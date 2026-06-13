@@ -40,3 +40,13 @@
   · "海大停车看板"→"停车看板"
   · agent 自动启动 node server.js
   · 命令日志写入 log/agentCmd.txt
+
+──────────────────────────────────────
+2026-06-13 15:15
+  · 车牌加·分隔：琼A·054DB
+  · 停车状态文字居中
+  · 按钮→"快捷缴费"
+  · 文件英文化重命名（驼峰）
+  · 删无用文件
+  · .gitignore: api-keys/ node_modules/
+  · git init + commit (push网络异常需手动重试)
