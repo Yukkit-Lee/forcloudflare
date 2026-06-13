@@ -394,7 +394,7 @@ app.listen(PORT, () => {
     // 启动日志
     try {
         fs.appendFileSync(
-            path.join(LOG_DIR, '服务运行日志.txt'),
+            path.join(LOG_DIR, 'server.log'),
             `[${new Date().toISOString()}] 服务启动 - 端口:${PORT}\n`
         );
     } catch (e) { /* 日志目录可能不存在 */ }
