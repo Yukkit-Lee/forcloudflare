@@ -1,0 +1,13 @@
+{
+  "name": "hainanu-parking-proxy",
+  "version": "1.0.0",
+  "description": "海大停车场一键缴费 - 后端代理，自动获取动态参数并构造缴费URL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "express": "^4.21.0"
+  }
+}

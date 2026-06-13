@@ -1,0 +1,31 @@
+══════════════════════════════════════════
+  海大停车场一键缴费 - 需求 & 技术文档
+  2026-06-13
+══════════════════════════════════════════
+
+【目标】
+  停车场一键缴费 + 停车看板，免手动输入车牌。
+
+【系统架构】
+  前端页面 → server.js(:3000) → 海大API
+               ├─ getInRecordByPlateNo  查询记录
+               └─ bill                 查询费用
+
+【API清单】
+  GET /api/search?plate=xxx         → { payUrl, parkId, enIndexCode }
+  GET /api/search?plate=xxx&redirect=1  → 302跳转缴费
+  GET /api/detail?plate=xxx         → { 入场时间, 费用, payUrl, ... }
+
+【页面】
+  /          快捷缴费页 —— 一键跳转
+  /board     便捷面板 —— 停车看板 + 后续扩展
+
+【停车看板功能】
+  车牌 / 入场时间 / 停车时长（实时）/ 应缴金额
+  48h拉黑进度条 + 三色警告
+  一键缴费按钮
+
+【待扩展】
+  Deadline看板 / Token消耗看板 / 计算器 / 其他工具
+
+【部署】cd code && npm install && node server.js

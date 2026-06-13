@@ -1,0 +1,100 @@
+═══════════════════════════════════════════════════════
+  海大停车场一键缴费 - 运行日志
+  创建时间：2026-06-13 12:30
+═══════════════════════════════════════════════════════
+
+【2026-06-13 12:13】项目初始化
+  创建目录结构：code/ log/ api-keys/
+  分析需求文档
+  目标URL分析完成
+
+【2026-06-13 12:15】第一版开发
+  创建 code/快捷缴费.html (v1 - 表单GET方案)
+  创建 code/快捷缴费书签.js
+  创建 code/安装书签工具.html
+  创建 code/快捷缴费油猴脚本.user.js
+  状态：待测试
+
+【2026-06-13 12:20】用户测试反馈
+  结果：❌ 方案一失败
+  原因：搜索页面不接受GET参数，跳转后仍是空白表单
+  实际缴费URL需要3个参数：
+    - 车牌号（URL路径参数）
+    - parkId（query参数）
+    - enIndexCode（query参数）
+  结论：需重构为直接构造缴费URL的方案
+
+【2026-06-13 12:25】第二版重构
+  删除无用文件：
+    ✅ 删除 code/快捷缴费书签.js
+    ✅ 删除 code/安装书签工具.html
+    ✅ 删除 code/快捷缴费油猴脚本.user.js
+  重写 code/快捷缴费.html (v2 - 直接URL方案)
+    ✅ 基于3个参数直接构造缴费URL
+    ✅ 参数可配置，localStorage持久化
+    ✅ 移动端适配UI
+
+【2026-06-13 12:30】功能增强
+  添加URL参数支持：
+    ✅ 支持 ?plate=xxx&parkId=xxx&enIndexCode=xxx 传参
+    ✅ 支持 ?auto=1 自动跳转模式
+  更新文档：
+    ✅ 进度.txt 更新
+    ✅ 当前需求.txt 更新（含技术参数）
+    ✅ 运行日志写入
+
+【2026-06-13 12:35】第三版重构 - 后端代理方案
+  发现问题：
+    ⚠️ enIndexCode是动态参数，每次停车重新生成
+    ⚠️ 硬编码enIndexCode很快就会失效
+  解决方案：后端代理动态抓取
+    ✅ 创建 code/server.js（Node.js + Express + axios）
+       - 访问搜索页获取session/cookie
+       - 自动提取CSRF token和隐藏字段
+       - 多策略提交（11种POST字段名 × 2种Content-Type + GET备用）
+       - 捕获302重定向提取Location中的参数
+       - 兼容JSON/HTML响应格式
+       - 请求超时15秒
+    ✅ 创建 code/package.json
+    ✅ 重写 code/快捷缴费.html（双模式 + API集成）
+       - 自动模式：调用/api/search抓取动态参数
+       - 手动模式：使用手动填写的备用参数
+       - 参数缓存、自动降级、状态反馈
+
+【2026-06-13 13:10】正式版完成 ✅
+  API验证通过：
+    ✅ GET /pms/action/mobile/getInRecordByPlateNo 成功返回数据
+    ✅ 确认 enIndexCode = uuid 字段
+    ✅ 缴费URL构造正确，点击即可跳转缴费页面
+  正式版代码：
+    ✅ code/server.js      - 清理后生产版本（仅express+axios）
+    ✅ code/快捷缴费.html   - 精简前端（自动获取+参数缓存+降级）
+    ✅ code/package.json   - 精简依赖
+    ✅ 文档同步更新
+
+【2026-06-13 13:20】停车看板功能完成 ✅
+  ✅ 新增 code/停车看板.html
+     - 入场时间/实时时长/48h拉黑警告
+     - 一键缴费入口
+     - 30秒自动刷新
+  ✅ server.js 新增 /api/detail + /board 路由
+  ✅ 文档同步更新
+
+【2026-06-13 13:28】修复session cookie传递 + 代码重构
+  ✅ 新增 getSessionCookie() 公共函数
+  ✅ queryBill 修复：正确传递Cookie到bill接口
+  ✅ queryPlate 重构：复用 getSessionCookie
+
+【2026-06-13 13:40】看板重新设计 ✅
+  ✅ 新建看板.html —— 模块化看板，预留扩展位
+
+【当前状态】✅ 已交付
+  核心文件：
+    code/server.js         - 后端代理
+    code/快捷缴费.html      - 一键缴费
+    code/停车看板.html      - 停车看板（新增）
+  部署步骤：
+    1. cd code && npm install
+    2. node server.js
+    3. 快捷缴费: http://localhost:3000
+    4. 停车看板: http://localhost:3000/board

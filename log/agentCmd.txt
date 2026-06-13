@@ -1,0 +1,3 @@
+2026-06-13 15:00
+cd E:/proDir/code && node server.js
+
