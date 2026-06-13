@@ -50,3 +50,11 @@
   · 删无用文件
   · .gitignore: api-keys/ node_modules/
   · git init + commit (push网络异常需手动重试)
+
+──────────────────────────────────────
+2026-06-13 15:25 - Cloudflare Worker 适配
+  · 新建 code/worker.js —— Workers 原生 fetch 实现
+  · 新建 code/wrangler.toml —— 部署配置
+  · dashboard.html 内嵌到 Worker（Workers 无 fs）
+  · Express → native fetch，axios → fetchWithTimeout
+  · 构建命令无需填写，部署命令: npx wrangler deploy
