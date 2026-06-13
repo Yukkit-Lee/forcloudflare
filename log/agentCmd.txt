@@ -18,3 +18,11 @@ git remote add origin https://github.com/Yukkit-Lee/forcloudflare.git
 git branch -M main
 git push -u origin main
 
+2026-06-13 15:35 - SSH推送修复 + Worker部署
+# HTTPS被墙，切SSH远程地址
+git remote set-url origin git@github.com:Yukkit-Lee/forcloudflare.git
+git push -u origin main
+
+# Cloudflare Worker 部署
+cd code && npx wrangler deploy
+

@@ -58,3 +58,9 @@
   · dashboard.html 内嵌到 Worker（Workers 无 fs）
   · Express → native fetch，axios → fetchWithTimeout
   · 构建命令无需填写，部署命令: npx wrangler deploy
+
+──────────────────────────────────────
+2026-06-13 15:35
+  · GitHub push 修复：HTTPS被墙 → 切 SSH (git@github.com)
+  · 5个commit已全部推送到 main 分支
+  · wrangler deploy 部署成功
