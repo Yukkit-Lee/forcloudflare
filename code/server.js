@@ -190,22 +190,27 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
 
     if (data && data.code === '0') {
         const bill = data.data || data;
+        // 判断是否已缴费未驶出
+        const paid = bill.type === '1' || (parseFloat(bill.realCost || 0) === 0 && parseFloat(bill.paidCost || 0) > 0);
+        const freeMin = paid ? parseInt(bill.remainingTime || 0) : 0;
+
         // 根据实际计费规则计算：¥3@07:00 ¥2@22:00交替
         const parkMin = parseInt(bill.parkTime || 0);
         const curFee = bill.totalCost || '0';
-        const ni = calcNextCharge(entryTime, parkMin, curFee);
-        const nextChargeMin = ni.min;
-        const nextChargeFee = ni.fee;
+        // 已缴费状态下，下次加钱从免费期结束时算起
+        const calcEntry = paid && freeMin > 0 ? Date.now() + freeMin * 60000 : entryTime;
+        const ni = calcNextCharge(calcEntry, paid ? 0 : parkMin, paid ? '0' : curFee);
         return {
-            totalFee: bill.totalCost || bill.totalFee || bill.payAmount || bill.amount || null,
-            paidFee: bill.paidCost || bill.paidFee || bill.paidAmount || null,
-            unpaidFee: bill.realCost || bill.unpaidFee || null,
-            durationMinutes: bill.parkTime || bill.durationMinutes || bill.parkingTime || null,
-            entryTimeStr: bill.inTime || bill.enCrossTime || bill.entryTime || null,
+            totalFee: bill.totalCost || bill.totalFee || null,
+            paidFee: bill.paidCost || bill.paidFee || null,
+            unpaidFee: bill.realCost || null,
+            durationMinutes: bill.parkTime || null,
+            entryTimeStr: bill.inTime || bill.enCrossTime || null,
             chargeRuleName: bill.chargeRuleName || '',
-            remainingTime: bill.remainingTime || null,
-            nextChargeMin,   // 距下次加钱的分钟数
-            nextChargeFee,   // 下次加钱金额
+            paid,
+            freeMin,
+            nextChargeMin: ni.min,
+            nextChargeFee: ni.fee,
             raw: bill,
         };
     }
@@ -329,7 +334,8 @@ app.get('/api/detail', async (req, res) => {
                 durationMinutes: bill.durationMinutes,
                 entryTimeStr: bill.entryTimeStr,
                 chargeRuleName: bill.chargeRuleName,
-                remainingTime: bill.remainingTime,
+                paid: bill.paid,
+                freeMin: bill.freeMin,
                 nextChargeMin: bill.nextChargeMin,
                 nextChargeFee: bill.nextChargeFee,
             } : null,

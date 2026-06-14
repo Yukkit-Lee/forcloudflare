@@ -74,3 +74,11 @@
   · server.js + worker.js 同步修复，语法通过
   · 本地服务已重启：http://localhost:3000
 
+
+──────────────────────────────────────
+2026-06-14 12:00
+  · 新增「已缴费未驶出」状态检测(type=1/realCost=0)
+  · 已缴费：剩余免费时间倒计时 + ¥0.00 + 绿色提示条
+  · 已缴费按钮变灰绿disabled '已缴费'
+  · server.js + worker.js 同步，wrangler deploy 成功
+

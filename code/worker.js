@@ -98,11 +98,12 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
     if (data.code !== '0' || !data.data) return null;
 
     const bill = data.data;
+    const paid = bill.type === '1' || (parseFloat(bill.realCost || 0) === 0 && parseFloat(bill.paidCost || 0) > 0);
+    const freeMin = paid ? parseInt(bill.remainingTime || 0) : 0;
     const parkMin = parseInt(bill.parkTime || 0);
     const curFee = bill.totalCost || '0';
-    const ni = calcNextCharge(entryTime || Date.now(), parkMin, curFee);
-    const nextChargeMin = ni.min;
-    const nextChargeFee = ni.fee;
+    const calcEntry = paid && freeMin > 0 ? Date.now() + freeMin * 60000 : (entryTime || Date.now());
+    const ni = calcNextCharge(calcEntry, paid ? 0 : parkMin, paid ? '0' : curFee);
 
     return {
         totalFee: bill.totalCost || null,
@@ -111,8 +112,10 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
         durationMinutes: bill.parkTime || null,
         entryTimeStr: bill.inTime || null,
         chargeRuleName: bill.chargeRuleName || '',
-        nextChargeMin,
-        nextChargeFee,
+        paid,
+        freeMin,
+        nextChargeMin: ni.min,
+        nextChargeFee: ni.fee,
     };
 }
 
@@ -379,7 +382,22 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
         function renderParkData(d){
             const el=document.getElementById('parkBody');
             document.getElementById('parkName').textContent=d.parkName||'海南大学海甸校区';
-            const plate=d.plate||'--',entryStr=d.bill?.entryTimeStr||fmtTs(d.entryTime)||'--';
+            const plate=d.plate||'--';
+            if(d.bill?.paid){
+                const fm=d.bill.freeMin||0,fh=Math.floor(fm/60),fmm=fm%60;
+                const fs=fh>0?fh+'h'+fmm+'m':fmm+'m';
+                const nc=d.bill.nextChargeMin>0?'<span style="font-size:11px;color:var(--sub);">'+nextChargeText(d.bill.nextChargeMin,d.bill.nextChargeFee)+'</span>':'';
+                el.innerHTML='<div class="plate-row"><div class="plate-tag">'+esc(fmtPlate(plate))+'</div><div class="park-status parked"><span class="dot"></span>已缴费未驶出</div></div>'+
+                '<div class="info-grid"><div class="info-item"><div class="label">剩余免费停车时间</div><div class="value" style="font-size:12px;">'+esc(fs)+'</div></div>'+
+                '<div class="info-item"><div class="label">停车时长</div><div class="value">'+fmtDur(parseInt(d.bill.durationMinutes))+'</div></div>'+
+                '<div class="info-item" style="grid-column:1/-1;"><div class="label">应缴金额</div>'+
+                '<div style="display:flex;justify-content:space-between;align-items:baseline;">'+
+                '<span class="value fee" style="color:var(--green);">¥0.00</span>'+nc+'</div></div></div>'+
+                '<div class="limit-msg safe" style="text-align:center;">✅ 已缴费，请尽快驶出停车场!</div>'+
+                '<div style="display:flex;gap:8px;margin-top:12px;"><button class="btn btn-pay" style="background:#a0c8a8;cursor:not-allowed;box-shadow:none;" disabled>已缴费</button><button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷新">&#x1f504;</button></div>';
+                return;
+            }
+            const entryStr=d.bill?.entryTimeStr||fmtTs(d.entryTime)||'--';
             const fee=d.bill?.totalFee!=null?Number(d.bill.totalFee).toFixed(2):null;
             const parkMin=d.bill?.durationMinutes!=null?parseInt(d.bill.durationMinutes):null;
             const hours=parkMin!==null?Math.floor(parkMin/60):null,level=hours!==null?getLevel(hours):'safe';
@@ -404,6 +422,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
         function startTick(){
             clearInterval(tickTimer);
             tickTimer=setInterval(()=>{
+                if(parkData?.bill?.paid){if(parkData.bill.freeMin>0)parkData.bill.freeMin=Math.max(0,parkData.bill.freeMin-10/60);if(parkData.bill.nextChargeMin>0)parkData.bill.nextChargeMin=Math.max(0,parkData.bill.nextChargeMin-10/60);return}
                 if(parkData?.bill?.durationMinutes==null)return;
                 parkData.bill.durationMinutes=parseInt(parkData.bill.durationMinutes)+10/60;
                 const min=Math.floor(parkData.bill.durationMinutes),durEl=document.getElementById('durVal');

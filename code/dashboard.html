@@ -310,6 +310,33 @@
             document.getElementById('parkName').textContent = d.parkName || '海南大学海甸校区';
 
             const plate = d.plate || '--';
+            const paid = d.bill?.paid === true;
+
+            if (paid) {
+                // ---- 已缴费未驶出状态 ----
+                const freeMin = d.bill?.freeMin || 0;
+                const freeH = Math.floor(freeMin / 60), freeM = freeMin % 60;
+                const freeStr = freeH > 0 ? freeH + 'h' + freeM + 'm' : freeM + 'm';
+                const nextCharge = d.bill?.nextChargeMin > 0
+                    ? '<span style="font-size:11px;color:var(--sub);">' + nextChargeText(d.bill.nextChargeMin, d.bill.nextChargeFee) + '</span>' : '';
+
+                el.innerHTML = '<div class="plate-row"><div class="plate-tag">' + esc(fmtPlate(plate)) + '</div>' +
+                    '<div class="park-status parked"><span class="dot"></span>已缴费未驶出</div></div>' +
+                    '<div class="info-grid"><div class="info-item"><div class="label">剩余免费停车时间</div>' +
+                    '<div class="value" style="font-size:12px;" id="durVal">' + esc(freeStr) + '</div></div>' +
+                    '<div class="info-item"><div class="label">停车时长</div>' +
+                    '<div class="value">' + fmtDur(parseInt(d.bill.durationMinutes)) + '</div></div>' +
+                    '<div class="info-item" style="grid-column:1/-1;"><div class="label">应缴金额</div>' +
+                    '<div style="display:flex;justify-content:space-between;align-items:baseline;">' +
+                    '<span class="value fee" style="color:var(--green);">¥0.00</span>' + nextCharge + '</div></div></div>' +
+                    '<div class="limit-msg safe" style="text-align:center;">✅ 已缴费，请尽快驶出停车场!</div>' +
+                    '<div style="display:flex;gap:8px;margin-top:12px;">' +
+                    '<button class="btn btn-pay" style="background:#a0c8a8;cursor:not-allowed;box-shadow:none;" disabled>已缴费</button>' +
+                    '<button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷新">🔄</button></div>';
+                return;
+            }
+
+            // ---- 未缴费状态 ----
             const entryStr = d.bill?.entryTimeStr || fmtTs(d.entryTime) || '--';
             const fee = d.bill?.totalFee != null ? Number(d.bill.totalFee).toFixed(2) : null;
             const parkMin = d.bill?.durationMinutes != null ? parseInt(d.bill.durationMinutes) : null;
@@ -368,6 +395,13 @@
         function startTick() {
             clearInterval(tickTimer);
             tickTimer = setInterval(() => {
+                // 已缴费状态：倒计时免费剩余时间 + 下次加钱
+                if (parkData?.bill?.paid) {
+                    if (parkData.bill.freeMin > 0) parkData.bill.freeMin = Math.max(0, parkData.bill.freeMin - 10/60);
+                    if (parkData.bill.nextChargeMin > 0) parkData.bill.nextChargeMin = Math.max(0, parkData.bill.nextChargeMin - 10/60);
+                    return; // 已缴费状态数据每30s刷新一次即可
+                }
+                // 未缴费状态
                 if (parkData?.bill?.durationMinutes == null) return;
                 parkData.bill.durationMinutes = parseInt(parkData.bill.durationMinutes) + 10/60;
                 const min = Math.floor(parkData.bill.durationMinutes);
