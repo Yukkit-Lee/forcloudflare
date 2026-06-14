@@ -3,23 +3,23 @@
   "msg": "pms.common.msg.success",
   "data": {
     "resreleaseCode": "5",
-    "chargeIndexCode": "454fec07ad0045c4a67893045347e77e",
+    "chargeIndexCode": "fc528bd1b2bb42beb4bda3e06310f6ed",
     "enIndexCode": "87f37fc74d5246c3bbc2320a9ba47265_6540f8a8e3d33_29b15",
     "enPlateNo": "琼A054DB",
     "enPlateColor": 0,
     "enCardNo": "",
     "enVehilceType": "1",
     "enCrossTime": "2026-06-12 22:46:26",
-    "enVehicleUrl": "https://hkioc.hainanu.edu.cn:443/ngx/proxy?i=aHR0cDovLzE3Mi4xNy4xNDAuMTc6NjEyMC9waWM/ODAwNjEwNUYwMkEwRjcwQkYzM0QqaGNzMzcxMmIwMDgyMGNmNGM2NjgyMDI1L2NhcnBpYy8yODQwMDsxNzgxMjczMjE3OTY4MTU5NjE2Mzc1P3BpYyo1MzkwOTE0NCo0NTE5MTIqMTU0KjgwMDYxMDVGMDI2MEI5MDUxRDJGLTIqMTc4MTI3NTIyNiZBY2Nlc3NLZXlJZD1IQ1M3UDg2TjU2MmE2REM5NkthZzBGRzQxM3pHMlNKaCZFeHBpcmVzPTE3ODEzNDE0MDImU2lnbmF0dXJlPVhkbWZoM1VxMUpSVkJDYUh1VE12eVJkQzNsMD0=&ztype=2&zvalue=5",
-    "enPlateUrl": "https://hkioc.hainanu.edu.cn:443/ngx/proxy?i=aHR0cDovLzE3Mi4xNy4xNDAuMTc6NjEyMC9waWM/ODAwNjEwNUYwMkEwRjcwQkYzM0QqaGNzMzcxMmIwMDgyMGNmNGM2NjgyMDI1L2NhcnBpYy8yODQwMDsxNzgxMjczNDIzOTE1MzMwNjE2Mzc0P3BpYyo0MjQ2ODkwKjI3ODQqNDUyKjgwMDYxMDVGMDIxMERDMDFEMDE1LTIqMTc4MTI3NTIyNiZBY2Nlc3NLZXlJZD1IQ1M3UDg2TjU2MmE2REM5NkthZzBGRzQxM3pHMlNKaCZFeHBpcmVzPTE3ODEzNDE0MDImU2lnbmF0dXJlPURwVFVnWUpraXBnSno0b3FEOG5rc3ZTSDFGZz0=&ztype=2&zvalue=5",
+    "enVehicleUrl": "https://hkioc.hainanu.edu.cn:443/ngx/proxy?i=aHR0cDovLzE3Mi4xNy4xNDAuMTc6NjEyMC9waWM/ODAwNjEwNUYwMkEwRjcwQkYzM0QqaGNzMzcxMmIwMDgyMGNmNGM2NjgyMDI1L2NhcnBpYy8yODQwMDsxNzgxMjczMjE3OTY4MTU5NjE2Mzc1P3BpYyo1MzkwOTE0NCo0NTE5MTIqMTU0KjgwMDYxMDVGMDI2MEI5MDUxRDJGLTIqMTc4MTI3NTIyNiZBY2Nlc3NLZXlJZD1IQ1M3UDg2TjU2MmE2REM5NkthZzBGRzQxM3pHMlNKaCZFeHBpcmVzPTE3ODE0NDE2NDMmU2lnbmF0dXJlPTZpd1NjVFlUc1E3b2JGUTlZOTVoU3drby85RT0=&ztype=2&zvalue=5",
+    "enPlateUrl": "https://hkioc.hainanu.edu.cn:443/ngx/proxy?i=aHR0cDovLzE3Mi4xNy4xNDAuMTc6NjEyMC9waWM/ODAwNjEwNUYwMkEwRjcwQkYzM0QqaGNzMzcxMmIwMDgyMGNmNGM2NjgyMDI1L2NhcnBpYy8yODQwMDsxNzgxMjczNDIzOTE1MzMwNjE2Mzc0P3BpYyo0MjQ2ODkwKjI3ODQqNDUyKjgwMDYxMDVGMDIxMERDMDFEMDE1LTIqMTc4MTI3NTIyNiZBY2Nlc3NLZXlJZD1IQ1M3UDg2TjU2MmE2REM5NkthZzBGRzQxM3pHMlNKaCZFeHBpcmVzPTE3ODE0NDE2NDMmU2lnbmF0dXJlPUxmU1hpWnpYRVRjV1JhTFlrbjd4RTJYNlduWT0=&ztype=2&zvalue=5",
     "exIndexCode": "",
     "exPlateNo": "琼A054DB",
     "exPlateColor": 0,
     "exCardNo": "",
     "exVehicleType": "1",
-    "exCrossTime": "2026-06-13 16:03:21",
-    "totalCost": "5.00",
-    "realCost": "5.00",
+    "exCrossTime": "2026-06-14 19:54:03",
+    "totalCost": "8.00",
+    "realCost": "8.00",
     "deduceCost": "0.00",
     "exceptionCost": "",
     "couponUsed": "false",
@@ -27,7 +27,7 @@
     "couponUsedMsg": "",
     "type": "0",
     "paidCost": "0.00",
-    "parkTime": "1037",
+    "parkTime": "2708",
     "deductRules": [
       {
         "deductRuleId": "20dc21d6-65fd-11f1-9d26-9b069ec870a9",
@@ -60,9 +60,9 @@
     "extraData": {
       "usedFreeTime": 0,
       "remainFreeTime": 0,
-      "periodStart": 1781275586083,
-      "periodEnd": 1781361986083,
-      "periodPrice": 5
+      "periodStart": 1781361986083,
+      "periodEnd": 1781448386083,
+      "periodPrice": 3
     },
     "coupons": null
   }

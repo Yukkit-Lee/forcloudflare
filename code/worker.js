@@ -73,7 +73,7 @@ async function queryPlate(plate) {
     };
 }
 
-async function queryBill(plate, parkId, enIndexCode, vehicleType) {
+async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
     const cookies = await getSessionCookie();
     const ts = Date.now();
 
@@ -98,14 +98,11 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType) {
     if (data.code !== '0' || !data.data) return null;
 
     const bill = data.data;
-    let nextChargeMin = null, nextChargeFee = null;
-    if (bill.extraData && bill.extraData.periodEnd) {
-        const remainMs = parseInt(bill.extraData.periodEnd) - Date.now();
-        if (remainMs > 0) {
-            nextChargeMin = Math.floor(remainMs / 60000);
-            nextChargeFee = bill.extraData.periodPrice || null;
-        }
-    }
+    const parkMin = parseInt(bill.parkTime || 0);
+    const curFee = bill.totalCost || '0';
+    const ni = calcNextCharge(entryTime || Date.now(), parkMin, curFee);
+    const nextChargeMin = ni.min;
+    const nextChargeFee = ni.fee;
 
     return {
         totalFee: bill.totalCost || null,
@@ -117,6 +114,20 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType) {
         nextChargeMin,
         nextChargeFee,
     };
+}
+
+const TZ=8;
+function cnMins(t){const d=new Date(t+TZ*3600000);return d.getUTCHours()*60+d.getUTCMinutes()}
+function nextCN(now,hour){const t=hour*60,cur=cnMins(now);let d=t-cur;if(d<=0)d+=1440;return now+d*60000}
+function calcNextCharge(entryTs,parkMin,currentFee){
+    if(!entryTs)return{min:null,fee:null};
+    const now=Date.now(),h=new Date(entryTs+TZ*3600000).getUTCHours(),isNight=h>=22||h<7;
+    const feeNum=parseFloat(currentFee)||0,elapsed=parkMin||0;
+    if(feeNum===0){if(isNight)return{min:0,fee:5};if(elapsed<30)return{min:30-elapsed,fee:3};return{min:0,fee:3}}
+    const n7=nextCN(now,7),n22=nextCN(now,22);
+    const cand=[{t:n7,fee:3},{t:n22,fee:2}].sort((a,b)=>a.t-b.t);
+    const rem=Math.floor((cand[0].t-now)/60000);
+    return rem>0?{min:rem,fee:cand[0].fee}:{min:null,fee:null};
 }
 
 function buildPayUrl(plate, parkId, enIndexCode) {
@@ -156,7 +167,7 @@ async function handleRequest(request) {
             const payUrl = buildPayUrl(result.plate, result.parkId, result.enIndexCode);
             let bill = null;
             try {
-                bill = await queryBill(result.plate, result.parkId, result.enIndexCode, result.vehicleType);
+                bill = await queryBill(result.plate, result.parkId, result.enIndexCode, result.vehicleType, result.entryTime);
             } catch (e) { /* 费用查询失败不阻断 */ }
 
             return json({
@@ -280,6 +291,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
         .limit-bar .track { height: 6px; background: #e8eaed; border-radius: 3px; overflow: hidden; }
         .limit-bar .fill { height: 100%; border-radius: 3px; transition: width 1s linear; }
         .limit-bar .fill.safe { background: var(--green); }
+        .limit-bar .fill.alert { background: var(--amber); }
         .limit-bar .fill.danger { background: var(--red); }
         .limit-msg { font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 6px; text-align: center; }
         .limit-msg.safe { background: var(--green-bg); color: var(--green); }

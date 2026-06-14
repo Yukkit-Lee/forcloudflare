@@ -64,3 +64,13 @@
   · GitHub push 修复：HTTPS被墙 → 切 SSH (git@github.com)
   · 5个commit已全部推送到 main 分支
   · wrangler deploy 部署成功
+
+──────────────────────────────────────
+2026-06-14 11:45
+  · 重置到GitHub远程稳定版 0b48b94
+  · 仅做两处修改：
+    1.计费算法：periodEnd→calcNextCharge(¥3@07:00/¥2@22:00交替)
+    2.进度条CSS：补 .limit-bar .fill.alert
+  · server.js + worker.js 同步修复，语法通过
+  · 本地服务已重启：http://localhost:3000
+

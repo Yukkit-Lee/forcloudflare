@@ -156,7 +156,7 @@ async function getSessionCookie() {
  * API: /pms/action/mobile/bill
  *   ?enRecordIndexCode={uuid}&parkId={parkId}&exPlateNo={plate}&exVehilceType={type}&time={ts}
  */
-async function queryBill(plate, parkId, enIndexCode, vehicleType) {
+async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
     const client = createClient();
     const cookies = await getSessionCookie();
 
@@ -190,17 +190,12 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType) {
 
     if (data && data.code === '0') {
         const bill = data.data || data;
-        // 计算距下次加钱的时间（基于extraData.periodEnd - 计费周期结束时间）
-        let nextChargeMin = null, nextChargeFee = null;
-        if (bill.extraData && bill.extraData.periodEnd) {
-            const periodEnd = parseInt(bill.extraData.periodEnd);
-            const now = Date.now();
-            const remainMs = periodEnd - now;
-            if (remainMs > 0) {
-                nextChargeMin = Math.floor(remainMs / 60000);
-                nextChargeFee = bill.extraData.periodPrice || null;
-            }
-        }
+        // 根据实际计费规则计算：¥3@07:00 ¥2@22:00交替
+        const parkMin = parseInt(bill.parkTime || 0);
+        const curFee = bill.totalCost || '0';
+        const ni = calcNextCharge(entryTime, parkMin, curFee);
+        const nextChargeMin = ni.min;
+        const nextChargeFee = ni.fee;
         return {
             totalFee: bill.totalCost || bill.totalFee || bill.payAmount || bill.amount || null,
             paidFee: bill.paidCost || bill.paidFee || bill.paidAmount || null,
@@ -217,6 +212,32 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType) {
 
     log('err', '费用查询失败:', data.msg || data.message);
     return null;
+}
+
+/**
+ * 计费规则：白天进场<30min免费→¥3→22:00+¥2(共¥5)→07:00+¥3...
+ *          夜间进场¥5→07:00+¥3→22:00+¥2...
+ *          首次后交替：¥3@07:00 / ¥2@22:00
+ */
+function calcNextCharge(entryTs, parkMin, currentFee) {
+    if (!entryTs) return { min: null, fee: null };
+    const now = Date.now();
+    const h = new Date(entryTs).getHours();
+    const isNight = h >= 22 || h < 7;
+    const feeNum = parseFloat(currentFee) || 0;
+    const elapsed = parkMin || 0;
+
+    if (feeNum === 0) {
+        if (isNight) return { min: 0, fee: 5 };
+        if (elapsed < 30) return { min: 30 - elapsed, fee: 3 };
+        return { min: 0, fee: 3 };
+    }
+    // 后续：最近07:00(¥3)或22:00(¥2)
+    const n7 = new Date(now); n7.setHours(7,0,0,0); if (n7<=now) n7.setDate(n7.getDate()+1);
+    const n22 = new Date(now); n22.setHours(22,0,0,0); if (n22<=now) n22.setDate(n22.getDate()+1);
+    const cand = [{t:n7.getTime(),fee:3},{t:n22.getTime(),fee:2}].sort((a,b)=>a.t-b.t);
+    const rem = Math.floor((cand[0].t - now) / 60000);
+    return rem > 0 ? { min: rem, fee: cand[0].fee } : { min: null, fee: null };
 }
 
 /**
@@ -282,7 +303,8 @@ app.get('/api/detail', async (req, res) => {
                 result.plate,
                 result.parkId,
                 result.enIndexCode,
-                result.vehicleType
+                result.vehicleType,
+                result.entryTime
             );
         } catch (e) {
             log('err', '费用查询异常:', e.message);
