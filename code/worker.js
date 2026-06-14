@@ -380,7 +380,8 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
             try{return JSON.parse(localStorage.getItem('hainanu_board_plate')||'{}').plate||'琼A054DB'}catch(e){return '琼A054DB'}
         }
         function renderParkData(d){
-            const el=document.getElementById('parkBody');
+            const card=document.getElementById('parkCard');card.style.display='';card.style.flexDirection='';
+            const el=document.getElementById('parkBody');el.style.display='';el.style.flexDirection='';el.style.flex='';
             document.getElementById('parkName').textContent=d.parkName||'海南大学海甸校区';
             const plate=d.plate||'--';
             if(d.bill?.paid){
@@ -415,8 +416,11 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
                 '<div style="display:flex;gap:8px;margin-top:12px;"><button class="btn btn-pay" onclick="goPay()">快捷缴费</button><button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷新">&#x1f504;</button></div>';
         }
         function renderEmpty(msg){
-            document.getElementById('parkName').textContent='暂无记录';
-            document.getElementById('parkBody').innerHTML='<div style="text-align:center;padding:20px;color:var(--sub);"><div style="font-size:36px;margin-bottom:6px;">&#x1f697;</div><p style="font-size:13px;">'+esc(msg)+'</p><button class="btn btn-outline" style="margin-top:12px;" onclick="fetchParkData()">&#x1f504; 重新查询</button></div>';
+            document.getElementById('parkName').textContent=parkData?.parkName||'暂无记录';
+            const plate=parkData?.plate||loadPlate();
+            const card=document.getElementById('parkCard');card.style.display='flex';card.style.flexDirection='column';
+            const el=document.getElementById('parkBody');el.style.display='flex';el.style.flexDirection='column';el.style.flex='1';
+            el.innerHTML='<div class="plate-row"><div class="plate-tag">'+esc(fmtPlate(plate))+'</div><div class="park-status" style="color:var(--red);"><span class="dot" style="background:var(--red);animation:none;"></span>未入场</div></div><div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--sub);"><div style="text-align:center;"><div style="font-size:36px;margin-bottom:6px;">&#x1f697;</div><p style="font-size:13px;">'+esc(msg)+'</p><button class="btn btn-outline" style="margin-top:12px;" onclick="fetchParkData()">&#x1f504; 重新查询</button></div></div>';
             clearInterval(tickTimer);
         }
         function startTick(){

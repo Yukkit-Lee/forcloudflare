@@ -82,3 +82,10 @@
   · 已缴费按钮变灰绿disabled '已缴费'
   · server.js + worker.js 同步，wrangler deploy 成功
 
+
+──────────────────────────────────────
+2026-06-15 10:00
+  · worker.js 同步：renderEmpty 补齐车牌行+flex居中 + renderParkData card样式重置
+  · 全部demo代码已清理
+  · wrangler deploy 成功 (8afd29be)
+

@@ -50,11 +50,43 @@ function log(level, ...args) {
     console.log(`[${ts}] ${prefix}`, ...args);
 }
 
-// ==================== 核心：车牌查询 ====================
+// ╔══════════════════════════════════════════════════════════════╗
+// ║                    数据流向说明                                ║
+// ╠══════════════════════════════════════════════════════════════╣
+// ║  前端 fetch('/api/detail?plate=琼A054DB')                     ║
+// ║    ↓                                                         ║
+// ║  server.js /api/detail 路由                                   ║
+// ║    ├─ queryPlate(plate)     → 海大API getInRecordByPlateNo   ║
+// ║    │   返回: { plate, parkId, enIndexCode(uuid),             ║
+// ║    │           entryTime(createTime), parkName, vehicleType } ║
+// ║    │                                                         ║
+// ║    └─ queryBill(plate, parkId, enIndexCode, vehicleType,     ║
+// ║                  entryTime)                                   ║
+// ║         → 海大API /pms/action/mobile/bill                    ║
+// ║         返回: { totalFee(totalCost), paidFee(paidCost),       ║
+// ║                 unpaidFee(realCost), entryTimeStr(inTime),    ║
+// ║                 durationMinutes(parkTime),                    ║
+// ║                 paid(已缴费?), freeMin(剩余免费分钟),         ║
+// ║                 nextChargeMin/Fee(距下次加钱) }               ║
+// ║    ↓                                                         ║
+// ║  前端 renderParkData() 渲染看板                                ║
+// ║    ├─ 未缴费: 入场时间 + 停车时长 + 应缴金额 + 48h进度条       ║
+// ║    └─ 已缴费: 剩余免费时间 + 停车时长 + ¥0 + 绿色提示          ║
+// ╚══════════════════════════════════════════════════════════════╝
 
 /**
- * 查询车牌对应的停车场记录
- * 返回完整记录数据（入场时间、parkId、uuid等）
+ * [第1步] 查询车牌 → 获取停车记录
+ * 调用海大 API: GET /pms/action/mobile/getInRecordByPlateNo
+ *   ?plateNo={车牌}&sceneType=pms&regionIndexCode=&time={时间戳}
+ *
+ * 响应示例: { code:"0", data:[{
+ *   carNo:"琼A054DB",        // → plate
+ *   parkId:"76f837a6-...",   // → 缴费URL参数
+ *   uuid:"87f37fc7...",      // → enIndexCode（缴费URL参数）
+ *   createTime:1781275586083,// → entryTime（入场Unix毫秒时间戳）
+ *   parkName:"海南大学海甸校区",
+ *   vehicleType:1            // 1=小型车
+ * }]}
  */
 async function queryPlate(plate) {
     const client = createClient();
@@ -152,9 +184,25 @@ async function getSessionCookie() {
 }
 
 /**
- * 查询停车费用
- * API: /pms/action/mobile/bill
- *   ?enRecordIndexCode={uuid}&parkId={parkId}&exPlateNo={plate}&exVehilceType={type}&time={ts}
+ * [第2步] 查询停车费用
+ * 调用海大 API: GET /pms/action/mobile/bill
+ *   ?enRecordIndexCode={uuid} &parkId={parkId}
+ *   &exPlateNo={plate} &exVehilceType={type} &time={ts}
+ *
+ * 响应关键字段:
+ *   totalCost     → 总费用（应缴金额）
+ *   paidCost      → 已缴金额
+ *   realCost      → 未缴金额（0=已缴完）
+ *   parkTime      → 已停分钟数
+ *   inTime        → 入场时间字符串 "2026/06/12 22:46:26"
+ *   remainingTime → 缴费后剩余免费分钟数（仅缴费后有值）
+ *   type          → "0"=未缴费 "1"=已缴费
+ *   extraData     → { periodEnd(计费周期结束), periodPrice }
+ *
+ * 本函数额外计算:
+ *   paid        → type==="1" 或 (realCost==0 && paidCost>0)
+ *   freeMin     → 缴费后 remainingTime 转整数
+ *   nextChargeMin/Fee → 根据计费规则 ¥3@07:00 / ¥2@22:00 计算
  */
 async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
     const client = createClient();
@@ -275,7 +323,20 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
-// 看板API：查询车牌 → 返回完整停车详情（含费用）
+/**
+ * [前端调用] GET /api/detail?plate=琼A054DB
+ * 串联 queryPlate + queryBill，返回前端渲染所需全部数据
+ *
+ * 返回字段流向:
+ *   entryTime → dashboard.html 渲染 "入场时间" 或 fmtTs 格式化
+ *   parkName  → dashboard.html 卡片副标题
+ *   bill.totalFee   → "应缴金额 ¥X.XX"
+ *   bill.durationMinutes → "停车时长 X小时X分"
+ *   bill.entryTimeStr → "入场时间" 优先使用 bill 返回的字符串
+ *   bill.paid / bill.freeMin → 决定渲染"已缴费未驶出"或"停车中"
+ *   bill.nextChargeMin/Fee → "XhXm后加¥X" 倒计时
+ *   payUrl → "一键缴费"按钮跳转目标
+ */
 app.get('/api/detail', async (req, res) => {
     const plate = (req.query.plate || '').trim();
 
@@ -286,11 +347,14 @@ app.get('/api/detail', async (req, res) => {
         });
     }
 
+
+
     log('req', '查询详情:', plate);
 
     try {
         const result = await queryPlate(plate);
 
+        // queryPlate 返回 null → 车辆未入场，前端 renderEmpty() 显示 🚗 + 提示
         if (!result) {
             return res.status(404).json({
                 success: false,
