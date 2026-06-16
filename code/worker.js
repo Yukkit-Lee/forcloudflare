@@ -128,7 +128,10 @@ function calcNextCharge(entryTs,parkMin,currentFee){
     const feeNum=parseFloat(currentFee)||0,elapsed=parkMin||0;
     if(feeNum===0){if(isNight)return{min:0,fee:5};if(elapsed<30)return{min:30-elapsed,fee:3};return{min:0,fee:3}}
     const n7=nextCN(now,7),n22=nextCN(now,22);
-    const cand=[{t:n7,fee:3},{t:n22,fee:2}].sort((a,b)=>a.t-b.t);
+    // 22:00费用取决于是否跨24h周期边界：同一周期内¥2，跨周期后¥5
+    const ms24=86400000,periodsDone=Math.floor((now-entryTs)/ms24),nextPeriod=entryTs+(periodsDone+1)*ms24;
+    const fee22=n22>=nextPeriod?5:2;
+    const cand=[{t:n7,fee:3},{t:n22,fee:fee22}].sort((a,b)=>a.t-b.t);
     const rem=Math.floor((cand[0].t-now)/60000);
     return rem>0?{min:rem,fee:cand[0].fee}:{min:null,fee:null};
 }

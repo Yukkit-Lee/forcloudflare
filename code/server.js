@@ -268,9 +268,11 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
 }
 
 /**
- * 计费规则：白天进场<30min免费→¥3→22:00+¥2(共¥5)→07:00+¥3...
- *          夜间进场¥5→07:00+¥3→22:00+¥2...
- *          首次后交替：¥3@07:00 / ¥2@22:00
+ * 计费规则：
+ *   白天进场(07-22): <30min免费→¥3→22:00+¥2→07:00+¥3→...
+ *     关键：过24h周期边界后，下个22:00加¥5（新周期夜间费），不是¥2
+ *   夜间进场(22-07): ¥5→07:00+¥3→22:00+¥2→07:00+¥3→...
+ *     注意：同一24h周期内22:00加¥2，跨周期后22:00加¥5
  */
 function calcNextCharge(entryTs, parkMin, currentFee) {
     if (!entryTs) return { min: null, fee: null };
@@ -285,10 +287,22 @@ function calcNextCharge(entryTs, parkMin, currentFee) {
         if (elapsed < 30) return { min: 30 - elapsed, fee: 3 };
         return { min: 0, fee: 3 };
     }
-    // 后续：最近07:00(¥3)或22:00(¥2)
+
+    // 24h周期边界（从入场时刻算）
+    const msPer24h = 24 * 3600 * 1000;
+    const periodsDone = Math.floor((now - entryTs) / msPer24h);
+    const nextPeriodStart = entryTs + (periodsDone + 1) * msPer24h;
+
+    // 最近07:00 和 22:00
     const n7 = new Date(now); n7.setHours(7,0,0,0); if (n7<=now) n7.setDate(n7.getDate()+1);
     const n22 = new Date(now); n22.setHours(22,0,0,0); if (n22<=now) n22.setDate(n22.getDate()+1);
-    const cand = [{t:n7.getTime(),fee:3},{t:n22.getTime(),fee:2}].sort((a,b)=>a.t-b.t);
+
+    // 22:00 的费用取决于是否跨24h周期边界
+    //   同一周期内: ¥2（夜间补充）
+    //   跨周期后:   ¥5（新周期夜间费）
+    const fee22 = n22.getTime() >= nextPeriodStart ? 5 : 2;
+
+    const cand = [{t:n7.getTime(),fee:3},{t:n22.getTime(),fee:fee22}].sort((a,b)=>a.t-b.t);
     const rem = Math.floor((cand[0].t - now) / 60000);
     return rem > 0 ? { min: rem, fee: cand[0].fee } : { min: null, fee: null };
 }
