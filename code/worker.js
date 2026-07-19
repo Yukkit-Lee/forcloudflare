@@ -209,7 +209,7 @@ async function getServerStatus(env) {
         return json({
             source: 'worker-kv',
             host: report.host || null,
-            connectivity: !Number.isFinite(checkedMs) || Date.now() - checkedMs > 3 * 60 * 1000
+            connectivity: !Number.isFinite(checkedMs) || Date.now() - checkedMs > 5 * 60 * 1000
                 ? 'STALE' : (report.connectivity || 'UNKNOWN'),
             last_confirmed_os: report.last_confirmed_os || 'UNKNOWN',
             status: report.status || 'UNKNOWN',

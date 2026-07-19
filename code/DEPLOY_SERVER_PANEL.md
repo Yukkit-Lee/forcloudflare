@@ -74,7 +74,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File "D:\myApps\ServerMonitor
   "enabled": true,
   "endpoint": "https://<你的 Worker 域名>/api/server-report",
   "credential_file": "D:\\myApps\\ServerMonitor\\web-report-credential.xml",
-  "timeout_seconds": 10
+  "timeout_seconds": 10,
+  "report_interval_seconds": 120
 }
 ```
 

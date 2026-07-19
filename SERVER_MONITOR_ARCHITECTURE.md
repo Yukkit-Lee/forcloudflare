@@ -36,7 +36,8 @@ Cloudflare Worker（forcloudflare）
 
 - 只接收已经完成的检测结果，不会主动连接局域网服务器，也不会读取 Andy 本机日志或文件。
 - `POST /api/server-report`：校验 HMAC 后把最新数据写入 KV。
-- `GET /api/server-status`：从 KV 读取最新数据供网页使用；超过三分钟未更新时显示 `STALE`。
+- 稳定状态每 120 秒写入一次 KV；确认离线、恢复在线或系统切换时立即上报，降低 KV 写入量。
+- `GET /api/server-status`：从 KV 读取最新数据供网页使用；超过五分钟未更新时显示 `STALE`。
 - 不参与 SMTP 发信，因此 Worker 部署、KV 故障或网页故障不会替代或关闭本机邮件通知。
 
 ## 配置和密钥
