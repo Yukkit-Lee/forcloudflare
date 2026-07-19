@@ -441,7 +441,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
                     <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">查询中...</p></div>
                 </div>
             </div>
-            <div class="card" id="serverCard"><div class="card-header"><div class="card-icon blue">&#x1f5a5;&#xfe0f;</div><div><div class="card-title">实验室服务器状态</div><div class="card-sub" id="serverUpdated">加载中...</div></div></div><div class="card-body" id="serverBody"><div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">读取状态中...</p></div></div></div>
+            <div class="card" id="serverCard"><div class="card-header"><div class="card-icon blue">&#x1f5a5;&#xfe0f;</div><div><div class="card-title">服务器状态</div><div class="card-sub" id="serverUpdated">加载中...</div></div></div><div class="card-body" id="serverBody"><div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">读取状态中...</p></div></div></div>
             <div class="placeholder-card"><div class="icon">&#x1fa99;</div><div class="title">Token 消耗看板</div><div class="hint">即将上线</div></div>
             <div class="placeholder-card"><div class="icon">&#x1f9ee;</div><div class="title">计算器工具</div><div class="hint">即将上线</div></div>
             <div class="placeholder-card"><div class="icon">&#x1f527;</div><div class="title">其他工具</div><div class="hint">即将上线</div></div>
