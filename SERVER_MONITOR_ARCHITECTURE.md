@@ -30,6 +30,7 @@ Cloudflare Worker（forcloudflare）
 - 负责所有实际检测、状态持久化、离线确认、系统切换判断与邮件通知。
 - SMTP 凭据与 Worker 上报密钥都保存为当前 Windows 用户的 DPAPI 凭据文件，不保存明文密码或密钥。
 - 上报失败不会阻止本地检测或邮件通知。
+- `monitor.log` 达到 `10 MiB` 后，会在下一次每分钟监控启动时自动清空；不保留轮转副本。
 
 ### Cloudflare Worker
 
