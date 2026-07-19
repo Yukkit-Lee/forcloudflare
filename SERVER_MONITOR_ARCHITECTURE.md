@@ -20,6 +20,26 @@ Cloudflare Worker（forcloudflare）
 网页第二面板 GET /api/server-status 并渲染
 ```
 
+## 当前工作流
+
+1. Windows 计划任务 `AndyServerMonitor` 每分钟以创建 DPAPI 凭据的同一用户后台运行一次监控器。
+2. 监控器并行检测 ICMP、SSH 22、RPC 135、SMB 445、RDP 3389，并更新本地 `last-state.json` 与 `monitor.log`。
+3. 连续三次全部不可达才确认 `OFFLINE`；恢复可达、确认离线、Linux/Windows 切换会进入本地邮件告警流程。
+4. 稳定状态每 120 秒通过 HTTPS/HMAC 上报一次；确认离线、恢复在线或系统切换时绕过间隔并立即上报。
+5. Worker 校验签名后，将最新报告写入 KV 的 `SERVER_STATUS/latest`。Worker 不会主动连接 Andy 本机，也不会发送邮件。
+6. 网页每次加载、自动刷新或点击“刷新服务器状态”时，调用 `GET /api/server-status`，从 KV 获取最新**已经上报**的数据并渲染。
+
+## STALE 状态的含义
+
+`STALE` 表示 Worker 中保存的最近一条报告已经超过 **5 分钟**没有更新。
+
+- 它不等于服务器 `OFFLINE`，也不会触发邮件；它只表示网页无法确认状态是否仍然新鲜。
+- 可能原因包括 Andy 本机的计划任务未执行、本机网络或 HTTPS 上报异常、Worker/KV 暂时故障，或主力机已关机。
+- 在正常稳定运行时，上报间隔为 120 秒，因此报告通常不会进入 `STALE`。
+- `ONLINE` 与 `OFFLINE` 由 Andy 本机对目标服务器的实际探测得出；`STALE` 由 Worker 根据“最后上报时间”得出。
+
+当前刷新按钮会立即绕过浏览器缓存读取 KV，但它不能让未对外开放的 Andy 本机在点击瞬间运行新一轮检测。若需要“点击后强制检测”，需要增加受保护的本机入站通道（例如 Cloudflare Tunnel），或采用下一次计划任务读取刷新请求的方式（最长约一分钟）。
+
 ## 职责边界
 
 ### Andy 本机监控器
