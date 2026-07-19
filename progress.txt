@@ -98,3 +98,33 @@
   · server.js + worker.js 同步修复
   · wrangler deploy (0ca107b0)
 
+──────────────────────────────────────
+2026-07-04 01:00
+  · 明确 agent 运行终端命令需追加写入 log/agentCmd.txt
+  · 排查 localhost 拒绝连接：3000端口无监听，node服务未运行
+  · 已启动本地服务：cd code && node server.js
+  · 健康检查通过：http://localhost:3000/api/health → status=ok
+
+──────────────────────────────────────
+2026-07-19 - 100 服务器状态面板
+  · 第二面板由「Deadline 看板」占位卡替换为「100 服务器状态」。
+  · 面板显示 ONLINE/OFFLINE/STALE、最后确认系统、原始检测状态、Ping、端口开闭、判定理由与离线采样次数；每 60 秒刷新，支持手动刷新。
+  · 本地 Express 版新增 GET /api/server-status，读取 D:\myApps\ServerMonitor\last-state.json；可用环境变量 SERVER_MONITOR_STATE_FILE 覆盖路径。
+  · Cloudflare Worker 版新增同名接口，通过 SERVER_STATUS_API_URL 与 SERVER_STATUS_API_TOKEN 两个 Worker Secret 读取独立服务器状态 Worker 的 /api/status。
+  · 新增 code/.dev.vars.example；真实 URL 和令牌不得提交到仓库。
+  · server.js 与 worker.js 均已通过 node --check 语法检查。
+
+──────────────────────────────────────
+2026-07-19 - 服务器面板样式与状态变更时间
+  · 面板名称改为「实验室服务器状态」，ONLINE 同行显示由接口动态读取的服务器地址。
+  · 「检测状态」改为「系统信息」；新增「最近状态变更」，无历史数据时显示 1970/1/1 0:00。
+  · 端口状态列表追加 ICMP（Ping）状态。
+  · 状态服务不可用时，提示文字与重试按钮改为卡片内水平、垂直居中。
+  · 监控器新增 last_state_change_at：系统切换、确认 OFFLINE、恢复 ONLINE 时更新，并随 Worker 上报发送。
+
+──────────────────────────────────────
+2026-07-19 - 单 Worker + KV 架构
+  · 按简化方案移除部署版对独立状态 Worker、D1、SERVER_STATUS_API_URL 和 SERVER_STATUS_API_TOKEN 的依赖。
+  · hainanu-parking Worker 新增 POST /api/server-report：校验 Andy HMAC 签名后，将最新状态写入 SERVER_STATUS KV 的 latest 键。
+  · GET /api/server-status 改为直接读取本 Worker 的 KV；第二面板无需跨 Worker 请求。
+  · 新增 code/DEPLOY_SERVER_PANEL.md，说明 KV 创建、Secret 设置、GitHub 推送与 Andy 上报配置。

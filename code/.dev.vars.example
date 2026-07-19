@@ -1,0 +1,2 @@
+# Cloudflare Worker 本地开发专用；请复制为 .dev.vars 后填入真实值，勿提交。
+INGEST_HMAC_KEY=replace-with-the-same-hmac-key-stored-in-andy-dpapi-credential

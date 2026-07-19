@@ -203,6 +203,13 @@
         .placeholder-card .icon { font-size: 32px; margin-bottom: 6px; }
         .placeholder-card .title { font-size: 13px; font-weight: 600; color: #aaa; }
         .placeholder-card .hint { font-size: 11px; color: #ccc; margin-top: 2px; }
+        .status-pill { display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:999px; font-size:11px; font-weight:800; }
+        .status-pill.online { background:var(--green-bg); color:var(--green); }
+        .status-pill.offline { background:var(--red-bg); color:var(--red); }
+        .status-pill.stale, .status-pill.unknown { background:var(--amber-bg); color:var(--amber); }
+        .port-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+        .port-chip { font-size:10px; font-weight:700; padding:4px 7px; background:#f4f5f7; border-radius:6px; color:var(--sub); }
+        .port-chip.open { color:var(--green); background:var(--green-bg); }
 
         /* ====== 加载/空状态 ====== */
         .loading-box {
@@ -257,8 +264,14 @@
             </div>
 
             <!-- ══════ 占位 ══════ -->
-            <div class="placeholder-card">
-                <div class="icon">⏰</div><div class="title">Deadline 看板</div><div class="hint">即将上线</div>
+            <div class="card" id="serverCard">
+                <div class="card-header">
+                    <div class="card-icon blue">🖥️</div>
+                    <div><div class="card-title">实验室服务器状态</div><div class="card-sub" id="serverUpdated">加载中...</div></div>
+                </div>
+                <div class="card-body" id="serverBody">
+                    <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">读取状态中...</p></div>
+                </div>
             </div>
             <div class="placeholder-card">
                 <div class="icon">🪙</div><div class="title">Token 消耗看板</div><div class="hint">即将上线</div>
@@ -282,9 +295,41 @@
 
         let parkData = null;
         let tickTimer = null;
+        let serverTimer = null;
 
-        window.addEventListener('DOMContentLoaded', fetchParkData);
-        window.addEventListener('beforeunload', () => clearInterval(tickTimer));
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchParkData(); fetchServerStatus(); serverTimer = setInterval(fetchServerStatus, 60000);
+        });
+        window.addEventListener('beforeunload', () => { clearInterval(tickTimer); clearInterval(serverTimer); });
+
+        async function fetchServerStatus() {
+            try {
+                const response = await fetch('/api/server-status', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || '读取失败');
+                renderServerStatus(data);
+            } catch (err) { renderServerError('状态服务不可用'); }
+        }
+
+        function renderServerStatus(data) {
+            const connectivity = (data.connectivity || 'UNKNOWN').toUpperCase();
+            const level = connectivity === 'ONLINE' ? 'online' : connectivity === 'OFFLINE' ? 'offline' : connectivity === 'STALE' ? 'stale' : 'unknown';
+            document.getElementById('serverUpdated').textContent = data.checked_at ? '检测于 ' + fmtTs(data.checked_at) : '暂无检测时间';
+            const ports = Object.entries({ ...(data.ports || {}), icmp: Boolean(data.ping) }).map(([name, open]) =>
+                '<span class="port-chip ' + (open ? 'open' : '') + '">' + esc(name.toUpperCase()) + ' ' + (open ? 'OPEN' : 'CLOSED') + '</span>'
+            ).join('');
+            document.getElementById('serverBody').innerHTML =
+                '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span class="status-pill ' + level + '"><span>●</span>' + esc(connectivity) + '</span><span style="font-size:12px;color:var(--sub);">服务器地址：<b style="color:var(--text);">' + esc(data.host || 'UNKNOWN') + '</b></span></div>' +
+                '<div class="info-grid"><div class="info-item"><div class="label">系统信息</div><div class="value">' + esc(data.status || 'UNKNOWN') + '</div></div><div class="info-item"><div class="label">最近状态变更</div><div class="value" style="font-size:12px;">' + fmtStateChange(data.last_state_change_at) + '</div></div></div>' +
+                '<div class="limit-msg ' + level + '" style="text-align:left;">' + esc(data.reason || '暂无判定理由') + (data.consecutive_offline_count > 0 ? '（离线采样 ' + data.consecutive_offline_count + ' 次）' : '') + '</div><div class="port-list">' + (ports || '<span class="port-chip">暂无端口数据</span>') + '</div><button class="btn btn-outline" style="margin-top:12px;" onclick="fetchServerStatus()">↻ 刷新服务器状态</button>';
+        }
+
+        function renderServerError(message) {
+            document.getElementById('serverUpdated').textContent = '读取失败';
+            document.getElementById('serverBody').innerHTML = '<div style="min-height:150px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="limit-msg danger" style="text-align:center;">⚠️ ' + esc(message) + '</div><button class="btn btn-outline" style="width:auto;margin-top:12px;" onclick="fetchServerStatus()">↻ 重试</button></div>';
+        }
+
+        function fmtStateChange(value) { return value ? fmtTs(value) : '1970/1/1 0:00'; }
 
         async function fetchParkData() {
             const plate = loadPlate();

@@ -42,6 +42,8 @@ const CONFIG = {
 };
 
 const LOG_DIR = path.join(__dirname, '..', 'log');
+const SERVER_MONITOR_STATE_FILE = process.env.SERVER_MONITOR_STATE_FILE ||
+    path.resolve(__dirname, '..', '..', '..', '..', 'last-state.json');
 
 // ==================== 日志 ====================
 function log(level, ...args) {
@@ -335,6 +337,35 @@ app.get('/board', (req, res) => {
 // 健康检查
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
+});
+
+// 服务器状态面板（本地版）：直接读取 andy 监控器写入的状态文件。
+app.get('/api/server-status', (req, res) => {
+    try {
+        const state = JSON.parse(fs.readFileSync(SERVER_MONITOR_STATE_FILE, 'utf8'));
+        const result = state.last_result || {};
+        const checkedAt = state.last_checked_at || result.checked_at || null;
+        const checkedMs = checkedAt ? Date.parse(checkedAt) : NaN;
+        const stale = !Number.isFinite(checkedMs) || Date.now() - checkedMs > 3 * 60 * 1000;
+        res.set('Cache-Control', 'no-store');
+        res.json({
+            source: 'local',
+            host: result.host || null,
+            connectivity: stale ? 'STALE' : (state.last_connectivity || (result.status === 'OFFLINE' ? 'OFFLINE' : 'UNKNOWN')),
+            last_confirmed_os: state.last_confirmed_os || 'UNKNOWN',
+            status: result.status || state.last_status || 'UNKNOWN',
+            checked_at: checkedAt,
+            consecutive_offline_count: state.consecutive_offline_count || 0,
+            last_state_change_at: state.last_state_change_at || null,
+            reason: result.reason || '暂无检测结果',
+            ports: result.ports || {},
+            ping: Boolean(result.ping),
+        });
+    } catch (e) {
+        res.status(503).json({
+            source: 'local', error: '无法读取服务器监控状态文件', detail: e.code || e.message,
+        });
+    }
 });
 
 /**

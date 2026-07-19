@@ -151,8 +151,81 @@ function json(data, status = 200) {
     });
 }
 
-// ==================== 路由 ====================
-async function handleRequest(request) {
+// ==================== 服务器状态 KV ====================
+// Andy 通过 HMAC 签名向本 Worker 上报，KV 只保存最新一份状态。
+const textEncoder = new TextEncoder();
+
+function hexToBytes(value) {
+    if (!/^[0-9a-f]{64}$/i.test(value || '')) return null;
+    const bytes = new Uint8Array(32);
+    for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(value.slice(i * 2, i * 2 + 2), 16);
+    return bytes;
+}
+
+async function verifyServerReport(request, body, env) {
+    const timestamp = request.headers.get('X-Monitor-Timestamp');
+    const signature = hexToBytes(request.headers.get('X-Monitor-Signature'));
+    if (!timestamp || !/^\d+$/.test(timestamp) || !signature || !env.INGEST_HMAC_KEY) return false;
+    if (Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false;
+    const prefix = textEncoder.encode(timestamp + '.');
+    const signed = new Uint8Array(prefix.length + body.length);
+    signed.set(prefix); signed.set(body, prefix.length);
+    const key = await crypto.subtle.importKey(
+        'raw', textEncoder.encode(env.INGEST_HMAC_KEY), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']
+    );
+    return crypto.subtle.verify('HMAC', key, signature.buffer, signed.buffer);
+}
+
+function isServerReport(data) {
+    return data && data.schema_version === 1 && typeof data.host === 'string'
+        && typeof data.reported_at === 'string' && typeof data.status === 'string'
+        && typeof data.connectivity === 'string' && typeof data.last_confirmed_os === 'string'
+        && typeof data.reason === 'string' && typeof data.ports === 'object';
+}
+
+async function receiveServerReport(request, env) {
+    if (!env.SERVER_STATUS) return json({ error: '未绑定 SERVER_STATUS KV Namespace' }, 503);
+    const body = new Uint8Array(await request.arrayBuffer());
+    if (body.length === 0 || body.length > 16384 || !await verifyServerReport(request, body, env)) {
+        return json({ error: 'unauthorized' }, 401);
+    }
+    try {
+        const report = JSON.parse(new TextDecoder().decode(body));
+        if (!isServerReport(report)) return json({ error: 'invalid_report' }, 400);
+        await env.SERVER_STATUS.put('latest', JSON.stringify(report));
+        return json({ ok: true });
+    } catch (e) {
+        return json({ error: 'invalid_json' }, 400);
+    }
+}
+
+async function getServerStatus(env) {
+    if (!env.SERVER_STATUS) return json({ error: '未绑定 SERVER_STATUS KV Namespace' }, 503);
+    const text = await env.SERVER_STATUS.get('latest');
+    if (!text) return json({ error: '尚未收到 Andy 的服务器状态上报' }, 404);
+    try {
+        const report = JSON.parse(text);
+        const checkedMs = Date.parse(report.reported_at);
+        return json({
+            source: 'worker-kv',
+            host: report.host || null,
+            connectivity: !Number.isFinite(checkedMs) || Date.now() - checkedMs > 3 * 60 * 1000
+                ? 'STALE' : (report.connectivity || 'UNKNOWN'),
+            last_confirmed_os: report.last_confirmed_os || 'UNKNOWN',
+            status: report.status || 'UNKNOWN',
+            checked_at: report.reported_at || null,
+            last_state_change_at: report.last_state_change_at || null,
+            consecutive_offline_count: report.consecutive_offline_count || 0,
+            reason: report.reason || '暂无判定理由',
+            ports: report.ports || {},
+            ping: Boolean(report.ping),
+        });
+    } catch (e) {
+        return json({ error: 'KV 中的服务器状态数据无效' }, 500);
+    }
+}
+
+async function handleRequest(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
 
@@ -160,6 +233,9 @@ async function handleRequest(request) {
     if (path === '/api/health') {
         return json({ status: 'ok', time: new Date().toISOString() });
     }
+
+    if (path === '/api/server-report' && request.method === 'POST') return receiveServerReport(request, env);
+    if (path === '/api/server-status' && request.method === 'GET') return getServerStatus(env);
 
     // API: 车牌详情
     if (path === '/api/detail') {
@@ -225,7 +301,7 @@ async function handleRequest(request) {
 // ==================== 启动 ====================
 export default {
     async fetch(request, env, ctx) {
-        return handleRequest(request);
+        return handleRequest(request, env);
     },
 };
 
@@ -321,6 +397,13 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
         .placeholder-card .icon { font-size: 32px; margin-bottom: 6px; }
         .placeholder-card .title { font-size: 13px; font-weight: 600; color: #aaa; }
         .placeholder-card .hint { font-size: 11px; color: #ccc; margin-top: 2px; }
+        .status-pill { display:inline-flex; align-items:center; gap:5px; padding:4px 9px; border-radius:999px; font-size:11px; font-weight:800; }
+        .status-pill.online { background:var(--green-bg); color:var(--green); }
+        .status-pill.offline { background:var(--red-bg); color:var(--red); }
+        .status-pill.stale, .status-pill.unknown { background:var(--amber-bg); color:var(--amber); }
+        .port-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+        .port-chip { font-size:10px; font-weight:700; padding:4px 7px; background:#f4f5f7; border-radius:6px; color:var(--sub); }
+        .port-chip.open { color:var(--green); background:var(--green-bg); }
         .loading-box { text-align: center; padding: 28px; }
         .spinner {
             width: 28px; height: 28px; margin: 0 auto 10px;
@@ -358,7 +441,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
                     <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">查询中...</p></div>
                 </div>
             </div>
-            <div class="placeholder-card"><div class="icon">&#x23f0;</div><div class="title">Deadline 看板</div><div class="hint">即将上线</div></div>
+            <div class="card" id="serverCard"><div class="card-header"><div class="card-icon blue">&#x1f5a5;&#xfe0f;</div><div><div class="card-title">实验室服务器状态</div><div class="card-sub" id="serverUpdated">加载中...</div></div></div><div class="card-body" id="serverBody"><div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">读取状态中...</p></div></div></div>
             <div class="placeholder-card"><div class="icon">&#x1fa99;</div><div class="title">Token 消耗看板</div><div class="hint">即将上线</div></div>
             <div class="placeholder-card"><div class="icon">&#x1f9ee;</div><div class="title">计算器工具</div><div class="hint">即将上线</div></div>
             <div class="placeholder-card"><div class="icon">&#x1f527;</div><div class="title">其他工具</div><div class="hint">即将上线</div></div>
@@ -367,9 +450,13 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     </div>
     <script>
         const WARN_H=40,DANGER_H=46,LIMIT_H=48;
-        let parkData=null,tickTimer=null;
-        window.addEventListener('DOMContentLoaded',fetchParkData);
-        window.addEventListener('beforeunload',()=>clearInterval(tickTimer));
+        let parkData=null,tickTimer=null,serverTimer=null;
+        window.addEventListener('DOMContentLoaded',()=>{fetchParkData();fetchServerStatus();serverTimer=setInterval(fetchServerStatus,60000)});
+        window.addEventListener('beforeunload',()=>{clearInterval(tickTimer);clearInterval(serverTimer)});
+        async function fetchServerStatus(){try{const r=await fetch('/api/server-status',{cache:'no-store',signal:AbortSignal.timeout(10000)});const d=await r.json();if(!r.ok)throw new Error(d.error||'读取失败');renderServerStatus(d)}catch(e){renderServerError('状态服务不可用')}}
+        function renderServerStatus(d){const c=(d.connectivity||'UNKNOWN').toUpperCase(),level=c==='ONLINE'?'online':c==='OFFLINE'?'offline':c==='STALE'?'stale':'unknown';document.getElementById('serverUpdated').textContent=d.checked_at?'检测于 '+fmtTs(d.checked_at):'暂无检测时间';const ports=Object.entries({...d.ports,icmp:Boolean(d.ping)}).map(([k,v])=>'<span class="port-chip '+(v?'open':'')+'">'+esc(k.toUpperCase())+' '+(v?'OPEN':'CLOSED')+'</span>').join('');document.getElementById('serverBody').innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span class="status-pill '+level+'"><span>●</span>'+esc(c)+'</span><span style="font-size:12px;color:var(--sub);">服务器地址：<b style="color:var(--text);">'+esc(d.host||'UNKNOWN')+'</b></span></div><div class="info-grid"><div class="info-item"><div class="label">系统信息</div><div class="value">'+esc(d.status||'UNKNOWN')+'</div></div><div class="info-item"><div class="label">最近状态变更</div><div class="value" style="font-size:12px;">'+fmtStateChange(d.last_state_change_at)+'</div></div></div><div class="limit-msg '+level+'" style="text-align:left;">'+esc(d.reason||'暂无判定理由')+(d.consecutive_offline_count>0?'（离线采样 '+d.consecutive_offline_count+' 次）':'')+'</div><div class="port-list">'+(ports||'<span class="port-chip">暂无端口数据</span>')+'</div><button class="btn btn-outline" style="margin-top:12px;" onclick="fetchServerStatus()">↻ 刷新服务器状态</button>';}
+        function renderServerError(msg){document.getElementById('serverUpdated').textContent='读取失败';document.getElementById('serverBody').innerHTML='<div style="min-height:150px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="limit-msg danger" style="text-align:center;">⚠️ '+esc(msg)+'</div><button class="btn btn-outline" style="width:auto;margin-top:12px;" onclick="fetchServerStatus()">↻ 重试</button></div>'}
+        function fmtStateChange(v){return v?fmtTs(v):'1970/1/1 0:00'}
         async function fetchParkData(){
             const plate=loadPlate();
             try{
