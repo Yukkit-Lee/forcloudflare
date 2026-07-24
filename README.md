@@ -81,7 +81,7 @@ GitHub 与 Cloudflare Workers 已连接时，推送 `main` 分支会自动部署
 
 邮件由 Andy 本机直接发送，Cloudflare 不参与：
 
-- 连续 **3 次**（约 3 分钟）Ping 和全部配置端口均不可达：发送 **OFFLINE** 邮件。
+- 单次检测发现 Ping 和全部配置端口均不可达：立即发送 **OFFLINE** 邮件（实际延迟为下一次每分钟检测到达的 0～1 分钟）。
 - 已确认 OFFLINE 后任意检测重新可达：发送 **ONLINE recovery** 邮件。
 - 已知 Linux 状态切换到 Windows：发送 Windows 进入通知。
 - 已知 Windows 状态切换到 Linux：发送 Linux 进入通知。

@@ -24,7 +24,7 @@ Cloudflare Worker（forcloudflare）
 
 1. Windows 计划任务 `AndyServerMonitor` 每分钟以创建 DPAPI 凭据的同一用户后台运行一次监控器。
 2. 监控器并行检测 ICMP、SSH 22、RPC 135、SMB 445、RDP 3389，并更新本地 `last-state.json` 与 `monitor.log`。
-3. 连续三次全部不可达才确认 `OFFLINE`；恢复可达、确认离线、Linux/Windows 切换会进入本地邮件告警流程。
+3. 单次检测发现 Ping 与全部端口均不可达即确认 `OFFLINE` 并发送邮件；恢复可达、确认离线、Linux/Windows 切换也会进入本地邮件告警流程。
 4. 稳定状态每 120 秒通过 HTTPS/HMAC 上报一次；确认离线、恢复在线或系统切换时绕过间隔并立即上报。
 5. Worker 校验签名后，将最新报告写入 KV 的 `SERVER_STATUS/latest`。Worker 不会主动连接 Andy 本机，也不会发送邮件。
 6. 网页每次加载、自动刷新或点击“刷新服务器状态”时，调用 `GET /api/server-status`，从 KV 获取最新**已经上报**的数据并渲染。
