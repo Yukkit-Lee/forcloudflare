@@ -89,7 +89,7 @@ GitHub 与 Cloudflare Workers 已连接时，推送 `main` 分支会自动部署
 
 系统类型基于开放端口的特征推断，不等价于登录操作系统后读取的系统信息。例如 SSH 可达且 RDP 不可达时判为 `LINUX_LIKELY`。
 
-对于本项目监控的服务器，SSH(22) 可达且 RPC(135) 不可达时优先判为 `LINUX_LIKELY`；RPC(135) 可达且 SSH(22) 不可达时优先判为 `WINDOWS`。SMB/RDP 的残留可达状态不会覆盖该判断。
+对于本项目监控的服务器，SSH(22) 可达即优先判为 `LINUX_LIKELY`；RPC(135) 是否可达只影响展示的判定理由。RPC 可达且 SSH 不可达时判为 `WINDOWS`；SMB/RDP/RPC 的残留可达状态不会覆盖 SSH 对 Linux 的判断。
 
 详细说明见 [SERVER_MONITOR_ARCHITECTURE.md](SERVER_MONITOR_ARCHITECTURE.md)。
 

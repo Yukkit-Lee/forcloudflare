@@ -42,12 +42,12 @@ Cloudflare Worker（forcloudflare）
 
 ## 系统判定优先级
 
-此服务器以 SSH 与 Windows RPC 的组合为最高优先级特征：
+此服务器以 SSH 为 Linux 的最高优先级特征，Windows RPC/RDP/SMB 仅作辅助判断：
 
-- SSH(22) 可达且 RPC(135) 不可达：判定 `LINUX_LIKELY`。
+- SSH(22) 可达：判定 `LINUX_LIKELY`；RPC(135) 是否可达只影响展示的判定理由。
 - RPC(135) 可达且 SSH(22) 不可达：判定 `WINDOWS`。
 
-SMB(445) 或 RDP(3389) 可能受残留服务、端口转发或网络设备影响而仍显示可达，因此在以上两种组合出现时，不会覆盖 SSH/RPC 的判定。该规则使 Linux/Windows 切换能进入对应邮件通知流程。
+SMB(445)、RDP(3389) 或 RPC(135) 可能受残留服务、端口转发或网络设备影响而仍显示可达，因此都不会覆盖 SSH 对 Linux 的判断。该规则使 Linux/Windows 切换能进入对应邮件通知流程。
 
 ## 职责边界
 
