@@ -31,3 +31,4 @@
 2026-07-30: Stopped local Node PID 18300 and confirmed port 3000 is no longer listening.
 2026-07-30: With local collection stopped, Worker Cron succeeded at 14:45 UTC (HTTP 200, 1202ms) and wrote the latest sample.
 2026-07-30: Restricted gym_api_logs to five-minute worker-cron requests only; realtime refresh no longer writes access logs.
+2026-07-30: Removed legacy realtime-refresh rows and verified a new manual refresh left the D1 realtime log count at zero.

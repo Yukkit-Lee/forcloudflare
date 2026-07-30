@@ -53,3 +53,4 @@ LIMIT 100;
 - 实时刷新不会生成 `gym_api_logs` 记录。
 - 关闭本地 PID 18300 后，Worker Cron 仍在 14:45 UTC 自动采集成功。
 - Cron 日志：`worker-cron`、HTTP 200、成功、1202ms；对应采样正常写入 `gym_samples`。
+- 最终部署验证已清理全部旧 `realtime-refresh` 记录；再次手动刷新后，D1 中该类型记录仍为 0 条。

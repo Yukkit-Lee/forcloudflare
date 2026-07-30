@@ -210,3 +210,4 @@
   - 本地关闭后 Worker Cron 于 14:45 UTC 独立采集成功：HTTP 200、耗时 1202ms，并写入 worker-cron 采样。
   - 按最新要求收窄日志范围：仅记录每五分钟 Worker Cron；实时刷新成功或失败均不写 gym_api_logs。
   - 日志查询接口固定只返回 worker-cron，旧 realtime-refresh 日志从 D1 清理。
+  - 线上最终验证：清理旧日志后手动刷新一次，D1 中 realtime-refresh 日志仍为 0 条。
