@@ -202,9 +202,11 @@
   - 线上复核手动刷新行为：调用 current-online 前后，D1 当日记录均为 283 条，确认刷新不写库。
   - 确认日期按 Asia/Shanghai 计算；2026-07-31 的昨日参考将自动读取 2026-07-30 数据。
   - README 健身房/D1 章节已全部改为中文，并补充 UTC 时间、次日切换和 Rows Read 说明。
-  - 新增 D1 `gym_api_logs`：记录 Cron 和实时刷新访问上游接口的 HTTP 状态、成功状态、耗时及错误原因。
+  - 新增 D1 `gym_api_logs`：记录 Cron 访问上游接口的 HTTP 状态、成功状态、耗时及错误原因。
   - 新增 `/api/gym/api-logs` 查询接口和 `log/gymApiLog.md` 字段说明；单次最多返回 500 条。
-  - 日志不保存实时刷新得到的人数；实时刷新仍不会向 `gym_samples` 写入曲线采样。
-  - 线上验证实时刷新前后 `gym_samples` 均为 287 条；访问日志记录 HTTP 200 和 117ms，未保存人数。
+  - 实时刷新不写 `gym_api_logs`，也不会向 `gym_samples` 写入曲线采样。
+  - 线上验证实时刷新前后 `gym_samples` 均为 287 条，未写入曲线采样。
   - 已停止本地 PID 18300，端口 3000 不再监听，不再写入本地 txt。
   - 本地关闭后 Worker Cron 于 14:45 UTC 独立采集成功：HTTP 200、耗时 1202ms，并写入 worker-cron 采样。
+  - 按最新要求收窄日志范围：仅记录每五分钟 Worker Cron；实时刷新成功或失败均不写 gym_api_logs。
+  - 日志查询接口固定只返回 worker-cron，旧 realtime-refresh 日志从 D1 清理。

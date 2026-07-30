@@ -270,3 +270,6 @@ cd code && npx wrangler deploy
 [2026-07-30 22:46:48] git add -- .gitignore log/agentCmd.txt log/gymApiLog.md log/gym_worker_deploy.log progress.txt; git commit -m "Record gym API log production verification"
 [2026-07-30 22:46:56] git push origin main
 [2026-07-30 22:47:07] git add -- log/agentCmd.txt; git commit -m "Record gym API log push command"; git push origin main; git status --short
+[2026-07-30 22:52:58] git status --short; rg -n -A 95 -B 8 "fetchGymOnlineCount|writeGymApiLog|getGymApiLogs" code/worker.js; rg -n "realtime-refresh|gym_api_logs|每次 Worker|访问日志" README.md requirements.txt progress.txt log/gymApiLog.md log/gym_worker_deploy.log
+[2026-07-30 22:53:40] node --check code/worker.js; npx wrangler deploy --dry-run --config code/wrangler.toml; git diff --check; Write-Output "--- LOG CALLS ---"; rg -n "fetchGymOnlineCount\(|writeGymApiLog\(|request_type = 'worker-cron'" code/worker.js; Write-Output "--- DOC REALTIME ---"; rg -n "realtime-refresh|实时刷新" README.md requirements.txt log/gymApiLog.md progress.txt log/gym_worker_deploy.log
+[2026-07-30 22:54:13] git add -- README.md code/worker.js log/agentCmd.txt log/gymApiLog.md log/gym_worker_deploy.log progress.txt requirements.txt; git commit -m "Limit gym API logs to scheduled collection"

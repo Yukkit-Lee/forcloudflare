@@ -59,6 +59,6 @@ Cloudflare gym monitor deployment (2026-07-30)
 - The gym sample-count subtitle is removed so the chart has more vertical space.
 - Embedded Worker HTML must keep valid `<title>`, `<body>`, and `<script>` closing tags; malformed title markup causes a fully blank browser page.
 - Worker dashboard HTML is generated from the local `code/dashboard.html`; D1-backed compatibility endpoints must provide `time` and `count` fields expected by the local chart.
-- Every Worker request to the gym upstream API must write a status record to D1 `gym_api_logs`, including request source, HTTP status, success, duration, and error details.
-- A realtime refresh may write an API access log, but it must never insert a `gym_samples` record or persist the returned online count.
-- Gym API logs must be queryable through `/api/gym/api-logs`, with a maximum of 500 records per request.
+- Every five-minute Worker Cron request to the gym upstream API must write a status record to D1 `gym_api_logs`, including HTTP status, success, duration, and error details.
+- A realtime refresh must not write `gym_api_logs`, insert a `gym_samples` record, or persist the returned online count.
+- Gym API logs must be queryable through `/api/gym/api-logs`, return only `worker-cron` records, and allow a maximum of 500 records per request.

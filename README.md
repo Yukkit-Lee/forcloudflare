@@ -144,7 +144,7 @@ gym_samples(
 )
 ```
 
-每次 Worker 访问健身房上游接口时，都会向 D1 的 `gym_api_logs` 表记录调用来源、HTTP 状态、成功状态、耗时和错误原因。日志不保存用户手动刷新得到的在线人数，手动刷新也不会向 `gym_samples` 写入曲线采样。最近的访问日志可以通过 `/api/gym/api-logs?limit=100` 查询，详细字段和 SQL 示例见 `log/gymApiLog.md`。
+Worker Cron 每五分钟访问健身房上游接口时，都会向 D1 的 `gym_api_logs` 表记录 HTTP 状态、成功状态、耗时和错误原因。用户手动刷新不写访问日志，也不会向 `gym_samples` 写入曲线采样。最近的定时任务日志可以通过 `/api/gym/api-logs?limit=100` 查询，详细字段和 SQL 示例见 `log/gymApiLog.md`。
 
 如需统计数据库中的实际记录数，应使用聚合查询，不要把控制台结果面板显示的行数当作总记录数：
 

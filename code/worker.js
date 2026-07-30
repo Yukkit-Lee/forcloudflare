@@ -216,26 +216,30 @@ async function fetchGymOnlineCount(env, requestType) {
         upstreamStatus = response.status;
         if (!response.ok) throw new Error('gym upstream HTTP ' + response.status);
         const count = extractGymCount(await response.json());
-        await writeGymApiLog(env, {
-            requestedAt,
-            requestType,
-            upstreamStatus,
-            success: true,
-            durationMs: Date.now() - startedAt,
-        });
+        if (requestType) {
+            await writeGymApiLog(env, {
+                requestedAt,
+                requestType,
+                upstreamStatus,
+                success: true,
+                durationMs: Date.now() - startedAt,
+            });
+        }
         return count;
     } catch (error) {
         const errorMessage = error?.name === 'AbortError'
             ? 'gym upstream timeout after ' + GYM_CONFIG.TIMEOUT + 'ms'
             : error?.message || String(error);
-        await writeGymApiLog(env, {
-            requestedAt,
-            requestType,
-            upstreamStatus,
-            success: false,
-            durationMs: Date.now() - startedAt,
-            errorMessage,
-        });
+        if (requestType) {
+            await writeGymApiLog(env, {
+                requestedAt,
+                requestType,
+                upstreamStatus,
+                success: false,
+                durationMs: Date.now() - startedAt,
+                errorMessage,
+            });
+        }
         throw error;
     } finally {
         clearTimeout(timer);
@@ -295,7 +299,7 @@ async function getGymLatest(env) {
 
 async function getGymCurrentOnline(env) {
     try {
-        const count = await fetchGymOnlineCount(env, 'realtime-refresh');
+        const count = await fetchGymOnlineCount(env);
         return json({ success: true, count, serverTime: Date.now(), source: 'realtime-refresh' });
     } catch (error) {
         return json({ success: false, count: null, error: 'gym realtime request failed' }, 502);
@@ -310,10 +314,14 @@ async function getGymApiLogs(env, url) {
     const query = date
         ? `SELECT requested_at, request_date, request_type, upstream_status, success,
                   duration_ms, error_message
-           FROM gym_api_logs WHERE request_date = ? ORDER BY requested_at DESC LIMIT ?`
+           FROM gym_api_logs
+           WHERE request_type = 'worker-cron' AND request_date = ?
+           ORDER BY requested_at DESC LIMIT ?`
         : `SELECT requested_at, request_date, request_type, upstream_status, success,
                   duration_ms, error_message
-           FROM gym_api_logs ORDER BY requested_at DESC LIMIT ?`;
+           FROM gym_api_logs
+           WHERE request_type = 'worker-cron'
+           ORDER BY requested_at DESC LIMIT ?`;
     const statement = date
         ? env.GYM_DB.prepare(query).bind(date, limit)
         : env.GYM_DB.prepare(query).bind(limit);

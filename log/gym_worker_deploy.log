@@ -26,7 +26,8 @@
 2026-07-30: Confirmed Asia/Shanghai date rollover will query 2026-07-30 as yesterday on 2026-07-31.
 2026-07-30: Translated the README Gym/D1 section into Chinese and documented UTC timestamp handling.
 2026-07-30: Created remote D1 table gym_api_logs for Worker upstream status, latency, and error records.
-2026-07-30: Added /api/gym/api-logs; realtime refresh logs access status but never writes gym_samples or the returned count.
-2026-07-30: Production verification: realtime refresh kept gym_samples at 287 rows and wrote only a status log (HTTP 200, 117ms).
+2026-07-30: Added /api/gym/api-logs for worker-cron status records; realtime refresh never writes gym_samples or the returned count.
+2026-07-30: Production verification: realtime refresh kept gym_samples at 287 rows.
 2026-07-30: Stopped local Node PID 18300 and confirmed port 3000 is no longer listening.
 2026-07-30: With local collection stopped, Worker Cron succeeded at 14:45 UTC (HTTP 200, 1202ms) and wrote the latest sample.
+2026-07-30: Restricted gym_api_logs to five-minute worker-cron requests only; realtime refresh no longer writes access logs.
