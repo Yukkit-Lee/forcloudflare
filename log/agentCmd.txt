@@ -197,3 +197,42 @@ cd code && npx wrangler deploy
 2026-07-30 19:54:37 npx wrangler deploy
 2026-07-30 19:55:03 verify restored UTF8 remote dashboard
 2026-07-30 19:55:23 git add code/dashboard.html code/worker.js progress.txt log/gym_worker_deploy.log log/agentCmd.txt; git commit -m "Restore UTF-8 dashboard source"; git push origin main
+2026-07-30 19:59:43 inspect Cloudflare pasted worker candidate and compare markers
+2026-07-30 20:00:01 inspect candidate gym current and board response sections
+2026-07-30 20:00:01 compare candidate fingerprints with repository current worker and dashboard
+2026-07-30 20:00:01 inspect candidate embedded dashboard title and gym UI markers
+2026-07-30 20:00:20 verify candidate refresh and subtitle behavior markers
+2026-07-30 20:03:12 inspect confirmed e068 Cloudflare bundle markers
+2026-07-30 20:03:12 inspect confirmed e068 bundle gym current and dashboard start
+2026-07-30 20:03:55 extract confirmed e068 dashboard HTML to local source
+2026-07-30 20:04:06 extract confirmed e068 dashboard HTML to local source retry
+2026-07-30 20:04:22 extract confirmed e068 dashboard HTML preserving escaped interpolation
+2026-07-30 20:04:32 inspect interpolation markers inside e068 dashboard bundle
+2026-07-30 20:04:50 extract confirmed e068 dashboard HTML safely
+2026-07-30 20:05:19 inspect extracted e068 dashboard refresh code
+2026-07-30 20:05:19 inspect local server dashboard-triggered file writes
+2026-07-30 20:05:47 read exact e068 gym poll block for patching
+2026-07-30 20:06:32 node code/sync-dashboard.mjs; node --check code/worker.js; verify e068 baseline with requested refresh behavior
+2026-07-30 20:06:48 dry-run Wrangler build for e068 baseline sync
+2026-07-30 20:06:48 read README gym section before update
+2026-07-30 20:07:30 verify local refresh does not append gym txt and inspect final diff
+2026-07-30 20:08:00 inspect port 3000 listener before local service restart
+2026-07-30 20:08:20 Stop-Process -Id 9948 -Force
+2026-07-30 20:08:27 Start-Process hidden node server.js in E:\proDir\code
+2026-07-30 20:08:45 verify restarted local server and refresh no longer appends txt
+2026-07-30 20:09:04 diagnose local server restart exit
+2026-07-30 20:09:17 diagnose server.js encoding recovery passes in memory
+2026-07-30 20:09:31 recover server.js one GBK-to-UTF8 pass
+2026-07-30 20:09:42 node --check code/server.js after encoding recovery
+2026-07-30 20:09:56 list server.js lines with odd single-quote counts
+2026-07-30 20:10:13 node --check code/server.js recovery pass 2
+2026-07-30 20:10:20 inspect server.js around syntax error line 484
+2026-07-30 20:10:38 node --check code/server.js recovery pass 3
+2026-07-30 20:10:53 node --check code/server.js recovery pass 4
+2026-07-30 20:11:08 node --check code/server.js recovery pass 5
+2026-07-30 20:11:14 inspect server.js startup block around syntax error
+2026-07-30 20:11:31 node --check code/server.js recovery final
+2026-07-30 20:11:38 start recovered local Node server hidden
+2026-07-30 20:11:51 verify recovered local service and no-write page refresh
+2026-07-30 20:12:18 final checks for e068 baseline plus no-write refresh changes
+2026-07-30 20:12:27 git add e068 baseline sync files and documentation; commit

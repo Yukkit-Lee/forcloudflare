@@ -36,7 +36,7 @@
         }
         .container { max-width: 960px; margin: 0 auto; }
 
-        /* ====== 头�??====== */
+        /* ====== 头部 ====== */
         .header {
             text-align: center; padding: 16px 0 24px;
         }
@@ -57,12 +57,12 @@
             grid-template-columns: 1fr;
             gap: 14px;
         }
-        /* 电脑端：一行两个面??*/
+        /* 电脑端：一行两个面板 */
         @media (min-width: 640px) {
             .grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* ====== 卡�??====== */
+        /* ====== 卡片 ====== */
         .card {
             background: var(--card);
             border-radius: var(--radius);
@@ -140,7 +140,7 @@
             color: var(--red);
         }
 
-        /* 48h 进度�?*/
+        /* 48h 进度条 */
         .limit-bar { margin-bottom: 14px; }
         .limit-bar .labels {
             display: flex; justify-content: space-between;
@@ -167,7 +167,7 @@
         .limit-msg.alert  { background: var(--amber-bg); color: var(--amber); }
         .limit-msg.danger { background: var(--red-bg); color: var(--red); }
 
-        /* 按�??*/
+        /* 按钮 */
         .btn {
             display: flex; align-items: center; justify-content: center;
             gap: 6px; width: 100%; padding: 12px 20px;
@@ -211,7 +211,7 @@
         .port-chip { font-size:10px; font-weight:700; padding:4px 7px; background:#f4f5f7; border-radius:6px; color:var(--sub); }
         .port-chip.open { color:var(--green); background:var(--green-bg); }
 
-        /* ====== 健身房监??====== */
+        /* ====== 健身房监控 ====== */
         .gym-stat {
             text-align: center; padding: 6px 0 12px;
         }
@@ -292,7 +292,7 @@
         .btn-icon:hover { background: #f0f1f5; color: var(--text); }
         .btn-icon:active { transform: scale(.92); }
 
-        /* ====== 加�??空状�?====== */
+        /* ====== 加载/空状态 ====== */
         .loading-box {
             text-align: center; padding: 28px;
         }
@@ -303,13 +303,13 @@
         }
         @keyframes spin { to{transform:rotate(360deg)} }
 
-        /* ====== 底�??====== */
+        /* ====== 底部 ====== */
         .footer {
             text-align: center; margin-top: 20px;
             font-size: 11px; color: #ccc;
         }
 
-        /* ====== 电脑端微??====== */
+        /* ====== 电脑端微调 ====== */
         @media (min-width: 640px) {
             .plate-tag { font-size: 16px; padding: 5px 14px; }
             .info-grid { gap: 8px; }
@@ -330,37 +330,37 @@
 
         <div class="grid">
 
-            <!-- ═════�??停车看板 ═════�??-->
+            <!-- ══════ 停车看板 ══════ -->
             <div class="card" id="parkCard">
                 <div class="card-header">
-                    <div class="card-icon blue">🅿?</div>
+                    <div class="card-icon blue">🅿️</div>
                     <div>
                         <div class="card-title">停车看板</div>
-                        <div class="card-sub" id="parkName">加载�?..</div>
+                        <div class="card-sub" id="parkName">加载中...</div>
                     </div>
                 </div>
                 <div class="card-body" id="parkBody">
-                    <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">查询�?..</p></div>
+                    <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">查询中...</p></div>
                 </div>
             </div>
 
-            <!-- ═════�??占�??═════�??-->
+            <!-- ══════ 占位 ══════ -->
             <div class="card" id="serverCard">
                 <div class="card-header">
-                    <div class="card-icon blue">🖥?</div>
-                    <div><div class="card-title">服务器状?</div><div class="card-sub" id="serverUpdated">加载�?..</div></div>
+                    <div class="card-icon blue">🖥️</div>
+                    <div><div class="card-title">服务器状态</div><div class="card-sub" id="serverUpdated">加载中...</div></div>
                 </div>
                 <div class="card-body" id="serverBody">
                     <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">读取状态中...</p></div>
                 </div>
             </div>
-            <!-- ═════�??健身房人数监�?═════�??-->
+            <!-- ══════ 健身房人数监控 ══════ -->
             <div class="card" id="gymCard">
                 <div class="card-header">
-                    <div class="card-icon purple">🏋?</div>
+                    <div class="card-icon purple">🏋️</div>
                     <div>
-                        <div class="card-title">健身房人数监�</div>
-                        <div class="card-sub" id="gymName">722??长治Look·长城旗舰�</div>
+                        <div class="card-title">健身房人数监控</div>
+                        <div class="card-sub" id="gymName">722店-长治Look·长城旗舰店</div>
                     </div>
                 </div>
                 <div class="card-body" id="gymBody">
@@ -368,10 +368,9 @@
                         <div class="big-num" id="gymOnlineCount">--</div>
                         <div class="label">
                             <span class="status-dot" id="gymStatusDot"></span>
-                            当前在线人�??
-                            <button class="btn-icon" id="gymRefreshBtn" onclick="gymManualRefresh()" title="手动刷新">?</button>
+                            当前在线人数
+                            <button class="btn-icon" id="gymRefreshBtn" onclick="gymManualRefresh()" title="手动刷新">↻</button>
                         </div>
-                        <div class="sub" id="gymSubInfo">等待首次采�??..</div>
                     </div>
                     <div class="chart-wrap">
                         <canvas id="gymChart"></canvas>
@@ -379,13 +378,13 @@
                         <div class="chart-tip" id="gymChartTip"></div>
                     </div>
                     <div class="chart-legend">
-                        <span><span class="swatch today"></span>今日实�?</span>
-                        <span><span class="swatch yesterday"></span>昨日参�</span>
+                        <span><span class="swatch today"></span>今日实时</span>
+                        <span><span class="swatch yesterday"></span>昨日参考</span>
                     </div>
                 </div>
             </div>
             <div class="placeholder-card">
-                <div class="icon">�?</div><div class="title">计算器工?</div><div class="hint">即将上线</div>
+                <div class="icon">🧮</div><div class="title">计算器工具</div><div class="hint">即将上线</div>
             </div>
             <div class="placeholder-card">
                 <div class="icon">🔧</div><div class="title">其他工具</div><div class="hint">即将上线</div>
@@ -393,12 +392,12 @@
 
         </div>
 
-        <div class="footer">海南大�????便捷面板</div>
+        <div class="footer">海南大学 · 便捷面板</div>
     </div>
 
     <script>
         const WARN_H = 40;
-        const DANGER_H = 46; // ??8h不�??h ??红�??
+        const DANGER_H = 46; // 距48h不足6h → 红色
         const LIMIT_H = 48;
 
         let parkData = null;
@@ -416,25 +415,25 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || '读取失败');
                 renderServerStatus(data);
-            } catch (err) { renderServerError('状态服务不可�??); }
+            } catch (err) { renderServerError('状态服务不可用'); }
         }
 
         function renderServerStatus(data) {
             const connectivity = (data.connectivity || 'UNKNOWN').toUpperCase();
             const level = connectivity === 'ONLINE' ? 'online' : connectivity === 'OFFLINE' ? 'offline' : connectivity === 'STALE' ? 'stale' : 'unknown';
-            document.getElementById('serverUpdated').textContent = data.checked_at ? '检测�??' + fmtTs(data.checked_at) : '暂无检测时??;
+            document.getElementById('serverUpdated').textContent = data.checked_at ? '检测于 ' + fmtTs(data.checked_at) : '暂无检测时间';
             const ports = Object.entries({ ...(data.ports || {}), icmp: Boolean(data.ping) }).map(([name, open]) =>
                 '<span class="port-chip ' + (open ? 'open' : '') + '">' + esc(name.toUpperCase()) + ' ' + (open ? 'OPEN' : 'CLOSED') + '</span>'
             ).join('');
             document.getElementById('serverBody').innerHTML =
-                '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span class="status-pill ' + level + '"><span>?</span>' + esc(connectivity) + '</span><span style="font-size:12px;color:var(--sub);">服务器地址??b style="color:var(--text);">' + esc(data.host || 'UNKNOWN') + '</b></span></div>' +
-                '<div class="info-grid"><div class="info-item"><div class="label">系统信息</div><div class="value">' + esc(data.status || 'UNKNOWN') + '</div></div><div class="info-item"><div class="label">最近状态变?</div><div class="value" style="font-size:12px;">' + fmtStateChange(data.last_state_change_at) + '</div></div></div>' +
-                '<div class="limit-msg ' + level + '" style="text-align:left;">' + esc(data.reason || '暂无判定理�??) + (data.consecutive_offline_count > 0 ? '（离线采??' + data.consecutive_offline_count + ' 次�?? : '') + '</div><div class="port-list">' + (ports || '<span class="port-chip">暂无端口数�?</span>') + '</div><button class="btn btn-outline" style="margin-top:12px;" onclick="fetchServerStatus()">??刷新服务器状�</button>';
+                '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span class="status-pill ' + level + '"><span>●</span>' + esc(connectivity) + '</span><span style="font-size:12px;color:var(--sub);">服务器地址：<b style="color:var(--text);">' + esc(data.host || 'UNKNOWN') + '</b></span></div>' +
+                '<div class="info-grid"><div class="info-item"><div class="label">系统信息</div><div class="value">' + esc(data.status || 'UNKNOWN') + '</div></div><div class="info-item"><div class="label">最近状态变更</div><div class="value" style="font-size:12px;">' + fmtStateChange(data.last_state_change_at) + '</div></div></div>' +
+                '<div class="limit-msg ' + level + '" style="text-align:left;">' + esc(data.reason || '暂无判定理由') + (data.consecutive_offline_count > 0 ? '（离线采样 ' + data.consecutive_offline_count + ' 次）' : '') + '</div><div class="port-list">' + (ports || '<span class="port-chip">暂无端口数据</span>') + '</div><button class="btn btn-outline" style="margin-top:12px;" onclick="fetchServerStatus()">↻ 刷新服务器状态</button>';
         }
 
         function renderServerError(message) {
             document.getElementById('serverUpdated').textContent = '读取失败';
-            document.getElementById('serverBody').innerHTML = '<div style="min-height:150px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="limit-msg danger" style="text-align:center;">⚠�??' + esc(message) + '</div><button class="btn btn-outline" style="width:auto;margin-top:12px;" onclick="fetchServerStatus()">??重�?</button></div>';
+            document.getElementById('serverBody').innerHTML = '<div style="min-height:150px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="limit-msg danger" style="text-align:center;">⚠️ ' + esc(message) + '</div><button class="btn btn-outline" style="width:auto;margin-top:12px;" onclick="fetchServerStatus()">↻ 重试</button></div>';
         }
 
         function fmtStateChange(value) { return value ? fmtTs(value) : '1970/1/1 0:00'; }
@@ -469,7 +468,7 @@
             const paid = d.bill?.paid === true;
 
             if (paid) {
-                // ---- 已缴费未驶出状�?----
+                // ---- 已缴费未驶出状态 ----
                 const freeMin = d.bill?.freeMin || 0;
                 const freeH = Math.floor(freeMin / 60), freeM = freeMin % 60;
                 const freeStr = freeH > 0 ? freeH + 'h' + freeM + 'm' : freeM + 'm';
@@ -477,22 +476,22 @@
                     ? '<span style="font-size:11px;color:var(--sub);">' + nextChargeText(d.bill.nextChargeMin, d.bill.nextChargeFee) + '</span>' : '';
 
                 el.innerHTML = '<div class="plate-row"><div class="plate-tag">' + esc(fmtPlate(plate)) + '</div>' +
-                    '<div class="park-status parked"><span class="dot"></span>已缴费未驶�?</div></div>' +
+                    '<div class="park-status parked"><span class="dot"></span>已缴费未驶出</div></div>' +
                     '<div class="info-grid"><div class="info-item"><div class="label">剩余免费停车时间</div>' +
                     '<div class="value" style="font-size:12px;" id="durVal">' + esc(freeStr) + '</div></div>' +
                     '<div class="info-item"><div class="label">停车时长</div>' +
                     '<div class="value">' + fmtDur(parseInt(d.bill.durationMinutes)) + '</div></div>' +
                     '<div class="info-item" style="grid-column:1/-1;"><div class="label">应缴金额</div>' +
                     '<div style="display:flex;justify-content:space-between;align-items:baseline;">' +
-                    '<span class="value fee" style="color:var(--green);">??.00</span>' + nextCharge + '</div></div></div>' +
-                    '<div class="limit-msg safe" style="text-align:center;">??已缴费，请尽快驶出停车场!</div>' +
+                    '<span class="value fee" style="color:var(--green);">¥0.00</span>' + nextCharge + '</div></div></div>' +
+                    '<div class="limit-msg safe" style="text-align:center;">✅ 已缴费，请尽快驶出停车场!</div>' +
                     '<div style="display:flex;gap:8px;margin-top:12px;">' +
-                    '<button class="btn btn-pay" style="background:#a0c8a8;cursor:not-allowed;box-shadow:none;" disabled>已缴�</button>' +
-                    '<button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷�??>🔄</button></div>';
+                    '<button class="btn btn-pay" style="background:#a0c8a8;cursor:not-allowed;box-shadow:none;" disabled>已缴费</button>' +
+                    '<button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷新">🔄</button></div>';
                 return;
             }
 
-            // ---- 未缴费状??----
+            // ---- 未缴费状态 ----
             const entryStr = d.bill?.entryTimeStr || fmtTs(d.entryTime) || '--';
             const fee = d.bill?.totalFee != null ? Number(d.bill.totalFee).toFixed(2) : null;
             const parkMin = d.bill?.durationMinutes != null ? parseInt(d.bill.durationMinutes) : null;
@@ -502,12 +501,12 @@
             el.innerHTML =
                 `<div class="plate-row">
                     <div class="plate-tag">${esc(fmtPlate(plate))}</div>
-                    <div class="park-status parked"><span class="dot"></span>停车�</div>
+                    <div class="park-status parked"><span class="dot"></span>停车中</div>
                 </div>
 
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="label">入场时�?</div>
+                        <div class="label">入场时间</div>
                         <div class="value" style="font-size:12px;">${esc(entryStr)}</div>
                     </div>
                     <div class="info-item">
@@ -517,7 +516,7 @@
                     <div class="info-item" style="grid-column:1/-1;">
                         <div class="label">应缴金额</div>
                         <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                            <span class="value fee">${fee != null ? '?? + fee : '--'}</span>
+                            <span class="value fee">${fee != null ? '¥' + fee : '--'}</span>
                             ${d.bill?.nextChargeMin > 0 ? '<span style="font-size:11px;color:var(--sub);">' + nextChargeText(d.bill.nextChargeMin, d.bill.nextChargeFee) + '</span>' : ''}
                         </div>
                     </div>
@@ -533,7 +532,7 @@
 
                 <div style="display:flex;gap:8px;margin-top:12px;">
                     <button class="btn btn-pay" onclick="goPay()">快捷缴费</button>
-                    <button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷�??>🔄</button>
+                    <button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷新">🔄</button>
                 </div>`;
         }
 
@@ -546,7 +545,7 @@
             el.style.display = 'flex'; el.style.flexDirection = 'column'; el.style.flex = '1';
             el.innerHTML =
                 '<div class="plate-row"><div class="plate-tag">' + esc(fmtPlate(plate)) + '</div>' +
-                '<div class="park-status" style="color:var(--red);"><span class="dot" style="background:var(--red);animation:none;"></span>未入�</div></div>' +
+                '<div class="park-status" style="color:var(--red);"><span class="dot" style="background:var(--red);animation:none;"></span>未入场</div></div>' +
                 '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--sub);">' +
                 '<div style="text-align:center;"><div style="font-size:36px;margin-bottom:6px;">🚗</div>' +
                 '<p style="font-size:13px;">' + esc(msg) + '</p>' +
@@ -557,13 +556,13 @@
         function startTick() {
             clearInterval(tickTimer);
             tickTimer = setInterval(() => {
-                // 已缴费状态：倒计时免费剩余时�?+ 下次加钱
+                // 已缴费状态：倒计时免费剩余时间 + 下次加钱
                 if (parkData?.bill?.paid) {
                     if (parkData.bill.freeMin > 0) parkData.bill.freeMin = Math.max(0, parkData.bill.freeMin - 10/60);
                     if (parkData.bill.nextChargeMin > 0) parkData.bill.nextChargeMin = Math.max(0, parkData.bill.nextChargeMin - 10/60);
-                    return; // 已缴费状态数据每30s刷新一次即??
+                    return; // 已缴费状态数据每30s刷新一次即可
                 }
-                // 未缴费状??
+                // 未缴费状态
                 if (parkData?.bill?.durationMinutes == null) return;
                 parkData.bill.durationMinutes = parseInt(parkData.bill.durationMinutes) + 10/60;
                 const min = Math.floor(parkData.bill.durationMinutes);
@@ -577,7 +576,7 @@
                 const msg = document.getElementById('limitMsg');
                 if (msg) { msg.textContent = limitMsg(h); msg.className = 'limit-msg ' + level; }
 
-                // 刷新倒计??
+                // 刷新倒计时
                 if (parkData.bill.nextChargeMin > 0) {
                     parkData.bill.nextChargeMin = Math.max(0, parkData.bill.nextChargeMin - 10/60);
                 }
@@ -589,20 +588,20 @@
             else fetchParkData().then(() => { if (parkData?.payUrl) window.location.href = parkData.payUrl; });
         }
 
-        // ══════════════════════════════════════════�?
-        //  健身房人数监�?
-        // ══════════════════════════════════════════�?
+        // ═══════════════════════════════════════════
+        //  健身房人数监控
+        // ═══════════════════════════════════════════
 
-        const GYM_POLL_INTERVAL = 300000;  // ??分钟自动轮询一�?
+        const GYM_POLL_INTERVAL = 300000;  // 每5分钟自动轮询一次
         const GYM_STORAGE_KEY = 'gym_today_data';
         let gymTimer = null;
 
-        /** 获取今日的数据存??key（YYYY-MM-DD??*/
+        /** 获取今日的数据存储 key（YYYY-MM-DD） */
         function gymTodayKey() {
             return new Date().toISOString().slice(0, 10);
         }
 
-        /** ??localStorage 加载今日已采集的数�??*/
+        /** 从 localStorage 加载今日已采集的数据 */
         function gymLoadToday() {
             try {
                 const raw = localStorage.getItem(GYM_STORAGE_KEY);
@@ -612,7 +611,7 @@
             } catch { return {}; }
         }
 
-        /** 保存一条新采集的数据�??localStorage */
+        /** 保存一条新采集的数据到 localStorage */
         function gymSaveSample(count) {
             const now = new Date();
             const h = now.getHours();
@@ -622,7 +621,7 @@
             if (!all[key]) all[key] = {};
             if (!all[key][h]) all[key][h] = [];
             all[key][h].push({ count, m: now.getMinutes(), t: Date.now() });
-            // 只保留最??天，控制大�??
+            // 只保留最近7天，控制大小
             const days = Object.keys(all).sort();
             while (days.length > 7) {
                 delete all[days.shift()];
@@ -630,7 +629,7 @@
             localStorage.setItem(GYM_STORAGE_KEY, JSON.stringify(all));
         }
 
-        /** 将服务器当天记录转换为图表使用的小时采样对�??*/
+        /** 将服务器当天记录转换为图表使用的小时采样对象 */
         function gymBuildTodayData(records) {
             const result = {};
             (records || []).forEach(r => {
@@ -644,7 +643,7 @@
             return result;
         }
 
-        /** 获取本周签到数据（参考线�?*/
+        /** 获取本周签到数据（参考线） */
         async function gymFetchWeeklyRef() {
             try {
                 const resp = await fetch('/api/gym/weekly-stats', {
@@ -652,17 +651,17 @@
                 });
                 const data = await resp.json();
                 if (data.success && Array.isArray(data.slots)) {
-                    // 转换为小时映�? "0:00~8:00" ??小�??-7都赋??
+                    // 转换为小时映射: "0:00~8:00" → 小时0-7都赋值
                     const ref = {};
                     data.slots.forEach(s => {
-                        const match = s.timeQuantum.match(/(\d+):00~(\d+):00/);
+                        const match = s.timeQuantum.match(/(d+):00~(d+):00/);
                         if (match) {
                             const startH = parseInt(match[1]);
                             const endH = parseInt(match[2]);
                             for (let h = startH; h < endH; h++) ref[h] = s.count;
                         }
                     });
-                    // 计算全天平�??
+                    // 计算全天平均
                     const counts = data.slots.map(s => s.count).filter(c => c != null);
                     const avg = counts.length ? Math.round(counts.reduce((a,b) => a+b, 0) / counts.length) : 0;
                     return { ref, avg };
@@ -689,7 +688,7 @@
             return result;
         }
 
-        /** 绘制健身房图�?*/
+        /** 绘制健身房图表 */
         function gymDrawChart(todayData, yesterdayData, refData, weeklyAvg) {
             const canvas = document.getElementById('gymChart');
             if (!canvas) return;
@@ -706,7 +705,7 @@
             const currentHour = now.getHours();
             const currentMin = now.getMinutes();
 
-            // 整理今日数据：首次采样前用周均填充，之后用真实数据，未来不显�?
+            // 整理今日数据：首次采样前用周均填充，之后用真实数据，未来不显示
             let firstRealH = 24;
             for (let h = 0; h < 24; h++) {
                 if (todayData[h] && todayData[h].length > 0) { firstRealH = h; break; }
@@ -724,17 +723,17 @@
                         val = sorted[0].count;
                     }
                 } else if (h < firstRealH && h < currentHour) {
-                    // 首次采样前用本周均值填??
+                    // 首次采样前用本周均值填充
                     val = refData[h] != null ? refData[h] : null;
                 }
-                // 首次采样后无真实数�??or h > currentHour ??null（曲线不延伸�?
+                // 首次采样后无真实数据 or h > currentHour → null（曲线不延伸）
                 hourlyData.push(val);
             }
 
-            // 整理昨日数据（已??-8点�??
+            // 整理昨日数据（已含0-8点）
             const yesterdayHourly = gymBuildYesterdayHourly(yesterdayData);
 
-            // Y轴固??-100，�??0人一�?
+            // Y轴固定0-100，每10人一格
             const MAX_Y = 100, Y_STEP = 10, ySteps = MAX_Y / Y_STEP;
 
             const pad = { top: 12, bottom: 18, left: 32, right: 12 };
@@ -744,7 +743,7 @@
 
             ctx.clearRect(0, 0, W, H);
 
-            // ---- Y轴网格线 + 标�??----
+            // ---- Y轴网格线 + 标签 ----
             ctx.strokeStyle = '#ebeef2';
             ctx.lineWidth = 0.5;
             for (let i = 0; i <= ySteps; i++) {
@@ -753,14 +752,14 @@
                 ctx.moveTo(pad.left, y);
                 ctx.lineTo(W - pad.right, y);
                 ctx.stroke();
-                // Y轴标�?
+                // Y轴标签
                 ctx.fillStyle = '#b0b2b8';
                 ctx.font = '9px sans-serif';
                 ctx.textAlign = 'right';
                 ctx.fillText(Y_STEP * i, pad.left - 4, y + 3);
             }
 
-            // ---- X轴标签（00:00 ??24:00??----
+            // ---- X轴标签（00:00 到 24:00） ----
             ctx.fillStyle = '#b0b2b8';
             ctx.font = '9px sans-serif';
             for (let h = 0; h <= 24; h += 2) {
@@ -770,7 +769,7 @@
                 ctx.fillText(String(labelHour) + ':00', x, H - 3);
             }
 
-            // ---- 绘制昨日数据线（深灰色点线�??----
+            // ---- 绘制昨日数据线（深灰色点线） ----
             ctx.strokeStyle = '#555';
             ctx.lineWidth = 1.5;
             ctx.setLineDash([3, 4]);
@@ -789,7 +788,7 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // ---- 绘制今日实时折线（蓝色实线�??----
+            // ---- 绘制今日实时折线（蓝色实线） ----
             ctx.strokeStyle = '#2563eb';
             ctx.lineWidth = 2.5;
             ctx.beginPath();
@@ -806,7 +805,8 @@
             }
             ctx.stroke();
 
-            // 使用蓝线最后一个实际绘制点的同一组坐标，保证圆心与曲线末端重合�??            const liveDot = document.getElementById('gymLiveDot');
+            // 使用蓝线最后一个实际绘制点的同一组坐标，保证圆心与曲线末端重合。
+            const liveDot = document.getElementById('gymLiveDot');
             let lastTodayHour = -1;
             for (let h = hourlyData.length - 1; h >= 0; h--) {
                 if (hourlyData[h] !== null) {
@@ -824,7 +824,7 @@
                 liveDot.style.display = 'none';
             }
 
-            // ---- 填充区域（渐变，到当前小时�??----
+            // ---- 填充区域（渐变，到当前小时） ----
             const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
             grad.addColorStop(0, 'rgba(37,99,235,0.15)');
             grad.addColorStop(1, 'rgba(37,99,235,0.01)');
@@ -862,8 +862,8 @@
                 }
             }
 
-            // ---- 构建分钟级采样点�?hover 使�??----
-            // 今日：每个采样点精确到分??
+            // ---- 构建分钟级采样点供 hover 使用 ----
+            // 今日：每个采样点精确到分钟
             const todayPoints = [];
             Object.keys(todayData).forEach(hStr => {
                 const h = parseInt(hStr);
@@ -872,13 +872,13 @@
                 });
             });
             todayPoints.sort((a, b) => a.min - b.min);
-            // 昨日同�??
+            // 昨日同理
             const yesterdayPoints = (yesterdayData || []).map(r => ({
                 min: parseInt(r.time.slice(0,2)) * 60 + parseInt(r.time.slice(2,4)),
                 count: r.count
             })).sort((a, b) => a.min - b.min);
 
-            // 保存数据??hover 交�??
+            // 保存数据供 hover 交互
             canvas._chartData = { todayPoints, yesterdayPoints, pad, colW };
             if (!canvas._hoverInitialized) {
                 canvas._hoverInitialized = true;
@@ -904,14 +904,14 @@
                     if (bestT) {
                         const hh = String(Math.floor(bestT.min / 60)).padStart(2,'0');
                         const mm = String(bestT.min % 60).padStart(2,'0');
-                        parts.push('今�??' + hh + ':' + mm + '  ' + bestT.count + '??);
+                        parts.push('今日 ' + hh + ':' + mm + '  ' + bestT.count + '人');
                     }
                     if (bestY) {
                         const hh = String(Math.floor(bestY.min / 60)).padStart(2,'0');
                         const mm = String(bestY.min % 60).padStart(2,'0');
-                        parts.push('昨�??' + hh + ':' + mm + '  ' + bestY.count + '??);
+                        parts.push('昨日 ' + hh + ':' + mm + '  ' + bestY.count + '人');
                     }
-                    tip.textContent = parts.join('  ?? ');
+                    tip.textContent = parts.join('  │  ');
                     let tx = e.clientX - rect.left - tip.offsetWidth / 2;
                     tx = Math.max(2, Math.min(tx, rect.width - tip.offsetWidth - 2));
                     tip.style.left = tx + 'px';
@@ -922,9 +922,9 @@
             }
         }
 
-        let gymYesterdayData = [];  // 缓存昨日数�??
+        let gymYesterdayData = [];  // 缓存昨日数据
 
-        /** 获取服务器当天已采集的完整数�?*/
+        /** 获取服务器当天已采集的完整数据 */
         async function gymFetchToday() {
             try {
                 const resp = await fetch('/api/gym/today-data', {
@@ -938,7 +938,7 @@
             return null;
         }
 
-        /** 轮询：获取当前在线人�?*/
+        /** 轮询：获取当前在线人数 */
         async function gymPoll() {
             try {
                 const resp = await fetch('/api/gym/current-online', {
@@ -948,49 +948,48 @@
                 if (data.success && data.count !== null && data.count !== undefined) {
                     const count = data.count;
 
-                    // 更新大数??
+                    // 更新大数字
                     const el = document.getElementById('gymOnlineCount');
                     el.textContent = count;
                     el.classList.remove('loading');
 
-                    // 状态�??
+                    // 状态点
                     document.getElementById('gymStatusDot').className = 'status-dot online';
 
-                    // 保存�?localStorage（供今日曲线渲染??
-
-                    // 更新副标??
-                    document.getElementById('gymSubInfo').textContent = ''; 
-                    // 服务器端持续采集的数据是今日曲线的唯一来源??                    // localStorage 仅作为服务器接口暂时不可用时的降级数据�?                    const serverTodayData = await gymFetchToday();
+                    // 服务器端持续采集的数据是今日曲线的唯一来源；
+                    // localStorage 仅作为服务器接口暂时不可用时的降级数据。
+                    const serverTodayData = await gymFetchToday();
                     const todayData = serverTodayData || gymLoadToday();
+
+                    // 重绘图表（含昨日参考线）
                     const [weeklyData] = await Promise.all([gymFetchWeeklyRef()]);
                     gymDrawChart(todayData, gymYesterdayData, weeklyData.ref, weeklyData.avg);
                 } else {
                     throw new Error(data.error || '数据为空');
                 }
             } catch (err) {
-                // 异常时显示状??
+                // 异常时显示状态
                 const el = document.getElementById('gymOnlineCount');
                 if (el.textContent === '--') {
                     el.classList.add('loading');
                 }
                 document.getElementById('gymStatusDot').className = 'status-dot offline';
-                document.getElementById('gymSubInfo').textContent = '⚠�??' + (err.message || '获取数据失�??);
             }
         }
 
-        /** 手动刷新（点按钮触发，然后重??分钟计时器�??*/
+        /** 手动刷新（点按钮触发，然后重置5分钟计时器） */
         async function gymManualRefresh() {
             const btn = document.getElementById('gymRefreshBtn');
             btn.style.transform = 'rotate(360deg)';
             btn.style.transition = 'transform .4s';
             setTimeout(() => btn.style.transition = '', 500);
             await gymPoll();
-            // 重置计时器：从当前时刻再??分�??
+            // 重置计时器：从当前时刻再过5分钟
             if (gymTimer) clearInterval(gymTimer);
             gymTimer = setInterval(gymPoll, GYM_POLL_INTERVAL);
         }
 
-        /** 获取昨日数�??*/
+        /** 获取昨日数据 */
         async function gymFetchYesterday() {
             try {
                 const resp = await fetch('/api/gym/yesterday-data', {
@@ -1005,7 +1004,7 @@
 
         /** 初始化健身房监控 */
         function gymInit() {
-            // 先加载昨日数据，再首次轮�?
+            // 先加载昨日数据，再首次轮询
             gymFetchYesterday().then(() => gymPoll());
             // 启动定时轮询
             if (gymTimer) clearInterval(gymTimer);
@@ -1014,26 +1013,26 @@
 
         // 启动健身房监控（在DOM加载后）
         window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(gymInit, 500);  // 让主页面先渲�?
+            setTimeout(gymInit, 500);  // 让主页面先渲染
         });
 
         function getLevel(h) {
-            if (h >= DANGER_H) return 'danger';  // ??6h ??红�??
-            if (h >= WARN_H) return 'alert';      // ??0h ??黄�??
+            if (h >= DANGER_H) return 'danger';  // ≥46h → 红色
+            if (h >= WARN_H) return 'alert';      // ≥40h → 黄色
             return 'safe';
         }
         function limitMsg(h) {
             const left = LIMIT_H - h;
-            if (h >= DANGER_H) return `⚠�??仅�??${left} 小时达拉黑线，请尽快缴费离场`;
-            if (h >= WARN_H)  return `??已�??${h} 小时，距拉黑线还??${left} 小时`;
-            return `??停车时长正常，距拉黑线还??${left} 小时`;
+            if (h >= DANGER_H) return `⚠️ 仅剩 ${left} 小时达拉黑线，请尽快缴费离场`;
+            if (h >= WARN_H)  return `⏰ 已停 ${h} 小时，距拉黑线还有 ${left} 小时`;
+            return `✅ 停车时长正常，距拉黑线还有 ${left} 小时`;
         }
         function fmtDur(min) {
             if (min == null) return '--';
             const d = Math.floor(min / 1440), h = Math.floor((min % 1440) / 60), m = min % 60;
-            if (d > 0) return d + '?? + h + '小�?? + m + '??;
-            if (h > 0) return h + '小�?? + m + '??;
-            return m + '分�??;
+            if (d > 0) return d + '天' + h + '小时' + m + '分';
+            if (h > 0) return h + '小时' + m + '分';
+            return m + '分钟';
         }
         function fmtTs(ts) {
             if (!ts) return null;
@@ -1049,9 +1048,9 @@
             return s;
         }
         function fmtPlate(p) {
-            // 琼A054DB ??琼A??54DB
+            // 琼A054DB → 琼A·054DB
             if (!p || p.length < 3) return p;
-            return p.slice(0, 2) + '?? + p.slice(2);
+            return p.slice(0, 2) + '·' + p.slice(2);
         }
         function esc(s) {
             const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;

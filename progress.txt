@@ -195,3 +195,7 @@
   - 新增本地页面兼容接口映射：/api/gym/current-online、/api/gym/today-data、/api/gym/yesterday-data、/api/gym/weekly-stats。
   - 线上验证通过：页面 200，h1/title 标签完整；today-data 250 条、yesterday-data 261 条，current-online=78。
   - 修复后续页面乱码：恢复 dashboard.html 被错误 GBK/UTF-8 转换的中文文本，Worker 页面标题已恢复为“便捷面板”。
+  - 以用户确认正常的 Cloudflare `e0684139` 页面为基线重新提取 dashboard.html。
+  - 在该基线上实现：Cron 每 5 分钟写 D1；客户刷新只实时查询并渲染，不写 D1/txt/localStorage。
+  - 删除“今日已采集…最新…”副标题，并新增 UTF-8 安全同步脚本 code/sync-dashboard.mjs。
+  - 恢复本地 server.js 的 UTF-8/语法并重启服务；PID 18300，刷新前后 20260730.txt 行数保持 280。

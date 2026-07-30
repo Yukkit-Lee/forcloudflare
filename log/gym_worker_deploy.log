@@ -18,3 +18,7 @@
 2026-07-30 19:43: Verified page 200, badTags=0, title/h1 complete, today-data=250, yesterday-data=261, current-online=78.
 2026-07-30 19:50: Restored dashboard UTF-8 text after two accidental encoding conversions; title/header verified as 便捷面板.
 2026-07-30 19:51: Redeployed Worker version 83bc83d8-ea27-48b2-9bd5-5303260d052c; page 200, badTags=0, realtime refresh OK.
+2026-07-30 20:06: User confirmed Cloudflare deployment e0684139 as the working UI baseline and rolled production back.
+2026-07-30 20:08: Extracted e0684139 DASHBOARD_HTML to local dashboard.html; title=便捷面板.
+2026-07-30 20:10: Applied refresh-without-write behavior and removed the sample-count subtitle; Wrangler dry-run passed.
+2026-07-30 20:12: Recovered local server.js syntax, restarted local service as PID 18300, and verified refresh kept txt rows at 280.

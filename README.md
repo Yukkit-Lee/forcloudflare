@@ -152,3 +152,14 @@ ORDER BY sample_date;
 ```
 
 `Rows Read` is the number of rows scanned by that SQL query; it is not the total number of rows in the table. The D1 console may also display a limited or paginated result set. The verified remote counts are 261 rows for `2026-07-29` and 252 rows for `2026-07-30`.
+
+The dashboard HTML is based on the confirmed working Cloudflare deployment
+`e0684139-forcloudflare`. Edit `code/dashboard.html`, then synchronize the
+embedded Worker page with:
+
+```powershell
+node code/sync-dashboard.mjs
+```
+
+The sync script reads and writes UTF-8 directly. Do not rebuild the embedded
+HTML through PowerShell's default text encoding.

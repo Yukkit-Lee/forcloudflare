@@ -54,5 +54,8 @@ Cloudflare gym monitor deployment (2026-07-30)
 - Online card layout is synchronized to the local gymCard/gymBody/gymChart structure and remains inside the two-column grid.
 - Historical imports from data/20260729.txt and data/20260730.txt are stored in D1 with source=historical-import.
 - Worker Cron remains responsible for the latest five-minute samples with source=worker-cron.
+- The confirmed UI baseline is Cloudflare version `e0684139`; local dashboard.html and Worker embedded HTML must stay synchronized through `code/sync-dashboard.mjs`.
+- Page refresh reads the gym upstream API for rendering only. It must not write D1, local data files, or browser sample history.
+- The gym sample-count subtitle is removed so the chart has more vertical space.
 - Embedded Worker HTML must keep valid `<title>`, `<body>`, and `<script>` closing tags; malformed title markup causes a fully blank browser page.
 - Worker dashboard HTML is generated from the local `code/dashboard.html`; D1-backed compatibility endpoints must provide `time` and `count` fields expected by the local chart.

@@ -1,20 +1,20 @@
 /**
- * 娴峰ぇ鍋滆溅鍦轰竴閿即璐?- 鍚庣浠ｇ悊鏈嶅姟
+ * 海大停车场一键缴�?- 后端代理服务
  * ============================================
  *
- * 鍔熻兘锛?
- *   鎺ユ敹杞︾墝鍙?鈫?璋冪敤娴峰ぇ鍋滆溅鍦篈PI鏌ヨ 鈫?鎻愬彇 parkId/uuid 鈫?
- *   鏋勯€犵即璐筓RL 鈫?杩斿洖鍓嶇璺宠浆
+ * 功能�?
+ *   接收车牌�?�?调用海大停车场API查询 �?提取 parkId/uuid �?
+ *   构造缴费URL �?返回前端跳转
  *
- * 鐪熷疄API锛?
+ * 真实API�?
  *   GET /pms/action/mobile/getInRecordByPlateNo
- *     ?plateNo={杞︾墝}&sceneType=pms&regionIndexCode=&time={鏃堕棿鎴硙
+ *     ?plateNo={车牌}&sceneType=pms&regionIndexCode=&time={时间戳}
  *
- * 浣跨敤锛?
- *   node server.js                    鍚姩鏈嶅姟
- *   http://localhost:3000             鍓嶇椤甸潰
- *   http://localhost:3000/api/search?plate=鐞糀054DB         API妯″紡
- *   http://localhost:3000/api/search?plate=鐞糀054DB&redirect=1  鐩存帴璺宠浆
+ * 使用�?
+ *   node server.js                    启动服务
+ *   http://localhost:3000             前端页面
+ *   http://localhost:3000/api/search?plate=琼A054DB         API模式
+ *   http://localhost:3000/api/search?plate=琼A054DB&redirect=1  直接跳转
  */
 
 const express = require('express');
@@ -25,23 +25,23 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ==================== 閰嶇疆 ====================
+// ==================== 配置 ====================
 const CONFIG = {
-    // 娴峰ぇ鍋滆溅鍦烘湇鍔″湴鍧€
+    // 海大停车场服务地址
     BASE_URL: 'https://hkioc.hainanu.edu.cn',
-    // 杞︾墝鏌ヨAPI锛堢敤鎴峰彂鐜扮殑瀹為檯鎺ュ彛锛?
+    // 车牌查询API（用户发现的实际接口�?
     SEARCH_API: '/pms/action/mobile/getInRecordByPlateNo',
-    // 鎼滅储椤甸潰锛堣幏鍙杝ession cookie鐢級
+    // 搜索页面（获取session cookie用）
     SEARCH_PAGE: '/pms/carParkMobile/carpayment/search',
-    // 璐圭敤鏌ヨAPI
+    // 费用查询API
     BILL_API: '/pms/action/mobile/bill',
-    // 缂磋垂椤甸潰璺緞鍓嶇紑
+    // 缴费页面路径前缀
     PAY_PATH: '/pms/carParkMobile/carpayment/carpaying/',
-    // 璇锋眰瓒呮椂
+    // 请求超时
     TIMEOUT: 15000,
 };
 
-// ==================== 鍋ヨ韩鎴?API 閰嶇疆 ====================
+// ==================== 健身�?API 配置 ====================
 const GYM_CONFIG = {
     BASE_URL: 'https://api.sbooy.com',
     CURRENT_ONLINE: '/card/1041/1818/public/signUp/statistics/currentOnlinePopulationStadium',
@@ -61,11 +61,11 @@ function gymDataLog(event, details = {}) {
             'utf8'
         );
     } catch (e) {
-        log('err', '鍋ヨ韩鎴?鍐檇ataLog澶辫触:', e.message);
+        log('err', '健身�?写dataLog失败:', e.message);
     }
 }
 
-// ==================== 鍋ヨ韩鎴?鏁版嵁鏂囦欢杈呭姪 ====================
+// ==================== 健身�?数据文件辅助 ====================
 
 async function gymFetchJson(url) {
     const controller = new AbortController();
@@ -85,7 +85,7 @@ async function gymFetchJson(url) {
     }
 }
 
-/** 杩藉姞涓€鏉′汉鏁伴噰鏍峰埌 data/YYYYMMDD.txt */
+/** 追加一条人数采样到 data/YYYYMMDD.txt */
 function gymSaveSample(count, source = 'unknown') {
     try {
         if (!fs.existsSync(GYM_DATA_DIR)) fs.mkdirSync(GYM_DATA_DIR, { recursive: true });
@@ -99,11 +99,11 @@ function gymSaveSample(count, source = 'unknown') {
         fs.appendFileSync(path.join(GYM_DATA_DIR, `${dateKey}.txt`), line, 'utf8');
         gymDataLog('sample_written', { source, dateKey, timeKey, count });
     } catch (e) {
-        log('err', '鍋ヨ韩鎴?鍐欐枃浠跺け璐?', e.message);
+        log('err', '健身�?写文件失�?', e.message);
     }
 }
 
-/** 璇诲彇鎸囧畾鏃ユ湡鐨勬暟鎹枃浠讹紝杩斿洖 [{ time, count }] */
+/** 读取指定日期的数据文件，返回 [{ time, count }] */
 function gymReadDay(dateKey) {
     const fp = path.join(GYM_DATA_DIR, `${dateKey}.txt`);
     if (!fs.existsSync(fp)) return [];
@@ -127,57 +127,57 @@ const LOG_DIR = path.join(__dirname, '..', 'log');
 const SERVER_MONITOR_STATE_FILE = process.env.SERVER_MONITOR_STATE_FILE ||
     path.resolve(__dirname, '..', '..', '..', '..', 'last-state.json');
 
-// ==================== 鏃ュ織 ====================
+// ==================== 日志 ====================
 function log(level, ...args) {
     const ts = new Date().toISOString().slice(11, 19);
-    const prefix = { info: '鈩癸笍', ok: '鉁?, err: '鉂?, req: '馃殫' }[level] || '路';
+    const prefix = { info: 'INFO', ok: 'OK', err: 'ERR', req: 'REQ' }[level] || '-';
     console.log(`[${ts}] ${prefix}`, ...args);
 }
 
-// 鈺斺晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晽
-// 鈺?                   鏁版嵁娴佸悜璇存槑                                鈺?
-// 鈺犫晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨暎
-// 鈺? 鍓嶇 fetch('/api/detail?plate=鐞糀054DB')                     鈺?
-// 鈺?   鈫?                                                        鈺?
-// 鈺? server.js /api/detail 璺敱                                   鈺?
-// 鈺?   鈹溾攢 queryPlate(plate)     鈫?娴峰ぇAPI getInRecordByPlateNo   鈺?
-// 鈺?   鈹?  杩斿洖: { plate, parkId, enIndexCode(uuid),             鈺?
-// 鈺?   鈹?          entryTime(createTime), parkName, vehicleType } 鈺?
-// 鈺?   鈹?                                                        鈺?
-// 鈺?   鈹斺攢 queryBill(plate, parkId, enIndexCode, vehicleType,     鈺?
-// 鈺?                 entryTime)                                   鈺?
-// 鈺?        鈫?娴峰ぇAPI /pms/action/mobile/bill                    鈺?
-// 鈺?        杩斿洖: { totalFee(totalCost), paidFee(paidCost),       鈺?
-// 鈺?                unpaidFee(realCost), entryTimeStr(inTime),    鈺?
-// 鈺?                durationMinutes(parkTime),                    鈺?
-// 鈺?                paid(宸茬即璐?), freeMin(鍓╀綑鍏嶈垂鍒嗛挓),         鈺?
-// 鈺?                nextChargeMin/Fee(璺濅笅娆″姞閽? }               鈺?
-// 鈺?   鈫?                                                        鈺?
-// 鈺? 鍓嶇 renderParkData() 娓叉煋鐪嬫澘                                鈺?
-// 鈺?   鈹溾攢 鏈即璐? 鍏ュ満鏃堕棿 + 鍋滆溅鏃堕暱 + 搴旂即閲戦 + 48h杩涘害鏉?      鈺?
-// 鈺?   鈹斺攢 宸茬即璐? 鍓╀綑鍏嶈垂鏃堕棿 + 鍋滆溅鏃堕暱 + 楼0 + 缁胯壊鎻愮ず          鈺?
-// 鈺氣晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨暆
+// ╔══════════════════════════════════════════════════════════════╗
+// �?                   数据流向说明                                �?
+// ╠══════════════════════════════════════════════════════════════╣
+// �? 前端 fetch('/api/detail?plate=琼A054DB')                     �?
+// �?   �?                                                        �?
+// �? server.js /api/detail 路由                                   �?
+// �?   ├─ queryPlate(plate)     �?海大API getInRecordByPlateNo   �?
+// �?   �?  返回: { plate, parkId, enIndexCode(uuid),             �?
+// �?   �?          entryTime(createTime), parkName, vehicleType } �?
+// �?   �?                                                        �?
+// �?   └─ queryBill(plate, parkId, enIndexCode, vehicleType,     �?
+// �?                 entryTime)                                   �?
+// �?        �?海大API /pms/action/mobile/bill                    �?
+// �?        返回: { totalFee(totalCost), paidFee(paidCost),       �?
+// �?                unpaidFee(realCost), entryTimeStr(inTime),    �?
+// �?                durationMinutes(parkTime),                    �?
+// �?                paid(已缴�?), freeMin(剩余免费分钟),         �?
+// �?                nextChargeMin/Fee(距下次加�? }               �?
+// �?   �?                                                        �?
+// �? 前端 renderParkData() 渲染看板                                �?
+// �?   ├─ 未缴�? 入场时间 + 停车时长 + 应缴金额 + 48h进度�?      �?
+// �?   └─ 已缴�? 剩余免费时间 + 停车时长 + ¥0 + 绿色提示          �?
+// ╚══════════════════════════════════════════════════════════════╝
 
 /**
- * [绗?姝 鏌ヨ杞︾墝 鈫?鑾峰彇鍋滆溅璁板綍
- * 璋冪敤娴峰ぇ API: GET /pms/action/mobile/getInRecordByPlateNo
- *   ?plateNo={杞︾墝}&sceneType=pms&regionIndexCode=&time={鏃堕棿鎴硙
+ * [�?步] 查询车牌 �?获取停车记录
+ * 调用海大 API: GET /pms/action/mobile/getInRecordByPlateNo
+ *   ?plateNo={车牌}&sceneType=pms&regionIndexCode=&time={时间戳}
  *
- * 鍝嶅簲绀轰緥: { code:"0", data:[{
- *   carNo:"鐞糀054DB",        // 鈫?plate
- *   parkId:"76f837a6-...",   // 鈫?缂磋垂URL鍙傛暟
- *   uuid:"87f37fc7...",      // 鈫?enIndexCode锛堢即璐筓RL鍙傛暟锛?
- *   createTime:1781275586083,// 鈫?entryTime锛堝叆鍦篣nix姣鏃堕棿鎴筹級
- *   parkName:"娴峰崡澶у娴风敻鏍″尯",
- *   vehicleType:1            // 1=灏忓瀷杞?
+ * 响应示例: { code:"0", data:[{
+ *   carNo:"琼A054DB",        // �?plate
+ *   parkId:"76f837a6-...",   // �?缴费URL参数
+ *   uuid:"87f37fc7...",      // �?enIndexCode（缴费URL参数�?
+ *   createTime:1781275586083,// �?entryTime（入场Unix毫秒时间戳）
+ *   parkName:"海南大学海甸校区",
+ *   vehicleType:1            // 1=小型�?
  * }]}
  */
 async function queryPlate(plate) {
     const client = createClient();
     const cookies = await getSessionCookie();
 
-    // 璋冪敤鎼滅储API
-    log('info', '鏌ヨ杞︾墝:', plate);
+    // 调用搜索API
+    log('info', '查询车牌:', plate);
     const timestamp = Date.now();
     const apiResp = await client.get(CONFIG.BASE_URL + CONFIG.SEARCH_API, {
         params: {
@@ -197,41 +197,41 @@ async function queryPlate(plate) {
     const data = apiResp.data;
 
     if (data.code !== '0') {
-        log('err', 'API杩斿洖閿欒:', data.msg || '鏈煡閿欒');
+        log('err', 'API返回错误:', data.msg || '未知错误');
         return null;
     }
 
     const record = getFirstRecord(data);
     if (!record) {
-        log('err', '鏈壘鍒板仠杞﹁褰?);
+        log('err', '未找到停车记录');
         return null;
     }
 
-    // 鏋勯€犲畬鏁磋繑鍥炴暟鎹?
+    // 构造完整返回数�?
     const result = {
         plate: record.carNo || plate,
         parkId: record.parkId || '',
-        // enIndexCode 鍗?uuid
+        // enIndexCode �?uuid
         enIndexCode: record.uuid || '',
-        // 鍏ュ満鏃堕棿鎴筹紙姣锛?
+        // 入场时间戳（毫秒�?
         entryTime: record.createTime || null,
-        // 鍋滆溅鍦哄悕绉?
+        // 停车场名�?
         parkName: record.parkName || '',
-        // 杞﹁締绫诲瀷
+        // 车辆类型
         vehicleType: record.vehicleType || null,
-        // 鍘熷璁板綍锛堜繚鐣欏叾浠栧瓧娈靛鐢級
+        // 原始记录（保留其他字段备用）
         raw: record,
     };
 
     log('ok', `parkId=${result.parkId}`);
     log('ok', `enIndexCode=${result.enIndexCode}`);
-    log('ok', `鍏ュ満鏃堕棿=${result.entryTime ? new Date(result.entryTime).toLocaleString('zh-CN') : '鏃?}`);
+    log('ok', `入场时间=${result.entryTime ? new Date(result.entryTime).toLocaleString('zh-CN') : '未知'}`);
 
     return result;
 }
 
 /**
- * 鍒涘缓axios瀹炰緥锛堝叕鍏辫姹傚ご锛?
+ * 创建axios实例（公共请求头�?
  */
 function createClient() {
     return axios.create({
@@ -246,8 +246,8 @@ function createClient() {
 }
 
 /**
- * 浠嶢PI鍝嶅簲涓彁鍙栫涓€鏉″仠杞﹁褰?
- * 鍝嶅簲缁撴瀯锛歿 code: "0", data: [{ parkId, uuid, carNo, ... }] }
+ * 从API响应中提取第一条停车记�?
+ * 响应结构：{ code: "0", data: [{ parkId, uuid, carNo, ... }] }
  */
 function getFirstRecord(data) {
     if (!data || typeof data !== 'object') return null;
@@ -257,7 +257,7 @@ function getFirstRecord(data) {
 }
 
 /**
- * 鑾峰彇鎼滅储椤电殑session cookie锛堜緵鍚庣画API璋冪敤浣跨敤锛?
+ * 获取搜索页的session cookie（供后续API调用使用�?
  */
 async function getSessionCookie() {
     const client = createClient();
@@ -268,32 +268,32 @@ async function getSessionCookie() {
 }
 
 /**
- * [绗?姝 鏌ヨ鍋滆溅璐圭敤
- * 璋冪敤娴峰ぇ API: GET /pms/action/mobile/bill
+ * [�?步] 查询停车费用
+ * 调用海大 API: GET /pms/action/mobile/bill
  *   ?enRecordIndexCode={uuid} &parkId={parkId}
  *   &exPlateNo={plate} &exVehilceType={type} &time={ts}
  *
- * 鍝嶅簲鍏抽敭瀛楁:
- *   totalCost     鈫?鎬昏垂鐢紙搴旂即閲戦锛?
- *   paidCost      鈫?宸茬即閲戦
- *   realCost      鈫?鏈即閲戦锛?=宸茬即瀹岋級
- *   parkTime      鈫?宸插仠鍒嗛挓鏁?
- *   inTime        鈫?鍏ュ満鏃堕棿瀛楃涓?"2026/06/12 22:46:26"
- *   remainingTime 鈫?缂磋垂鍚庡墿浣欏厤璐瑰垎閽熸暟锛堜粎缂磋垂鍚庢湁鍊硷級
- *   type          鈫?"0"=鏈即璐?"1"=宸茬即璐?
- *   extraData     鈫?{ periodEnd(璁¤垂鍛ㄦ湡缁撴潫), periodPrice }
+ * 响应关键字段:
+ *   totalCost     �?总费用（应缴金额�?
+ *   paidCost      �?已缴金额
+ *   realCost      �?未缴金额�?=已缴完）
+ *   parkTime      �?已停分钟�?
+ *   inTime        �?入场时间字符�?"2026/06/12 22:46:26"
+ *   remainingTime �?缴费后剩余免费分钟数（仅缴费后有值）
+ *   type          �?"0"=未缴�?"1"=已缴�?
+ *   extraData     �?{ periodEnd(计费周期结束), periodPrice }
  *
- * 鏈嚱鏁伴澶栬绠?
- *   paid        鈫?type==="1" 鎴?(realCost==0 && paidCost>0)
- *   freeMin     鈫?缂磋垂鍚?remainingTime 杞暣鏁?
- *   nextChargeMin/Fee 鈫?鏍规嵁璁¤垂瑙勫垯 楼3@07:00 / 楼2@22:00 璁＄畻
+ * 本函数额外计�?
+ *   paid        �?type==="1" �?(realCost==0 && paidCost>0)
+ *   freeMin     �?缴费�?remainingTime 转整�?
+ *   nextChargeMin/Fee �?根据计费规则 ¥3@07:00 / ¥2@22:00 计算
  */
 async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
     const client = createClient();
     const cookies = await getSessionCookie();
 
     const timestamp = Date.now();
-    log('info', '鏌ヨ璐圭敤...');
+    log('info', '查询费用...');
 
     const resp = await client.get(CONFIG.BASE_URL + CONFIG.BILL_API, {
         params: {
@@ -312,24 +312,24 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
     });
 
     const data = resp.data;
-    // 瀹屾暣鍝嶅簲淇濆瓨鍒版枃浠舵柟渚挎帓鏌?
+    // 完整响应保存到文件方便排�?
     fs.writeFileSync(
         path.join(LOG_DIR, 'bill_response.json'),
         JSON.stringify(data, null, 2)
     );
-    log('info', '璐圭敤鍝嶅簲宸蹭繚瀛樺埌 log/bill_response.json');
-    log('info', '璐圭敤姒傝:', JSON.stringify(data).slice(0, 2000));
+    log('info', '费用响应已保存到 log/bill_response.json');
+    log('info', '费用概要:', JSON.stringify(data).slice(0, 2000));
 
     if (data && data.code === '0') {
         const bill = data.data || data;
-        // 鍒ゆ柇鏄惁宸茬即璐规湭椹跺嚭
+        // 判断是否已缴费未驶出
         const paid = bill.type === '1' || (parseFloat(bill.realCost || 0) === 0 && parseFloat(bill.paidCost || 0) > 0);
         const freeMin = paid ? parseInt(bill.remainingTime || 0) : 0;
 
-        // 鏍规嵁瀹為檯璁¤垂瑙勫垯璁＄畻锛毬?@07:00 楼2@22:00浜ゆ浛
+        // 根据实际计费规则计算：�?@07:00 ¥2@22:00交替
         const parkMin = parseInt(bill.parkTime || 0);
         const curFee = bill.totalCost || '0';
-        // 宸茬即璐圭姸鎬佷笅锛屼笅娆″姞閽变粠鍏嶈垂鏈熺粨鏉熸椂绠楄捣
+        // 已缴费状态下，下次加钱从免费期结束时算起
         const calcEntry = paid && freeMin > 0 ? Date.now() + freeMin * 60000 : entryTime;
         const ni = calcNextCharge(calcEntry, paid ? 0 : parkMin, paid ? '0' : curFee);
         return {
@@ -347,16 +347,16 @@ async function queryBill(plate, parkId, enIndexCode, vehicleType, entryTime) {
         };
     }
 
-    log('err', '璐圭敤鏌ヨ澶辫触:', data.msg || data.message);
+    log('err', '费用查询失败:', data.msg || data.message);
     return null;
 }
 
 /**
- * 璁¤垂瑙勫垯锛?
- *   鐧藉ぉ杩涘満(07-22): <30min鍏嶈垂鈫捖?鈫?2:00+楼2鈫?7:00+楼3鈫?..
- *     鍏抽敭锛氳繃24h鍛ㄦ湡杈圭晫鍚庯紝涓嬩釜22:00鍔犅?锛堟柊鍛ㄦ湡澶滈棿璐癸級锛屼笉鏄?
- *   澶滈棿杩涘満(22-07): 楼5鈫?7:00+楼3鈫?2:00+楼2鈫?7:00+楼3鈫?..
- *     娉ㄦ剰锛氬悓涓€24h鍛ㄦ湡鍐?2:00鍔犅?锛岃法鍛ㄦ湡鍚?2:00鍔犅?
+ * 计费规则�?
+ *   白天进场(07-22): <30min免费→�?�?2:00+¥2�?7:00+¥3�?..
+ *     关键：过24h周期边界后，下个22:00加�?（新周期夜间费），不是�?
+ *   夜间进场(22-07): ¥5�?7:00+¥3�?2:00+¥2�?7:00+¥3�?..
+ *     注意：同一24h周期�?2:00加�?，跨周期�?2:00加�?
  */
 function calcNextCharge(entryTs, parkMin, currentFee) {
     if (!entryTs) return { min: null, fee: null };
@@ -372,18 +372,18 @@ function calcNextCharge(entryTs, parkMin, currentFee) {
         return { min: 0, fee: 3 };
     }
 
-    // 24h鍛ㄦ湡杈圭晫锛堜粠鍏ュ満鏃跺埢绠楋級
+    // 24h周期边界（从入场时刻算）
     const msPer24h = 24 * 3600 * 1000;
     const periodsDone = Math.floor((now - entryTs) / msPer24h);
     const nextPeriodStart = entryTs + (periodsDone + 1) * msPer24h;
 
-    // 鏈€杩?7:00 鍜?22:00
+    // 最�?7:00 �?22:00
     const n7 = new Date(now); n7.setHours(7,0,0,0); if (n7<=now) n7.setDate(n7.getDate()+1);
     const n22 = new Date(now); n22.setHours(22,0,0,0); if (n22<=now) n22.setDate(n22.getDate()+1);
 
-    // 22:00 鐨勮垂鐢ㄥ彇鍐充簬鏄惁璺?4h鍛ㄦ湡杈圭晫
-    //   鍚屼竴鍛ㄦ湡鍐? 楼2锛堝闂磋ˉ鍏咃級
-    //   璺ㄥ懆鏈熷悗:   楼5锛堟柊鍛ㄦ湡澶滈棿璐癸級
+    // 22:00 的费用取决于是否�?4h周期边界
+    //   同一周期�? ¥2（夜间补充）
+    //   跨周期后:   ¥5（新周期夜间费）
     const fee22 = n22.getTime() >= nextPeriodStart ? 5 : 2;
 
     const cand = [{t:n7.getTime(),fee:3},{t:n22.getTime(),fee:fee22}].sort((a,b)=>a.t-b.t);
@@ -392,7 +392,7 @@ function calcNextCharge(entryTs, parkMin, currentFee) {
 }
 
 /**
- * 鏋勯€犵即璐筓RL
+ * 构造缴费URL
  */
 function buildPayUrl(plate, parkId, enIndexCode) {
     return CONFIG.BASE_URL + CONFIG.PAY_PATH +
@@ -401,31 +401,31 @@ function buildPayUrl(plate, parkId, enIndexCode) {
         '&enIndexCode=' + encodeURIComponent(enIndexCode);
 }
 
-// ==================== Express璺敱 ====================
+// ==================== Express路由 ====================
 
-// 闈欐€佹枃浠?
+// 静态文�?
 app.use(express.static(path.join(__dirname)));
 
-// 鍓嶇棣栭〉 - 鍋滆溅鐪嬫澘
+// 前端首页 - 停车看板
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// 渚挎嵎闈㈡澘锛堢湅鏉块泦鍚堥〉锛?
+// 便捷面板（看板集合页�?
 app.get('/board', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// 鍋ュ悍妫€鏌?
+// 健康检�?
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
-// ==================== 鍋ヨ韩鎴?API 浠ｇ悊 ====================
+// ==================== 健身�?API 代理 ====================
 
 /**
  * GET /api/gym/current-online
- * 鑾峰彇鍋ヨ韩鎴垮綋鍓嶅疄鏃跺湪鍦轰汉鏁帮紙API鐩存帴杩斿洖瑁告暟瀛楋級
+ * 获取健身房当前实时在场人数（API直接返回裸数字）
  */
 app.get('/api/gym/current-online', async (req, res) => {
     try {
@@ -435,17 +435,17 @@ app.get('/api/gym/current-online', async (req, res) => {
             gymDataLog('request_success', { source: 'dashboard', count });
             return res.json({ success: true, count, serverTime: Date.now() });
         }
-        return res.json({ success: false, count: null, msg: '鏁版嵁鏍煎紡寮傚父', raw });
+        return res.json({ success: false, count: null, msg: '数据格式异常', raw });
     } catch (err) {
-        log('err', '鍋ヨ韩鎴?鍦ㄧ嚎浜烘暟鏌ヨ澶辫触:', err.message);
+        log('err', '健身�?在线人数查询失败:', err.message);
         gymDataLog('request_failure', { source: 'dashboard', error: err.message });
-        return res.status(502).json({ success: false, error: '鏌ヨ澶辫触: ' + err.message });
+        return res.status(502).json({ success: false, error: '查询失败: ' + err.message });
     }
 });
 
 /**
  * GET /api/gym/today-data
- * 璇诲彇褰撳ぉ鏈嶅姟鍣ㄥ凡鎸佺画閲囬泦鐨勬暟鎹紝渚涙湰鍦版洸绾夸娇鐢ㄣ€? */
+ * 读取当天服务器已持续采集的数据，供本地曲线使用�? */
 app.get('/api/gym/today-data', (req, res) => {
     const now = new Date();
     const dateKey = String(now.getFullYear()) +
@@ -456,7 +456,7 @@ app.get('/api/gym/today-data', (req, res) => {
 
 /**
  * GET /api/gym/yesterday-data
- * 璇诲彇鏄ㄦ棩璁板綍鏂囦欢锛岃繑鍥?[{ time: "0900", count: 12 }, ...]
+ * 读取昨日记录文件，返�?[{ time: "0900", count: 12 }, ...]
  */
 app.get('/api/gym/yesterday-data', (req, res) => {
     const d = new Date();
@@ -467,7 +467,9 @@ app.get('/api/gym/yesterday-data', (req, res) => {
     let records = gymReadDay(dateKey);
     let fallbackDate = null;
 
-    // 20260729 鐨勭湡瀹為噰闆嗕粠 10:51 鎵嶅紑濮嬶紝鏆傜敤 20260730 鐨勫搴旀椂鍒昏ˉ榻愭鍓嶆洸绾裤€?    // 7 鏈?31 鏃ヨ捣鏄ㄦ棩鏂囦欢灏辨槸瀹屾暣鐨?20260730锛屼笉浼氳繘鍏ヨ繖涓垎鏀€?    if (dateKey === '20260729' && records.length > 0) {
+    // 20260729 的真实采集从 10:51 才开始，暂用 20260730 的对应时刻补齐此前曲线。
+    // 7 月 31 日起昨日文件就是完整的 20260730，不会进入这个分支。
+    if (dateKey === '20260729' && records.length > 0) {
         const firstRealMinute = Math.min(...records.map(r => gymTimeToMinutes(r.time)));
         const fallbackRecords = gymReadDay('20260730')
             .filter(r => gymTimeToMinutes(r.time) < firstRealMinute)
@@ -493,11 +495,11 @@ app.get('/api/gym/yesterday-data', (req, res) => {
 
 /**
  * GET /api/gym/weekly-stats
- * 鑾峰彇鏈懆鍚勬椂娈电鍒扮粺璁℃暟鎹紙API杩斿洖鎵佸钩瀵硅薄锛?
+ * 获取本周各时段签到统计数据（API返回扁平对象�?
  */
 app.get('/api/gym/weekly-stats', async (req, res) => {
     try {
-        // 杩斿洖鏍煎紡: { "0:00~8:00":44, "8:00~10:00":73, ... }
+        // 返回格式: { "0:00~8:00":44, "8:00~10:00":73, ... }
         const data = await gymFetchJson(GYM_CONFIG.BASE_URL + GYM_CONFIG.WEEKLY_STATS);
         if (data && typeof data === 'object' && !Array.isArray(data)) {
             const slots = Object.entries(data).map(([timeQuantum, count]) => ({
@@ -505,14 +507,14 @@ app.get('/api/gym/weekly-stats', async (req, res) => {
             }));
             return res.json({ success: true, slots });
         }
-        return res.status(502).json({ success: false, error: '鏁版嵁鏍煎紡寮傚父' });
+        return res.status(502).json({ success: false, error: '数据格式异常' });
     } catch (err) {
-        log('err', '鍋ヨ韩鎴?绛惧埌缁熻鏌ヨ澶辫触:', err.message);
-        return res.status(502).json({ success: false, error: '鏌ヨ澶辫触: ' + err.message });
+        log('err', '健身�?签到统计查询失败:', err.message);
+        return res.status(502).json({ success: false, error: '查询失败: ' + err.message });
     }
 });
 
-// 鏈嶅姟鍣ㄧ姸鎬侀潰鏉匡紙鏈湴鐗堬級锛氱洿鎺ヨ鍙?andy 鐩戞帶鍣ㄥ啓鍏ョ殑鐘舵€佹枃浠躲€?
+// 服务器状态面板（本地版）：直接读�?andy 监控器写入的状态文件�?
 app.get('/api/server-status', (req, res) => {
     try {
         const state = JSON.parse(fs.readFileSync(SERVER_MONITOR_STATE_FILE, 'utf8'));
@@ -530,30 +532,30 @@ app.get('/api/server-status', (req, res) => {
             checked_at: checkedAt,
             consecutive_offline_count: state.consecutive_offline_count || 0,
             last_state_change_at: state.last_state_change_at || null,
-            reason: result.reason || '鏆傛棤妫€娴嬬粨鏋?,
+            reason: result.reason || '暂无检测结果',
             ports: result.ports || {},
             ping: Boolean(result.ping),
         });
     } catch (e) {
         res.status(503).json({
-            source: 'local', error: '鏃犳硶璇诲彇鏈嶅姟鍣ㄧ洃鎺х姸鎬佹枃浠?, detail: e.code || e.message,
+            source: 'local', error: '无法读取服务器监控状态文件', detail: e.code || e.message,
         });
     }
 });
 
 /**
- * [鍓嶇璋冪敤] GET /api/detail?plate=鐞糀054DB
- * 涓茶仈 queryPlate + queryBill锛岃繑鍥炲墠绔覆鏌撴墍闇€鍏ㄩ儴鏁版嵁
+ * [前端调用] GET /api/detail?plate=琼A054DB
+ * 串联 queryPlate + queryBill，返回前端渲染所需全部数据
  *
- * 杩斿洖瀛楁娴佸悜:
- *   entryTime 鈫?dashboard.html 娓叉煋 "鍏ュ満鏃堕棿" 鎴?fmtTs 鏍煎紡鍖?
- *   parkName  鈫?dashboard.html 鍗＄墖鍓爣棰?
- *   bill.totalFee   鈫?"搴旂即閲戦 楼X.XX"
- *   bill.durationMinutes 鈫?"鍋滆溅鏃堕暱 X灏忔椂X鍒?
- *   bill.entryTimeStr 鈫?"鍏ュ満鏃堕棿" 浼樺厛浣跨敤 bill 杩斿洖鐨勫瓧绗︿覆
- *   bill.paid / bill.freeMin 鈫?鍐冲畾娓叉煋"宸茬即璐规湭椹跺嚭"鎴?鍋滆溅涓?
- *   bill.nextChargeMin/Fee 鈫?"XhXm鍚庡姞楼X" 鍊掕鏃?
- *   payUrl 鈫?"涓€閿即璐?鎸夐挳璺宠浆鐩爣
+ * 返回字段流向:
+ *   entryTime �?dashboard.html 渲染 "入场时间" �?fmtTs 格式�?
+ *   parkName  �?dashboard.html 卡片副标�?
+ *   bill.totalFee   �?"应缴金额 ¥X.XX"
+ *   bill.durationMinutes �?"停车时长 X小时X�?
+ *   bill.entryTimeStr �?"入场时间" 优先使用 bill 返回的字符串
+ *   bill.paid / bill.freeMin �?决定渲染"已缴费未驶出"�?停车�?
+ *   bill.nextChargeMin/Fee �?"XhXm后加¥X" 倒计�?
+ *   payUrl �?"一键缴�?按钮跳转目标
  */
 app.get('/api/detail', async (req, res) => {
     const plate = (req.query.plate || '').trim();
@@ -561,29 +563,29 @@ app.get('/api/detail', async (req, res) => {
     if (!plate) {
         return res.status(400).json({
             success: false,
-            error: '璇锋彁渚涜溅鐗屽彿锛屼緥濡傦細?plate=鐞糀054DB',
+            error: '请提供车牌号，例如：?plate=琼A054DB',
         });
     }
 
 
 
-    log('req', '鏌ヨ璇︽儏:', plate);
+    log('req', '查询详情:', plate);
 
     try {
         const result = await queryPlate(plate);
 
-        // queryPlate 杩斿洖 null 鈫?杞﹁締鏈叆鍦猴紝鍓嶇 renderEmpty() 鏄剧ず 馃殫 + 鎻愮ず
+        // queryPlate 返回 null �?车辆未入场，前端 renderEmpty() 显示 🚗 + 提示
         if (!result) {
             return res.status(404).json({
                 success: false,
-                error: '鏈壘鍒板仠杞﹁褰曪紝鍙兘杞﹁締涓嶅湪鍋滆溅鍦哄唴',
+                error: '未找到停车记录，可能车辆不在停车场内',
                 plate,
             });
         }
 
         const payUrl = buildPayUrl(result.plate, result.parkId, result.enIndexCode);
 
-        // 鏌ヨ璐圭敤
+        // 查询费用
         let bill = null;
         try {
             bill = await queryBill(
@@ -594,10 +596,10 @@ app.get('/api/detail', async (req, res) => {
                 result.entryTime
             );
         } catch (e) {
-            log('err', '璐圭敤鏌ヨ寮傚父:', e.message);
+            log('err', '费用查询异常:', e.message);
         }
 
-        // 杩斿洖瀹屾暣鏁版嵁
+        // 返回完整数据
         return res.json({
             success: true,
             plate: result.plate,
@@ -608,7 +610,7 @@ app.get('/api/detail', async (req, res) => {
             vehicleType: result.vehicleType,
             payUrl,
             serverTime: Date.now(),
-            // 璐圭敤鏁版嵁
+            // 费用数据
             bill: bill ? {
                 totalFee: bill.totalFee,
                 paidFee: bill.paidFee,
@@ -624,16 +626,16 @@ app.get('/api/detail', async (req, res) => {
         });
 
     } catch (err) {
-        log('err', '璇锋眰澶辫触:', err.message);
+        log('err', '请求失败:', err.message);
         return res.status(502).json({
             success: false,
-            error: '璇锋眰鍋滆溅鍦烘湇鍔″け璐?,
+            error: '请求停车场服务失败',
             plate,
         });
     }
 });
 
-// 缂磋垂API锛氭煡璇㈣溅鐗?鈫?杩斿洖缂磋垂URL锛堝吋瀹规棫鐗堬紝鐢ㄤ簬蹇嵎缂磋垂椤碉級
+// 缴费API：查询车�?�?返回缴费URL（兼容旧版，用于快捷缴费页）
 app.get('/api/search', async (req, res) => {
     const plate = (req.query.plate || '').trim();
     const shouldRedirect = req.query.redirect === '1';
@@ -641,11 +643,11 @@ app.get('/api/search', async (req, res) => {
     if (!plate) {
         return res.status(400).json({
             success: false,
-            error: '璇锋彁渚涜溅鐗屽彿锛屼緥濡傦細?plate=鐞糀054DB',
+            error: '请提供车牌号，例如：?plate=琼A054DB',
         });
     }
 
-    log('req', '鏌ヨ杞︾墝:', plate);
+    log('req', '查询车牌:', plate);
 
     try {
         const result = await queryPlate(plate);
@@ -653,21 +655,21 @@ app.get('/api/search', async (req, res) => {
         if (!result) {
             return res.status(404).json({
                 success: false,
-                error: '鏈壘鍒拌杞︾墝鐨勫仠杞﹁褰曪紝璇风‘璁よ溅杈嗗湪鍋滆溅鍦哄唴',
+                error: '未找到该车牌的停车记录，请确认车辆在停车场内',
                 plate,
             });
         }
 
         const payUrl = buildPayUrl(result.plate, result.parkId, result.enIndexCode);
 
-        log('ok', '缂磋垂URL宸茬敓鎴?);
+        log('ok', '缴费URL已生成');
 
-        // 鐩存帴璺宠浆妯″紡
+        // 直接跳转模式
         if (shouldRedirect) {
             return res.redirect(302, payUrl);
         }
 
-        // JSON杩斿洖妯″紡
+        // JSON返回模式
         return res.json({
             success: true,
             plate: result.plate,
@@ -677,18 +679,18 @@ app.get('/api/search', async (req, res) => {
         });
 
     } catch (err) {
-        log('err', '璇锋眰澶辫触:', err.message);
+        log('err', '请求失败:', err.message);
         return res.status(502).json({
             success: false,
-            error: '璇锋眰鍋滆溅鍦烘湇鍔″け璐ワ紝璇风◢鍚庨噸璇?,
+            error: '请求停车场服务失败，请稍后重试',
             plate,
         });
     }
 });
 
-// ==================== 鍚姩 ====================
+// ==================== 启动 ====================
 
-/** 鏈嶅姟绔嚜鍔ㄩ噰闆嗗仴韬埧浜烘暟锛堜笉渚濊禆鍓嶇璇锋眰锛?*/
+/** 服务端自动采集健身房人数（不依赖前端请求�?*/
 let gymCollectTimer = null;
 let gymLastSuccessAt = null;
 
@@ -703,14 +705,14 @@ async function gymAutoCollect() {
             const gapMinutes = gymLastSuccessAt === null ? null : Math.round((now - gymLastSuccessAt) / 60000);
             gymSaveSample(count, 'auto');
             gymDataLog('success', { source: 'auto', count, elapsedMs: now - startedAt, gapMinutes });
-            log('ok', '馃弸锔?鑷姩閲囬泦: 浜烘暟 =', count);
+            log('ok', '🏋�?自动采集: 人数 =', count);
             gymLastSuccessAt = now;
         } else {
-            log('err', '馃弸锔?鑷姩閲囬泦: 鏁版嵁鏍煎紡寮傚父 raw =', raw);
+            log('err', '🏋�?自动采集: 数据格式异常 raw =', raw);
             gymDataLog('invalid_response', { source: 'auto', raw });
         }
     } catch (err) {
-        log('err', '馃弸锔?鑷姩閲囬泦: 璇锋眰澶辫触 -', err.message);
+        log('err', '🏋�?自动采集: 请求失败 -', err.message);
         gymDataLog('failure', { source: 'auto', elapsedMs: Date.now() - startedAt, error: err.message });
     } finally {
         clearTimeout(gymCollectTimer);
@@ -721,26 +723,27 @@ async function gymAutoCollect() {
 app.listen(PORT, () => {
     const lines = [
         '',
-        '鈺?.repeat(52),
-        '  馃吙锔? 娴峰ぇ鍋滆溅鍦轰竴閿即璐?- 浠ｇ悊鏈嶅姟',
-        '鈺?.repeat(52),
-        `  鐪嬫澘棣栭〉: http://localhost:${PORT}`,
-        `  鏌ヨAPI:  http://localhost:${PORT}/api/search?plate=鐞糀054DB`,
-        `  璇︽儏API:  http://localhost:${PORT}/api/detail?plate=鐞糀054DB`,
-        '鈺?.repeat(52),
+        '='.repeat(52),
+        '  海大停车场一键缴费 - 代理服务',
+        '='.repeat(52),
+        `  看板首页: http://localhost:${PORT}`,
+        `  查询API:  http://localhost:${PORT}/api/search?plate=琼A054DB`,
+        `  详情API:  http://localhost:${PORT}/api/detail?plate=琼A054DB`,
+        '='.repeat(52),
         '',
     ];
     console.log(lines.join('\n'));
 
-    // 鑷姩閲囬泦锛氱珛鍗虫墽琛屼竴娆★紱姣忔瀹屾垚鍚庡啀瀹夋帓5鍒嗛挓鍚庣殑涓嬩竴娆★紝閬垮厤閲嶅彔銆?    gymDataLog('service_start', { port: PORT, intervalMs: GYM_COLLECT_INTERVAL });
+    // 自动采集：立即执行一次；每次完成后再安排5分钟后的下一次，避免重叠。
+    gymDataLog('service_start', { port: PORT, intervalMs: GYM_COLLECT_INTERVAL });
     gymAutoCollect();
-    log('info', '馃弸锔?鍋ヨ韩鎴胯嚜鍔ㄩ噰闆嗗凡鍚姩锛堟瘡5鍒嗛挓锛?);
+    log('info', '健身房自动采集已启动（每5分钟）');
 
-    // 鍚姩鏃ュ織
+    // 启动日志
     try {
         fs.appendFileSync(
             path.join(LOG_DIR, 'server.log'),
-            `[${new Date().toISOString()}] 鏈嶅姟鍚姩 - 绔彛:${PORT}\n`
+            `[${new Date().toISOString()}] 服务启动 - 端口:${PORT}\n`
         );
-    } catch (e) { /* 鏃ュ織鐩綍鍙兘涓嶅瓨鍦?*/ }
+    } catch (e) { /* 日志目录可能不存在 */ }
 });
