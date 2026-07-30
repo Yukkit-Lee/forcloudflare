@@ -124,3 +124,31 @@ Get-Content "D:\myApps\ServerMonitor\monitor.log" -Tail 30
 ```
 
 当 `monitor.log` 达到 10 MiB 时，监控器会在下一次周期启动时自动清空该文件。
+## Gym Monitor / D1
+
+The gym monitor has two separate paths:
+
+- `Cron`: Cloudflare Worker Cron runs every five minutes, calls the gym upstream API, and writes one row to D1 table `gym_samples` with `source=worker-cron`.
+- `Refresh`: a visitor clicking refresh calls `/api/gym/current-online`, which reads the upstream API directly and only renders the response. It does not write D1 and does not write the local `data/*.txt` files.
+
+The chart reads `/api/gym/today-data` and `/api/gym/yesterday-data`. The compatibility response includes `time` and `count` fields required by the local dashboard renderer. Historical data from `data/20260729.txt` and `data/20260730.txt` was imported with `source=historical-import`.
+
+D1 database: `jinshugou-gym` (`d8985623-8620-47eb-a259-dd9d311c9c59`). The table has no `venue_code` because this project monitors one gym:
+
+```sql
+gym_samples(
+  id, sampled_at, sample_date, online_count,
+  source, created_at
+)
+```
+
+To count stored rows, use an aggregate query instead of relying on the console result pane:
+
+```sql
+SELECT sample_date, COUNT(*) AS rows
+FROM gym_samples
+GROUP BY sample_date
+ORDER BY sample_date;
+```
+
+`Rows Read` is the number of rows scanned by that SQL query; it is not the total number of rows in the table. The D1 console may also display a limited or paginated result set. The verified remote counts are 261 rows for `2026-07-29` and 252 rows for `2026-07-30`.

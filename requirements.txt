@@ -29,3 +29,30 @@
   Deadline看板 / Token消耗看板 / 计算器 / 其他工具
 
 【部署】cd code && npm install && node server.js
+
+【健身房监控】
+  本地 dashboard 展示当前在线人数、今日实时曲线和昨日真实数据曲线。
+  昨日数据由本地 /api/gym/yesterday-data 按当前日期动态读取。
+  2026-07-29 10:51 之前的缺失时段，暂使用 2026-07-30 对应时刻数据补齐；
+  2026-07-31 起昨日数据为完整的 2026-07-30 文件，不再触发补齐逻辑。
+  图例使用“今日实时”和“昨日参考”，昨日曲线使用灰色虚线。
+  健身房上游接口必须直连，不走本机代理；本地版使用 Node 原生 fetch 请求。
+  今日曲线必须读取服务器持续采集的当天数据文件，而不是只依赖浏览器 localStorage。
+  X 轴范围固定显示 0:00-24:00，小时标签不补前导零。
+  今日实时曲线末端显示一个跟随最新采样位置的呼吸闪烁蓝点。
+  昨日 10:51 前按每 5 分钟补齐数据点，确保早时段曲线连续。
+  蓝点圆心必须使用蓝线最后绘制点的相同坐标，确保与曲线末端重合。
+  后台自动采集必须与健身房接口代理使用同一条直连 fetch 链路，不得继续使用 axios 代理链路。
+  data/dataLog 记录自动采集尝试、成功、失败、恢复间隔、写入来源和服务启动信息。
+
+Cloudflare gym monitor deployment (2026-07-30)
+- D1 database: jinshugou-gym / d8985623-8620-47eb-a259-dd9d311c9c59
+- Schema: code/gym_schema.sql; single-gym design, no venue_code field
+- Worker binding: GYM_DB; Cron: */5 * * * *
+- Worker APIs: /api/gym/today, /api/gym/yesterday, /api/gym/latest
+- Local collection remains in code/server.js and is not deployed as Worker code.
+- Online card layout is synchronized to the local gymCard/gymBody/gymChart structure and remains inside the two-column grid.
+- Historical imports from data/20260729.txt and data/20260730.txt are stored in D1 with source=historical-import.
+- Worker Cron remains responsible for the latest five-minute samples with source=worker-cron.
+- Embedded Worker HTML must keep valid `<title>`, `<body>`, and `<script>` closing tags; malformed title markup causes a fully blank browser page.
+- Worker dashboard HTML is generated from the local `code/dashboard.html`; D1-backed compatibility endpoints must provide `time` and `count` fields expected by the local chart.

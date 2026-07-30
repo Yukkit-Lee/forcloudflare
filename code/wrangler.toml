@@ -9,3 +9,11 @@ enabled = true
 [[kv_namespaces]]
 binding = "SERVER_STATUS"
 id = "4d1df7652b954bb7b3bf3f80a98e2e19"
+
+[[d1_databases]]
+binding = "GYM_DB"
+database_name = "jinshugou-gym"
+database_id = "d8985623-8620-47eb-a259-dd9d311c9c59"
+
+[triggers]
+crons = ["*/5 * * * *"]

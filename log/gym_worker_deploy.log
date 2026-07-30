@@ -1,0 +1,18 @@
+2026-07-30 19:08: D1 remote schema applied: jinshugou-gym (d8985623-8620-47eb-a259-dd9d311c9c59)
+2026-07-30 19:09: Worker deployed: forcloudflare
+2026-07-30 19:09: URL https://forcloudflare.442192699.workers.dev
+2026-07-30 19:09: Cron */5 * * * *; binding GYM_DB; table gym_samples
+2026-07-30 19:10: Smoke tests passed for /api/health, /api/gym/today, /api/gym/yesterday, /api/gym/latest, /board
+2026-07-30 19:10: D1 is empty before first scheduled collection, which is expected.
+2026-07-30 19:16: First Cron collection verified: onlineCount=75, source=worker-cron, D1 write successful.
+2026-07-30 19:26: Fixed gym card placement and synchronized local card/chart structure in embedded Worker HTML.
+2026-07-30 19:27: Imported data/20260729.txt and data/20260730.txt; duplicate timestamps ignored.
+2026-07-30 19:28: Redeployed Worker version 712833e9-7a30-49ab-8165-b44186981837.
+2026-07-30 19:29: Verified board gymCard before placeholder-card; today 248 records; yesterday 261 records; latest source worker-cron.
+2026-07-30 19:33: Fixed malformed embedded title tag that caused browsers to render a blank page.
+2026-07-30 19:34: Redeployed Worker version bf9cb1b4-cc08-4590-8aa7-2fcca26bc50f.
+2026-07-30 19:35: Verified status 200, valid title/body/script tags, gymCard/gymChart, and health API 200.
+2026-07-30 19:40: Rebuilt embedded Worker dashboard from local dashboard.html; removed 16 malformed closing tags.
+2026-07-30 19:41: Added D1 compatibility response fields and routes required by the local chart renderer.
+2026-07-30 19:42: Redeployed Worker version e0684139-9b22-4563-8930-6708641f292b.
+2026-07-30 19:43: Verified page 200, badTags=0, title/h1 complete, today-data=250, yesterday-data=261, current-online=78.

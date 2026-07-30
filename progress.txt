@@ -128,3 +128,69 @@
   · hainanu-parking Worker 新增 POST /api/server-report：校验 Andy HMAC 签名后，将最新状态写入 SERVER_STATUS KV 的 latest 键。
   · GET /api/server-status 改为直接读取本 Worker 的 KV；第二面板无需跨 Worker 请求。
   · 新增 code/DEPLOY_SERVER_PANEL.md，说明 KV 创建、Secret 设置、GitHub 推送与 Andy 上报配置。
+
+──────────────────────────────────────
+2026-07-30 - 健身房昨日真实曲线
+  · 仅修改本地 server.js 与 dashboard.html，worker.js 暂不同步。
+  · /api/gym/yesterday-data 动态读取昨日文件。
+  · 20260729 的 10:51 之前缺失数据使用 20260730 对应时刻补齐。
+  · 昨日图例由“昨日参考”改为“昨日真实”，灰色虚线样式与曲线一致。
+  · 本地 3001 隔离实例验证通过：首条补齐 00:01，首条真实 10:51。
+
+──────────────────────────────────────
+2026-07-30 - 健身房接口直连修复
+  · 发现 axios 请求受本机代理/TLS链路影响，访问 api.sbooy.com 失败。
+  · 本地健身房当前人数与周统计接口改用 Node 原生 fetch，绕过代理直连。
+  · 未修改 worker.js。
+  · 验证通过：当前在线人数 26，周统计 9 个时段。
+
+──────────────────────────────────────
+2026-07-30 - 健身房今日曲线改读服务器数据
+  · 新增本地 GET /api/gym/today-data，读取服务器持续写入的当天数据文件。
+  · 今日蓝色实时曲线不再只依赖浏览器 localStorage，可显示后台 nohup/服务持续采集到的历史和最新数据。
+  · 采样点按真实小时和分钟生成时间戳，当前小时取最新采样。
+  · X轴标签修正为 00:00 至 24:00，补齐 24:00 端点。
+  · worker.js 未修改；本地接口验证最新数据为 13:50、26人。
+
+──────────────────────────────────────
+2026-07-30 - 健身房曲线标签与早时段补齐
+  · X轴小时标签去掉前导零，例如 6:00，减少标签重叠。
+  · 图例恢复为“昨日参考”。
+  · 将 7 月 30 日对应真实采样值写入 data/20260729.txt 的 10:51 前：00:01、06:01、08:01、09:01、10:01、10:46。
+  · 昨日接口现在优先直接读取文件中的早时段数据；worker.js 未修改。
+
+──────────────────────────────────────
+2026-07-30 - 健身房曲线早段连续与实时蓝点
+  · 将 data/20260729.txt 从 00:01 到 10:46 补齐为每 5 分钟一条，共 130 个早段数据点。
+  · 早段数值基于 20260730 对应采样趋势补齐，10:51 起继续使用 20260729 原始记录。
+  · 今日蓝线末端新增呼吸闪烁蓝点，跟随服务器当天文件的最新采样位置。
+  · 验证通过：昨日接口 10:51 前返回 130 条，页面包含昨日参考图例和实时蓝点。
+
+──────────────────────────────────────
+2026-07-30 - 实时蓝点坐标对齐与持续采集
+  · 蓝点改为复用蓝线最后一个实际绘制点的 x/y 坐标，圆心与曲线末端严格重合。
+  · 本次只更新 dashboard.html，未重启本地服务，避免中断 20260730 在线人数采集。
+  · 验证 3000 端口仍由后台 node 服务监听，data/20260730.txt 持续有新采样写入。
+
+──────────────────────────────────────
+2026-07-30 - 自动采集断连诊断与直连优化
+  · 诊断确认断档原因：后台 gymAutoCollect 仍使用 axios，页面接口虽已改为原生 fetch，后台定时采集仍可能发生 TLS/代理失败。
+  · gymAutoCollect 改用原生 fetch 直连 api.sbooy.com。
+  · 固定 setInterval 改为每次采集完成后再安排 5 分钟下一次，避免请求重叠和异常后的节奏漂移。
+  · 新增 data/dataLog，记录 attempt、success、failure、invalid_response、sample_written、request_success 和 gapMinutes。
+  · 新逻辑验证成功：服务 PID 9948，首次采集写入 202607301535-40。
+
+2026-07-30 - 健身房人数监控部署 Cloudflare D1
+  - 已绑定 D1 `jinshugou-gym`（d8985623-8620-47eb-a259-dd9d311c9c59），移除 venue_code 设计。
+  - 新增 `code/gym_schema.sql`、Worker D1 采集与查询接口，Cron 每 5 分钟采集一次。
+  - Worker 面板新增今日实时和昨日参考曲线，蓝色末端点复用最后采样坐标。
+  - 已远程建表并部署： https://forcloudflare.442192699.workers.dev
+  - 线上冒烟验证：health、today、yesterday、latest、board 均返回正常；等待首个 Cron 周期写入首条 D1 记录。
+  - 修复线上健身房卡片误插在主容器底部的问题，已移入 .grid 并同步本地卡片结构与图表样式。
+  - 已将 20260729/20260730 真实数据导入 D1；线上 today=248 条、yesterday=261 条，图表具备历史曲线数据。
+  - 重新部署后确认最新记录由 worker-cron 写入，Cron 仍为每 5 分钟。
+  - 修复线上页面空白：嵌入 HTML 的 title 结束标签损坏，已替换为有效的 `Convenient Dashboard` title。
+  - 重新部署并验证：HTML、body、script 标签完整，gymCard/gymChart 存在，/api/health 返回 200。
+  - 修复页面全面乱码/损坏：Worker 嵌入页面改为从本地 dashboard.html 重新生成，线上 bad closing tags=0。
+  - 新增本地页面兼容接口映射：/api/gym/current-online、/api/gym/today-data、/api/gym/yesterday-data、/api/gym/weekly-stats。
+  - 线上验证通过：页面 200，h1/title 标签完整；today-data 250 条、yesterday-data 261 条，current-online=78。

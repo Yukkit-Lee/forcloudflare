@@ -26,3 +26,151 @@ git push -u origin main
 # Cloudflare Worker 部署
 cd code && npx wrangler deploy
 
+2026-07-30 13:33:29 Get-ChildItem -Force; rg --files
+2026-07-30 13:33:29 Get-ChildItem log -Force | Select-Object Name,Length,LastWriteTime; Get-Content -Tail 80 -Encoding UTF8 log\agentCmd.txt; Get-Content -Tail 80 -Encoding UTF8 log\server.log
+2026-07-30 13:33:41 Get-Content -Raw -Encoding UTF8 README.md
+2026-07-30 13:33:41 Get-Content -Raw -Encoding UTF8 SERVER_MONITOR_ARCHITECTURE.md
+2026-07-30 13:33:41 Get-Content -Raw -Encoding UTF8 code\DEPLOY_SERVER_PANEL.md
+2026-07-30 13:33:41 Get-Content -Raw -Encoding UTF8 gym_api\接口.md; Get-Content -Raw -Encoding UTF8 gym_api\照片接口.md; Get-Content -Raw -Encoding UTF8 gym_api\output.md
+2026-07-30 13:33:42 Get-Content -Raw -Encoding UTF8 data\20260730.txt; Get-Content -Raw -Encoding UTF8 data\20260729.txt; Get-Content -Raw -Encoding UTF8 data\20260728.txt
+2026-07-30 13:33:51 git diff --stat; git diff -- code/server.js code/dashboard.html
+2026-07-30 13:33:51 Get-Content -Encoding UTF8 code\server.js | Select-Object -Skip 35 -First 120; Get-Content -Encoding UTF8 code\server.js | Select-Object -Skip 380 -First 290
+2026-07-30 13:33:52 Get-Content -Encoding UTF8 code\worker.js | Select-Object -Skip 145 -First 175
+2026-07-30 13:33:52 Get-Content -Encoding UTF8 code\dashboard.html | Select-Object -Skip 330 -First 330
+2026-07-30 13:33:52 Get-Content -Raw -Encoding UTF8 code\server.log; Get-Content -Tail 120 -Encoding UTF8 progress.txt
+2026-07-30 13:39:47 rg -n "gym|yesterday|data\\|202607|current-online|weekly-stats|gymBuildYesterday|chart-legend" code\server.js code\dashboard.html
+2026-07-30 13:39:52 Get-Content -Encoding UTF8 code\server.js | Select-Object -First 120; Get-Content -Encoding UTF8 code\server.js | Select-Object -Skip 380 -First 90; Get-Content -Encoding UTF8 code\dashboard.html | Select-Object -Skip 600 -First 370
+2026-07-30 13:40:36 node --check server.js
+2026-07-30 13:40:50 Get-Process node -ErrorAction SilentlyContinue | Select-Object Id,Path; Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object { $_.LocalPort -in 3000,3001 } | Select-Object LocalAddress,LocalPort,OwningProcess
+2026-07-30 13:40:58 Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' } | Select-Object ProcessId,CommandLine
+2026-07-30 13:41:05 Get-Content -Tail 30 -Encoding UTF8 code\server.log; Get-Content -Tail 30 -Encoding UTF8 log\server.log
+2026-07-30 13:41:25 $env:PORT=3001; node server.js
+2026-07-30 13:41:33 $d = Invoke-RestMethod -Uri http://localhost:3001/api/gym/yesterday-data -TimeoutSec 10; [pscustomobject]@{ date=$d.date; fallbackDate=$d.fallbackDate; count=$d.records.Count; first=$d.records[0]; firstReal=($d.records | Where-Object { $_.sourceDate -eq $d.date } | Select-Object -First 1); last=$d.records[$d.records.Count-1] } | ConvertTo-Json -Depth 5
+2026-07-30 13:41:59 git status --short; git diff --name-only; git diff --stat
+2026-07-30 13:43:12 Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'node|npm|cmd|powershell' -and $_.CommandLine -match 'server\.js|proDir\\code' } | Select-Object ProcessId,Name,CommandLine; Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object { $_.LocalPort -in 3000,3001 } | Select-Object LocalAddress,LocalPort,OwningProcess
+2026-07-30 13:43:24 Stop-Process -Id 39964 -Force; Start-Process -FilePath node -ArgumentList server.js -WorkingDirectory E:\proDir\code -WindowStyle Hidden; Start-Sleep -Seconds 3; Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object { $_.LocalPort -in 3000,3001 } | Select-Object LocalAddress,LocalPort,OwningProcess
+2026-07-30 13:43:37 $health = Invoke-RestMethod http://localhost:3000/api/health; $yesterday = Invoke-RestMethod http://localhost:3000/api/gym/yesterday-data; $online = Invoke-RestMethod http://localhost:3000/api/gym/current-online; [pscustomobject]@{ health=($health | ConvertTo-Json -Compress); yesterdayDate=$yesterday.date; fallbackDate=$yesterday.fallbackDate; yesterdayRecords=$yesterday.records.Count; first=$yesterday.records[0]; firstReal=($yesterday.records | Where-Object { $_.sourceDate -eq $yesterday.date } | Select-Object -First 1); onlineCount=$online.count; onlineSuccess=$online.success } | ConvertTo-Json -Depth 6
+2026-07-30 13:43:47 Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object LocalAddress,LocalPort,OwningProcess; Get-Process -Id 6204 -ErrorAction SilentlyContinue | Select-Object Id,ProcessName,StartTime; Get-Content -Tail 12 -Encoding UTF8 code\server.log
+2026-07-30 13:44:27 Resolve-DnsName api.sbooy.com -ErrorAction SilentlyContinue
+2026-07-30 13:44:28 curl.exe -I --max-time 15 https://api.sbooy.com
+2026-07-30 13:44:30 curl.exe -v --max-time 20 'https://api.sbooy.com/card/1041/1818/public/signUp/statistics/currentOnlinePopulationStadium'
+2026-07-30 13:44:31 Get-Content -Tail 40 -Encoding UTF8 code\server.log
+2026-07-30 13:44:39 curl.exe --noproxy '*' -v --max-time 15 'https://api.sbooy.com/card/1041/1818/public/signUp/statistics/currentOnlinePopulationStadium'
+2026-07-30 13:44:42 curl.exe --max-time 15 -v 'http://api.sbooy.com/card/1041/1818/public/signUp/statistics/currentOnlinePopulationStadium'
+2026-07-30 13:44:43 node -e "fetch('https://api.sbooy.com/card/1041/1818/public/signUp/statistics/currentOnlinePopulationStadium').then(r=>r.text()).then(console.log).catch(e=>{console.error(e);process.exit(1)})"
+2026-07-30 13:45:12 node --check server.js
+2026-07-30 13:45:18 Stop-Process -Id 6204 -Force; Start-Process -FilePath node -ArgumentList server.js -WorkingDirectory E:\proDir\code -WindowStyle Hidden; Start-Sleep -Seconds 3; Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object LocalPort,OwningProcess
+2026-07-30 13:45:29 $health = Invoke-RestMethod http://localhost:3000/api/health; $online = Invoke-RestMethod http://localhost:3000/api/gym/current-online; $weekly = Invoke-RestMethod http://localhost:3000/api/gym/weekly-stats; [pscustomobject]@{ health=($health.status); onlineSuccess=$online.success; onlineCount=$online.count; weeklySuccess=$weekly.success; weeklySlots=$weekly.slots.Count } | ConvertTo-Json -Compress
+2026-07-30 13:49:07 Get-Content -Tail 20 -Encoding UTF8 data\20260730.txt; Get-Content -Tail 20 -Encoding UTF8 code\server.log
+2026-07-30 13:49:07 Get-Content -Encoding UTF8 code\server.js | Select-Object -Skip 380 -First 80
+2026-07-30 13:49:08 Get-Content -Encoding UTF8 code\dashboard.html | Select-Object -Skip 580 -First 270
+2026-07-30 13:49:57 node --check server.js
+2026-07-30 13:50:12 Stop-Process -Id 41820 -Force
+2026-07-30 13:50:17 Start-Process -FilePath node -ArgumentList server.js -WorkingDirectory E:\proDir\code -WindowStyle Hidden
+2026-07-30 13:50:24 Start-Sleep -Seconds 3; $today = Invoke-RestMethod http://localhost:3000/api/gym/today-data; [pscustomobject]@{ date=$today.date; records=$today.records.Count; first=$today.records[0]; last=$today.records[$today.records.Count-1] } | ConvertTo-Json -Depth 5
+2026-07-30 13:53:55 Get-Content -First 30 -Encoding UTF8 data\20260729.txt; $d = Invoke-RestMethod http://localhost:3000/api/gym/yesterday-data; [pscustomobject]@{ date=$d.date; fallbackDate=$d.fallbackDate; count=$d.records.Count; first=$d.records[0]; firstReal=($d.records | Where-Object { $_.sourceDate -eq $d.date } | Select-Object -First 1) } | ConvertTo-Json -Depth 5
+2026-07-30 13:54:07 Select-String -Path data\20260730.txt -Pattern '^20260730(0001|0601|0801|0901|1001|1046)-' | ForEach-Object { $_.Line }
+2026-07-30 13:54:28 $d = Invoke-RestMethod http://localhost:3000/api/gym/yesterday-data; [pscustomobject]@{ date=$d.date; fallbackDate=$d.fallbackDate; count=$d.records.Count; first=$d.records[0]; before1051=($d.records | Where-Object { $_.time -lt '1051' }).Count; first1051=($d.records | Where-Object { $_.time -eq '1051' } | Select-Object -First 1) } | ConvertTo-Json -Depth 5
+2026-07-30 13:54:57 (Get-NetTCPConnection -LocalPort 3000 -State Listen).OwningProcess
+2026-07-30 13:55:03 Stop-Process -Id 43048 -Force
+2026-07-30 13:55:08 Start-Process -FilePath node -ArgumentList server.js -WorkingDirectory E:\proDir\code -WindowStyle Hidden
+2026-07-30 13:55:16 Start-Sleep -Seconds 2; $d = Invoke-RestMethod http://localhost:3000/api/gym/yesterday-data; $html = (Invoke-WebRequest http://localhost:3000/ -UseBasicParsing).Content; [pscustomobject]@{ fallbackDate=$d.fallbackDate; records=$d.records.Count; first=$d.records[0]; before1051=($d.records | Where-Object { $_.time -lt '1051' }).Count; hasLegend=($html -match '昨日参考'); has24=($html -match "String\(h\) \+ ':00'") } | ConvertTo-Json -Depth 5
+2026-07-30 13:58:25 $rows = Get-Content -Encoding UTF8 data\20260730.txt | Where-Object { $_ -match '^20260730(0[0-9]|10[0-4])[0-5][0-9]-\d+$' }; $rows | Select-Object -First 140; 'COUNT=' + $rows.Count
+2026-07-30 13:59:32 $d = Invoke-RestMethod http://localhost:3000/api/gym/yesterday-data; $html = (Invoke-WebRequest http://localhost:3000/ -UseBasicParsing).Content; $before = @($d.records | Where-Object { $_.time -lt '1051' }); [pscustomobject]@{ yesterdayRecords=$d.records.Count; before1051=$before.Count; first=$before[0]; last=$before[$before.Count-1]; hasLegend=($html -match '昨日参考'); hasLiveDot=($html -match 'gymLiveDot'); hasPulse=($html -match 'live-dot-pulse') } | ConvertTo-Json -Depth 5
+2026-07-30 14:03:16 Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object LocalPort,OwningProcess; Get-Content -Tail 5 -Encoding UTF8 data\20260730.txt; Get-Content -Tail 5 -Encoding UTF8 code\server.log
+2026-07-30 14:05:28 powercfg /getactivescheme; powercfg /query SCHEME_CURRENT SUB_BUTTONS LIDACTION; Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object LocalPort,OwningProcess
+2026-07-30 14:05:45 powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_BUTTONS LIDACTION 0; powercfg /SETDCVALUEINDEX SCHEME_CURRENT SUB_BUTTONS LIDACTION 0; powercfg /SETACTIVE SCHEME_CURRENT; powercfg /getactivescheme
+2026-07-30 14:05:59 powercfg /query SCHEME_CURRENT SUB_BUTTONS; Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object LocalPort,OwningProcess; $html = (Invoke-WebRequest http://localhost:3000/ -UseBasicParsing).Content; [pscustomobject]@{ hasZeroLabel=($html -match "labelHour = h === 24 \? 0 : h"); health=(Invoke-RestMethod http://localhost:3000/api/health).status } | ConvertTo-Json -Compress
+2026-07-30 14:06:18 powercfg /aliases | Select-String -Pattern 'LID|BUTTON|UIBUTTON'; powercfg /query SCHEME_CURRENT | Select-String -Pattern '盖|lid|LIDACTION|5CA83367' -Context 0,5
+2026-07-30 14:06:48 powercfg /ATTRIBUTES SUB_BUTTONS 5ca83367-6e45-459f-a27b-476b1d01c936 -ATTRIB_HIDE; powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_BUTTONS 5ca83367-6e45-459f-a27b-476b1d01c936 0; powercfg /SETDCVALUEINDEX SCHEME_CURRENT SUB_BUTTONS 5ca83367-6e45-459f-a27b-476b1d01c936 0; powercfg /SETACTIVE SCHEME_CURRENT; powercfg /QUERY SCHEME_CURRENT SUB_BUTTONS 5ca83367-6e45-459f-a27b-476b1d01c936
+2026-07-30 14:07:00 powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_BUTTONS 5ca83367-6e45-459f-a27b-476b1d01c936 1; powercfg /SETDCVALUEINDEX SCHEME_CURRENT SUB_BUTTONS 5ca83367-6e45-459f-a27b-476b1d01c936 1; powercfg /SETACTIVE SCHEME_CURRENT; powercfg /ATTRIBUTES SUB_BUTTONS 5ca83367-6e45-459f-a27b-476b1d01c936 +ATTRIB_HIDE
+2026-07-30 14:07:13 Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object LocalPort,OwningProcess; Invoke-RestMethod http://localhost:3000/api/health | ConvertTo-Json -Compress
+2026-07-30 15:33:58 Get-Content -Encoding UTF8 code\server.js | Select-Object -Skip 620 -First 90
+2026-07-30 15:33:58 Get-Content -Tail 120 -Encoding UTF8 code\server.log; Get-Content -Tail 80 -Encoding UTF8 log\server.log
+2026-07-30 15:33:59 Get-Content -Tail 80 -Encoding UTF8 data\20260730.txt
+2026-07-30 15:33:59 Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' } | Select-Object ProcessId,CommandLine; Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object LocalPort,OwningProcess
+2026-07-30 15:34:16 Get-Content -Tail 50 -Encoding UTF8 code\server.js
+2026-07-30 15:35:10 node --check server.js
+2026-07-30 15:35:19 (Get-NetTCPConnection -LocalPort 3000 -State Listen).OwningProcess
+2026-07-30 15:35:26 Stop-Process -Id 43992 -Force
+2026-07-30 15:35:31 Start-Process -FilePath node -ArgumentList server.js -WorkingDirectory E:\proDir\code -WindowStyle Hidden
+2026-07-30 15:35:41 Start-Sleep -Seconds 4; Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object LocalPort,OwningProcess; Get-Content -Tail 12 -Encoding UTF8 data\dataLog; Get-Content -Tail 4 -Encoding UTF8 data\20260730.txt
+2026-07-30 18:52:49 rg -n "SERVER_STATUS|server-status|server-report|put\(|get\(|setInterval|fetchServerStatus|report_interval|120|300" code\worker.js code\dashboard.html README.md SERVER_MONITOR_ARCHITECTURE.md code\DEPLOY_SERVER_PANEL.md
+2026-07-30 18:52:50 Get-Content -Encoding UTF8 code\worker.js | Select-Object -Skip 145 -First 170
+2026-07-30 18:52:51 Get-Content -Encoding UTF8 code\dashboard.html | Select-Object -Skip 390 -First 90
+2026-07-30 18:52:51 Get-Content -Raw -Encoding UTF8 code\wrangler.toml; Get-Content -Raw -Encoding UTF8 README.md | Select-String -Pattern '120|五分钟|KV|STALE' -Context 2,2
+2026-07-30 18:55:45 rg -n "export default|async fetch|scheduled|SERVER_STATUS|fetch\(|put\(|get\(|/api/|setInterval|cron|gym|D1|DB" code\worker.js code\wrangler.toml
+2026-07-30 18:55:46 Get-Content -Encoding UTF8 code\worker.js | Select-Object -First 320
+2026-07-30 18:55:46 Get-Content -Raw -Encoding UTF8 code\wrangler.toml; Get-Content -Raw -Encoding UTF8 code\DEPLOY_SERVER_PANEL.md
+2026-07-30 18:59:19 npx wrangler d1 list
+2026-07-30 18:59:40 npx wrangler d1 list
+2026-07-30 19:04:23 npx wrangler d1 list
+2026-07-30 19:04:30 git status --short --branch
+2026-07-30 19:04:31 Get-Content -Raw -Encoding UTF8 code\wrangler.toml; Get-Content -Raw -Encoding UTF8 code\worker.js | Select-Object -First 30
+2026-07-30 19:04:46 Get-Content -Raw -Encoding UTF8 wrangler.toml; Get-Content -Encoding UTF8 worker.js | Select-Object -First 340
+2026-07-30 19:04:46 Get-Content -Encoding UTF8 worker.js | Select-Object -Skip 310 -First 260
+2026-07-30 19:04:46 Get-Content -Encoding UTF8 dashboard.html | Select-Object -Skip 330 -First 80; Get-Content -Encoding UTF8 dashboard.html | Select-Object -Skip 580 -First 420
+2026-07-30 19:05:19 rg -n "gym|gymCard|gymChart|gymPoll|today-data|yesterday-data|weekly-stats|gymOnline" worker.js
+2026-07-30 19:06:21 rg -n "serverCard|serverBody|placeholder|card-title|DOMContentLoaded|function fmt|const WARN|window.addEventListener|handleRequest|export default" worker.js
+2026-07-30 19:06:29 Get-Content worker.js | Select-Object -First 330
+2026-07-30 19:07:14 rg -n "extractGym|onlineNum|onlineCount|currentOnline|CURRENT_ONLINE|gymFetchJson" server.js dashboard.html
+2026-07-30 19:07:18 Get-Content server.js | Select-Object -Skip 410 -First 45
+2026-07-30 19:07:28 Get-Content worker.js | Select-Object -Skip 330 -First 145
+2026-07-30 19:07:33 Get-Content worker.js | Select-Object -Skip 470 -First 115
+2026-07-30 19:09:32 node --check worker.js; npx wrangler whoami; npx wrangler d1 list
+2026-07-30 19:10:06 npx wrangler d1 execute jinshugou-gym --remote --file=gym_schema.sql
+2026-07-30 19:10:21 npx wrangler deploy
+2026-07-30 19:10:50 $base = "https://forcloudflare.442192699.workers.dev"; $paths = @("/api/health", "/api/gym/today", "/api/gym/yesterday", "/api/gym/latest", "/board"); foreach ($path in $paths) { try { $resp = Invoke-WebRequest -Uri ($base + $path) -UseBasicParsing -TimeoutSec 30; Write-Output ("--- " + $path + " [" + $resp.StatusCode + "]"); if ($path -ne "/board") { Write-Output $resp.Content } else { Write-Output ("HTML length=" + $resp.Content.Length + "; gymCard=" + $resp.Content.Contains("gymCard") + "; gymChart=" + $resp.Content.Contains("drawGymChart")) } } catch { Write-Output ("--- " + $path + " [ERROR] " + $_.Exception.Message) } }
+2026-07-30 19:11:03 Get-Content ..\requirements.txt -Tail 30; Write-Output "---PROGRESS---"; Get-Content ..\progress.txt -Tail 40; Write-Output "---DATALOG---"; Get-Content ..\data\dataLog -Tail 20 -ErrorAction SilentlyContinue
+2026-07-30 19:11:21 Get-Content ..\requirements.txt -Tail 12; Get-Content ..\progress.txt -Tail 3
+2026-07-30 19:11:32 Get-ChildItem ..\log -File | Select-Object Name,Length,LastWriteTime
+2026-07-30 19:11:50 $base = "https://forcloudflare.442192699.workers.dev/api/gym/latest"; for ($i = 0; $i -lt 20; $i++) { try { $data = (Invoke-WebRequest -Uri $base -UseBasicParsing -TimeoutSec 20).Content | ConvertFrom-Json; if ($null -ne $data.record) { Write-Output ($data | ConvertTo-Json -Compress); break } Write-Output ((Get-Date -Format "HH:mm:ss") + " waiting"); } catch { Write-Output ((Get-Date -Format "HH:mm:ss") + " error") }; Start-Sleep -Seconds 20 }
+2026-07-30 19:16:43 $base = "https://forcloudflare.442192699.workers.dev"; $today = (Invoke-WebRequest -Uri ($base + "/api/gym/today") -UseBasicParsing -TimeoutSec 30).Content | ConvertFrom-Json; Write-Output ("D1 records=" + $today.records.Count + "; date=" + $today.date + "; first=" + ($today.records[0] | ConvertTo-Json -Compress)); $proc = Get-CimInstance Win32_Process -Filter "ProcessId = 9948" -ErrorAction SilentlyContinue; if ($proc) { Write-Output ("local PID 9948 active: " + $proc.Name + " " + $proc.CommandLine) } else { Write-Output "local PID 9948 not found" }; $cmdLines = (Get-Content "E:\proDir\log\agentCmd.txt").Count; Write-Output ("agentCmd lines=" + $cmdLines)
+2026-07-30 19:16:52 git diff --stat; git status --short
+2026-07-30 19:21:31 rg -n "gymCard|gym-card|gymChart|gym-chart|gymCanvas|gymToday|昨日参考|today-data|yesterday-data|weekly" dashboard.html worker.js; Write-Output "--- dashboard layout ---"; Get-Content dashboard.html | Select-Object -Skip 1 -First 260
+2026-07-30 19:21:38 Get-Content dashboard.html | Select-Object -Skip 250 -First 170; Write-Output "--- gym js ---"; Get-Content dashboard.html | Select-Object -Skip 580 -First 450
+2026-07-30 19:21:49 Get-Content worker.js | Select-Object -Skip 540 -First 30
+2026-07-30 19:22:13 Get-ChildItem ..\data\20260729.txt, ..\data\20260730.txt | Select-Object FullName,Length; Get-Content ..\data\20260729.txt -First 5; Get-Content ..\data\20260729.txt -Last 5; Get-Content ..\data\20260730.txt -First 5; Get-Content ..\data\20260730.txt -Last 5
+2026-07-30 19:22:54 $path = "worker.js"; $lines = [System.Collections.Generic.List[string]](Get-Content -LiteralPath $path); $gymIndex = -1; for ($i = 0; $i -lt $lines.Count; $i++) { if ($lines[$i] -match 'id="gymCard"') { $gymIndex = $i; break } }; if ($gymIndex -lt 0) { throw "gym card not found" }; $lines.RemoveAt($gymIndex); $newGym = @('            <div class="card" id="gymCard">','                <div class="card-header">','                    <div class="card-icon purple">&#x1f3cb;&#xfe0f;</div>','                    <div><div class="card-title">健身房人数监控</div><div class="card-sub" id="gymName">单场馆实时监控</div></div>','                </div>','                <div class="card-body" id="gymBody">','                    <div class="gym-stat"><div class="big-num loading" id="gymOnlineCount">--</div><div class="label"><span class="status-dot online" id="gymStatusDot"></span>当前在线人数 <button class="btn-icon" id="gymRefreshBtn" onclick="gymManualRefresh()" title="手动刷新">↻</button></div><div class="sub" id="gymSubInfo">等待采集数据...</div></div>','                    <div class="chart-wrap"><canvas id="gymChart"></canvas><div class="today-live-dot" id="gymLiveDot"></div><div class="chart-tip" id="gymChartTip"></div></div>','                    <div class="chart-legend"><span><span class="swatch today"></span>今日实时</span><span><span class="swatch yesterday"></span>昨日参考</span></div>','                </div>','            </div>'); $placeholderIndex = -1; for ($i = 0; $i -lt $lines.Count; $i++) { if ($lines[$i] -match 'placeholder-card') { $placeholderIndex = $i; break } }; if ($placeholderIndex -lt 0) { throw "placeholder not found" }; for ($j = $newGym.Count - 1; $j -ge 0; $j--) { $lines.Insert($placeholderIndex, $newGym[$j]) }; [System.IO.File]::WriteAllLines((Resolve-Path $path), $lines, [System.Text.UTF8Encoding]::new($false)); Write-Output ("Moved gym card into grid at line " + ($placeholderIndex + 1))
+2026-07-30 19:24:43 sync embedded gym renderer with local card structure
+2026-07-30 19:24:58 generate historical gym D1 import SQL from data/20260729.txt and data/20260730.txt
+2026-07-30 19:25:03 npx wrangler d1 execute jinshugou-gym --remote --file=gym_history_import.sql
+2026-07-30 19:25:23 remove unsupported SQL transaction wrapper from historical import
+2026-07-30 19:25:28 npx wrangler d1 execute jinshugou-gym --remote --file=gym_history_import.sql
+2026-07-30 19:25:47 node --check worker.js; npx wrangler deploy
+2026-07-30 19:26:00 Get-Content worker.js | Select-Object -Skip 282 -First 25
+2026-07-30 19:26:12 repair malformed legacy Worker string literals revealed by syntax check
+2026-07-30 19:26:18 Get-Content worker.js | Select-Object -Skip 300 -First 20
+2026-07-30 19:26:31 
+2026-07-30 19:26:42 $lines=Get-Content worker.js; for($i=0;$i -lt $lines.Count;$i++){ $count=([regex]::Matches($lines[$i],"'")).Count; if($count % 2 -ne 0){ Write-Output ((($i+1).ToString()) + ":" + $lines[$i]) } }
+2026-07-30 19:26:58 Get-Content worker.js | Select-Object -Skip 600 -First 85
+2026-07-30 19:28:02 replace malformed embedded dashboard script with clean equivalent
+2026-07-30 19:28:13 repair malformed parking route string literals
+2026-07-30 19:28:20 npx wrangler deploy
+2026-07-30 19:28:55 $base="https://forcloudflare.442192699.workers.dev"; $html=(Invoke-WebRequest -Uri ($base+"/board") -UseBasicParsing).Content; $today=(Invoke-WebRequest -Uri ($base+"/api/gym/today") -UseBasicParsing).Content|ConvertFrom-Json; $yesterday=(Invoke-WebRequest -Uri ($base+"/api/gym/yesterday") -UseBasicParsing).Content|ConvertFrom-Json; Write-Output ("gymCard="+$html.Contains("id=""gymCard""")+" chart="+$html.Contains("id=""gymChart""")+" gymIndex="+$html.IndexOf("id=""gymCard""")+" placeholderIndex="+$html.IndexOf("placeholder-card")+" length="+$html.Length); Write-Output ("today date="+$today.date+" records="+$today.records.Count+" yesterday date="+$yesterday.date+" records="+$yesterday.records.Count); Write-Output ("last today="+($today.records[-1]|ConvertTo-Json -Compress)); $latest=(Invoke-WebRequest -Uri ($base+"/api/gym/latest") -UseBasicParsing).Content; Write-Output ("latest="+$latest)
+2026-07-30 19:29:27 Get-Process -Id 9948 -ErrorAction SilentlyContinue | Select-Object Id,ProcessName; Get-Content ..\log\agentCmd.txt -Tail 5
+2026-07-30 19:31:46 Get-Content "C:\Users\c1072\.codex\attachments\0cb4dd3a-f145-4b6d-baf1-40d6dbd33cbc\pasted-text.txt" -First 80; Write-Output "--- worker source checks ---"; node --check worker.js; Write-Output "--- remote response ---"; $r=Invoke-WebRequest -Uri "https://forcloudflare.442192699.workers.dev/board" -UseBasicParsing -TimeoutSec 30; Write-Output ("status="+$r.StatusCode+" length="+$r.Content.Length); Write-Output $r.Content.Substring(0,[Math]::Min(500,$r.Content.Length))
+2026-07-30 19:32:18 repair malformed embedded HTML title tag
+2026-07-30 19:32:23 npx wrangler deploy
+2026-07-30 19:33:10 verify repaired remote HTML title/body/script tags and health
+2026-07-30 19:35:21 Write-Output "--- local dashboard head ---"; Get-Content dashboard.html -First 25; Write-Output "--- tag diagnostics ---"; foreach($p in @("dashboard.html","worker.js")){ $t=[System.IO.File]::ReadAllText((Resolve-Path $p)); Write-Output ($p+" title="+([regex]::Matches($t,"<title>").Count)+" closeTitle="+([regex]::Matches($t,"</title>").Count)+" h1="+([regex]::Matches($t,"<h1>").Count)+" closeH1="+([regex]::Matches($t,"</h1>").Count)+" badTags="+([regex]::Matches($t,"\?/\w+>").Count)+" scripts="+([regex]::Matches($t,"<script>").Count)+" closeScripts="+([regex]::Matches($t,"</script>").Count)) }
+2026-07-30 19:35:36 Get-Content worker.js -Tail 12
+2026-07-30 19:35:54 Get-Content worker.js | Select-Object -Skip 215 -First 115
+2026-07-30 19:35:59 Get-Content worker.js | Select-Object -Skip 190 -First 40
+2026-07-30 19:36:31 regenerate Worker embedded dashboard from local dashboard.html
+2026-07-30 19:36:37 npx wrangler deploy
+2026-07-30 19:37:08 verify regenerated remote dashboard and gym compatibility endpoints
+2026-07-30 19:45:13 git status --short; git remote -v; Write-Output "--- README ---"; Get-Content ..\README.md -First 220 -ErrorAction SilentlyContinue; Write-Output "--- gym refresh routes ---"; rg -n "current-online|gymSaveSample|gymPoll|gymAutoCollect|fetchGymJson|setInterval" server.js dashboard.html worker.js
+2026-07-30 19:45:21 Get-Content dashboard.html | Select-Object -Skip 930 -First 80; Get-Content server.js | Select-Object -Skip 420 -First 30; Get-Content worker.js | Select-Object -Skip 155 -First 110
+2026-07-30 19:45:48 remove local dashboard refresh writes and采集次数 subtitle
+2026-07-30 19:45:54 Get-Content dashboard.html | Select-Object -Skip 952 -First 25
+2026-07-30 19:46:03 remove remaining采集次数 subtitle calculation from local dashboard
+2026-07-30 19:46:11 regenerate Worker embedded dashboard after refresh-write separation
+2026-07-30 19:46:19 rg -n "\?/|<title|<h1|</h1|<div class=|/div>" dashboard.html | Select-Object -First 45
+2026-07-30 19:46:37 repair malformed closing HTML tags in local dashboard source
+2026-07-30 19:46:46 regenerate Worker embedded dashboard from repaired local source
+2026-07-30 19:46:52 npx wrangler deploy
+2026-07-30 19:47:20 verify refresh realtime path does not write D1 and verify repaired remote HTML
+2026-07-30 19:47:34 npx wrangler d1 execute jinshugou-gym --remote --command="SELECT sample_date, COUNT(*) AS rows FROM gym_samples GROUP BY sample_date ORDER BY sample_date;"
+2026-07-30 19:48:05 git status --short; Write-Output "--- gitignore ---"; Get-Content ..\.gitignore -ErrorAction SilentlyContinue; Write-Output "--- diff stat ---"; git diff --stat
+2026-07-30 19:48:18 git add README.md code/dashboard.html code/server.js code/worker.js code/wrangler.toml code/gym_schema.sql log/agentCmd.txt log/gym_worker_deploy.log progress.txt requirements.txt; git diff --cached --stat
