@@ -183,3 +183,17 @@ cd code && npx wrangler deploy
 2026-07-30 19:51:34 node --check worker.js; npx wrangler deploy
 2026-07-30 19:51:58 verify no-store header and remote page after redeploy
 2026-07-30 19:52:06 git add code/worker.js log/agentCmd.txt; git commit -m "Prevent stale dashboard HTML cache"; git push origin main
+2026-07-30 19:52:36 node -e "const cp=require(\"child_process\");const b=cp.execFileSync(\"git\",[\"show\",\"797e47b:code/dashboard.html\"]);console.log(b.toString(\"utf8\").slice(0,500))"
+2026-07-30 19:52:57 node -e "const cp=require(\"child_process\");const s=cp.execFileSync(\"git\",[\"show\",\"797e47b:code/dashboard.html\"]).toString(\"utf8\");const i=s.indexOf(\"gymSaveSample(count)\");console.log(s.slice(i-250,i+900))"
+2026-07-30 19:53:06 node -e "const cp=require(\"child_process\");const s=cp.execFileSync(\"git\",[\"show\",\"797e47b:code/dashboard.html\"]).toString(\"utf8\");for(const x of [\"gymCard\",\"gymPoll\",\"gymSaveSample\"]){console.log(x,s.indexOf(x))}"
+2026-07-30 19:53:12 git log --oneline --all -- code/dashboard.html | Select-Object -First 15
+2026-07-30 19:53:24 node -e "try{console.log(require.resolve(\"iconv-lite\"))}catch(e){console.log(\"missing\")}"
+2026-07-30 19:53:34 test reverse mojibake using explicit GBK to UTF8 conversion
+2026-07-30 19:53:44 node -e "const fs=require(\"fs\");const s=fs.readFileSync(\"code/dashboard.html\",\"utf8\");console.log(JSON.stringify(s.match(/<title>(.*?)<\\/title>/)[1]));"
+2026-07-30 19:53:58 explicit encoding diagnostic for title
+2026-07-30 19:54:05 second-pass encoding diagnostic for title
+2026-07-30 19:54:19 restore dashboard UTF8 text after two accidental GBK conversions
+2026-07-30 19:54:32 regenerate Worker embedded dashboard from restored UTF8 dashboard
+2026-07-30 19:54:37 npx wrangler deploy
+2026-07-30 19:55:03 verify restored UTF8 remote dashboard
+2026-07-30 19:55:23 git add code/dashboard.html code/worker.js progress.txt log/gym_worker_deploy.log log/agentCmd.txt; git commit -m "Restore UTF-8 dashboard source"; git push origin main

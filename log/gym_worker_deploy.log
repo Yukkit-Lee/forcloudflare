@@ -16,3 +16,5 @@
 2026-07-30 19:41: Added D1 compatibility response fields and routes required by the local chart renderer.
 2026-07-30 19:42: Redeployed Worker version e0684139-9b22-4563-8930-6708641f292b.
 2026-07-30 19:43: Verified page 200, badTags=0, title/h1 complete, today-data=250, yesterday-data=261, current-online=78.
+2026-07-30 19:50: Restored dashboard UTF-8 text after two accidental encoding conversions; title/header verified as 便捷面板.
+2026-07-30 19:51: Redeployed Worker version 83bc83d8-ea27-48b2-9bd5-5303260d052c; page 200, badTags=0, realtime refresh OK.

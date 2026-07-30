@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>娓氭寧宓庨棃銏℃緲</title>
+    <title>便捷面板</title>
     <style>
         :root {
             --bg: #f2f3f7;
@@ -36,7 +36,7 @@
         }
         .container { max-width: 960px; margin: 0 auto; }
 
-        /* ====== 婢舵挳鍎?====== */
+        /* ====== 头�??====== */
         .header {
             text-align: center; padding: 16px 0 24px;
         }
@@ -51,18 +51,18 @@
         .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
         .header p { font-size: 13px; color: var(--sub); margin-top: 2px; }
 
-        /* ====== 閸楋紕澧栫純鎴炵壐 ====== */
+        /* ====== 卡片网格 ====== */
         .grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 14px;
         }
-        /* 閻絻鍓崇粩顖ょ窗娑撯偓鐞涘奔琚辨稉顏堟桨閺?*/
+        /* 电脑端：一行两个面??*/
         @media (min-width: 640px) {
             .grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* ====== 閸楋紕澧?====== */
+        /* ====== 卡�??====== */
         .card {
             background: var(--card);
             border-radius: var(--radius);
@@ -88,7 +88,7 @@
         .card-sub   { font-size: 11px; color: var(--sub); }
         .card-body  { padding: 14px 18px 18px; }
 
-        /* ====== 閸嬫粏婧呴惇瀣緲 ====== */
+        /* ====== 停车看板 ====== */
         .plate-row {
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 14px;
@@ -140,7 +140,7 @@
             color: var(--red);
         }
 
-        /* 48h 鏉╂稑瀹抽弶?*/
+        /* 48h 进度�?*/
         .limit-bar { margin-bottom: 14px; }
         .limit-bar .labels {
             display: flex; justify-content: space-between;
@@ -167,7 +167,7 @@
         .limit-msg.alert  { background: var(--amber-bg); color: var(--amber); }
         .limit-msg.danger { background: var(--red-bg); color: var(--red); }
 
-        /* 閹稿鎸?*/
+        /* 按�??*/
         .btn {
             display: flex; align-items: center; justify-content: center;
             gap: 6px; width: 100%; padding: 12px 20px;
@@ -187,7 +187,7 @@
             border: 1px solid var(--border);
         }
 
-        /* ====== 閸楃姳缍呴崡锛勫 ====== */
+        /* ====== 占位卡片 ====== */
         .placeholder-card {
             background: var(--card);
             border-radius: var(--radius);
@@ -211,7 +211,7 @@
         .port-chip { font-size:10px; font-weight:700; padding:4px 7px; background:#f4f5f7; border-radius:6px; color:var(--sub); }
         .port-chip.open { color:var(--green); background:var(--green-bg); }
 
-        /* ====== 閸嬨儴闊╅幋璺ㄦ磧閹?====== */
+        /* ====== 健身房监??====== */
         .gym-stat {
             text-align: center; padding: 6px 0 12px;
         }
@@ -292,7 +292,7 @@
         .btn-icon:hover { background: #f0f1f5; color: var(--text); }
         .btn-icon:active { transform: scale(.92); }
 
-        /* ====== 閸旂姾娴?缁岃櫣濮搁幀?====== */
+        /* ====== 加�??空状�?====== */
         .loading-box {
             text-align: center; padding: 28px;
         }
@@ -303,13 +303,13 @@
         }
         @keyframes spin { to{transform:rotate(360deg)} }
 
-        /* ====== 鎼存洟鍎?====== */
+        /* ====== 底�??====== */
         .footer {
             text-align: center; margin-top: 20px;
             font-size: 11px; color: #ccc;
         }
 
-        /* ====== 閻絻鍓崇粩顖氫簳鐠?====== */
+        /* ====== 电脑端微??====== */
         @media (min-width: 640px) {
             .plate-tag { font-size: 16px; padding: 5px 14px; }
             .info-grid { gap: 8px; }
@@ -323,44 +323,44 @@
     <div class="container">
 
         <div class="header">
-            <div class="avatar">棣冩惖</div>
-            <h1>娓氭寧宓庨棃銏℃緲</h1>
-            <p>鐢摜鏁ゅ銉ュ徔 & 閺佺増宓侀惇瀣緲</p>
+            <div class="avatar">📋</div>
+            <h1>便捷面板</h1>
+            <p>常用工具 & 数据看板</p>
         </div>
 
         <div class="grid">
 
-            <!-- 閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅?閸嬫粏婧呴惇瀣緲 閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅?-->
+            <!-- ═════�??停车看板 ═════�??-->
             <div class="card" id="parkCard">
                 <div class="card-header">
-                    <div class="card-icon blue">棣冨悪閿</div>
+                    <div class="card-icon blue">🅿?</div>
                     <div>
-                        <div class="card-title">閸嬫粏婧呴惇瀣緲</div>
-                        <div class="card-sub" id="parkName">閸旂姾娴囨稉?..</div>
+                        <div class="card-title">停车看板</div>
+                        <div class="card-sub" id="parkName">加载�?..</div>
                     </div>
                 </div>
                 <div class="card-body" id="parkBody">
-                    <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">閺屻儴顕楁稉?..</p></div>
+                    <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">查询�?..</p></div>
                 </div>
             </div>
 
-            <!-- 閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅?閸楃姳缍?閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅?-->
+            <!-- ═════�??占�??═════�??-->
             <div class="card" id="serverCard">
                 <div class="card-header">
-                    <div class="card-icon blue">棣冩灱閿</div>
-                    <div><div class="card-title">閺堝秴濮熼崳銊уЦ閹</div><div class="card-sub" id="serverUpdated">閸旂姾娴囨稉?..</div></div>
+                    <div class="card-icon blue">🖥?</div>
+                    <div><div class="card-title">服务器状?</div><div class="card-sub" id="serverUpdated">加载�?..</div></div>
                 </div>
                 <div class="card-body" id="serverBody">
-                    <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">鐠囪褰囬悩鑸碘偓浣疯厬...</p></div>
+                    <div class="loading-box"><div class="spinner"></div><p style="font-size:12px;color:var(--sub);">读取状态中...</p></div>
                 </div>
             </div>
-            <!-- 閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅?閸嬨儴闊╅幋澶告眽閺佹壆娲冮幒?閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅?-->
+            <!-- ═════�??健身房人数监�?═════�??-->
             <div class="card" id="gymCard">
                 <div class="card-header">
-                    <div class="card-icon purple">棣冨几閿</div>
+                    <div class="card-icon purple">🏋?</div>
                     <div>
-                        <div class="card-title">閸嬨儴闊╅幋澶告眽閺佹壆娲冮幒</div>
-                        <div class="card-sub" id="gymName">722鎼?闂€鎸庝笉Look璺梹鍨厔閺冩鍩屾惔</div>
+                        <div class="card-title">健身房人数监�</div>
+                        <div class="card-sub" id="gymName">722??长治Look·长城旗舰�</div>
                     </div>
                 </div>
                 <div class="card-body" id="gymBody">
@@ -368,10 +368,10 @@
                         <div class="big-num" id="gymOnlineCount">--</div>
                         <div class="label">
                             <span class="status-dot" id="gymStatusDot"></span>
-                            瑜版挸澧犻崷銊у殠娴滅儤鏆?
-                            <button class="btn-icon" id="gymRefreshBtn" onclick="gymManualRefresh()" title="閹靛濮╅崚閿嬫煀">閳</button>
+                            当前在线人�??
+                            <button class="btn-icon" id="gymRefreshBtn" onclick="gymManualRefresh()" title="手动刷新">?</button>
                         </div>
-                        <div class="sub" id="gymSubInfo">缁涘绶熸＃鏍偧闁插洭娉?..</div>
+                        <div class="sub" id="gymSubInfo">等待首次采�??..</div>
                     </div>
                     <div class="chart-wrap">
                         <canvas id="gymChart"></canvas>
@@ -379,26 +379,26 @@
                         <div class="chart-tip" id="gymChartTip"></div>
                     </div>
                     <div class="chart-legend">
-                        <span><span class="swatch today"></span>娴犲﹥妫╃€圭偞妞</span>
-                        <span><span class="swatch yesterday"></span>閺勩劍妫╅崣鍌濃偓</span>
+                        <span><span class="swatch today"></span>今日实�?</span>
+                        <span><span class="swatch yesterday"></span>昨日参�</span>
                     </div>
                 </div>
             </div>
             <div class="placeholder-card">
-                <div class="icon">棣冃</div><div class="title">鐠侊紕鐣婚崳銊ヤ紣閸</div><div class="hint">閸楀啿鐨㈡稉濠勫殠</div>
+                <div class="icon">�?</div><div class="title">计算器工?</div><div class="hint">即将上线</div>
             </div>
             <div class="placeholder-card">
-                <div class="icon">棣冩暋</div><div class="title">閸忔湹绮銉ュ徔</div><div class="hint">閸楀啿鐨㈡稉濠勫殠</div>
+                <div class="icon">🔧</div><div class="title">其他工具</div><div class="hint">即将上线</div>
             </div>
 
         </div>
 
-        <div class="footer">濞村嘲宕℃径褍顒?璺?娓氭寧宓庨棃銏℃緲</div>
+        <div class="footer">海南大�????便捷面板</div>
     </div>
 
     <script>
         const WARN_H = 40;
-        const DANGER_H = 46; // 鐠?8h娑撳秷鍐?h 閳?缁俱垼澹?
+        const DANGER_H = 46; // ??8h不�??h ??红�??
         const LIMIT_H = 48;
 
         let parkData = null;
@@ -414,27 +414,27 @@
             try {
                 const response = await fetch('/api/server-status', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.error || '鐠囪褰囨径杈Е');
+                if (!response.ok) throw new Error(data.error || '读取失败');
                 renderServerStatus(data);
-            } catch (err) { renderServerError('閻樿埖鈧焦婀囬崝鈥茬瑝閸欘垳鏁?); }
+            } catch (err) { renderServerError('状态服务不可�??); }
         }
 
         function renderServerStatus(data) {
             const connectivity = (data.connectivity || 'UNKNOWN').toUpperCase();
             const level = connectivity === 'ONLINE' ? 'online' : connectivity === 'OFFLINE' ? 'offline' : connectivity === 'STALE' ? 'stale' : 'unknown';
-            document.getElementById('serverUpdated').textContent = data.checked_at ? '濡偓濞村绨?' + fmtTs(data.checked_at) : '閺嗗倹妫ゅΛ鈧ù瀣闂?;
+            document.getElementById('serverUpdated').textContent = data.checked_at ? '检测�??' + fmtTs(data.checked_at) : '暂无检测时??;
             const ports = Object.entries({ ...(data.ports || {}), icmp: Boolean(data.ping) }).map(([name, open]) =>
                 '<span class="port-chip ' + (open ? 'open' : '') + '">' + esc(name.toUpperCase()) + ' ' + (open ? 'OPEN' : 'CLOSED') + '</span>'
             ).join('');
             document.getElementById('serverBody').innerHTML =
-                '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span class="status-pill ' + level + '"><span>閳</span>' + esc(connectivity) + '</span><span style="font-size:12px;color:var(--sub);">閺堝秴濮熼崳銊ユ勾閸р偓閿?b style="color:var(--text);">' + esc(data.host || 'UNKNOWN') + '</b></span></div>' +
-                '<div class="info-grid"><div class="info-item"><div class="label">缁崵绮烘穱鈩冧紖</div><div class="value">' + esc(data.status || 'UNKNOWN') + '</div></div><div class="info-item"><div class="label">閺堚偓鏉╂垹濮搁幀浣稿綁閺</div><div class="value" style="font-size:12px;">' + fmtStateChange(data.last_state_change_at) + '</div></div></div>' +
-                '<div class="limit-msg ' + level + '" style="text-align:left;">' + esc(data.reason || '閺嗗倹妫ら崚銈呯暰閻炲棛鏁?) + (data.consecutive_offline_count > 0 ? '閿涘牏顬囩痪鍧楀櫚閺?' + data.consecutive_offline_count + ' 濞嗏槄绱? : '') + '</div><div class="port-list">' + (ports || '<span class="port-chip">閺嗗倹妫ょ粩顖氬經閺佺増宓</span>') + '</div><button class="btn btn-outline" style="margin-top:12px;" onclick="fetchServerStatus()">閳?閸掗攱鏌婇張宥呭閸ｃ劎濮搁幀</button>';
+                '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span class="status-pill ' + level + '"><span>?</span>' + esc(connectivity) + '</span><span style="font-size:12px;color:var(--sub);">服务器地址??b style="color:var(--text);">' + esc(data.host || 'UNKNOWN') + '</b></span></div>' +
+                '<div class="info-grid"><div class="info-item"><div class="label">系统信息</div><div class="value">' + esc(data.status || 'UNKNOWN') + '</div></div><div class="info-item"><div class="label">最近状态变?</div><div class="value" style="font-size:12px;">' + fmtStateChange(data.last_state_change_at) + '</div></div></div>' +
+                '<div class="limit-msg ' + level + '" style="text-align:left;">' + esc(data.reason || '暂无判定理�??) + (data.consecutive_offline_count > 0 ? '（离线采??' + data.consecutive_offline_count + ' 次�?? : '') + '</div><div class="port-list">' + (ports || '<span class="port-chip">暂无端口数�?</span>') + '</div><button class="btn btn-outline" style="margin-top:12px;" onclick="fetchServerStatus()">??刷新服务器状�</button>';
         }
 
         function renderServerError(message) {
-            document.getElementById('serverUpdated').textContent = '鐠囪褰囨径杈Е';
-            document.getElementById('serverBody').innerHTML = '<div style="min-height:150px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="limit-msg danger" style="text-align:center;">閳跨媴绗?' + esc(message) + '</div><button class="btn btn-outline" style="width:auto;margin-top:12px;" onclick="fetchServerStatus()">閳?闁插秷鐦</button></div>';
+            document.getElementById('serverUpdated').textContent = '读取失败';
+            document.getElementById('serverBody').innerHTML = '<div style="min-height:150px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="limit-msg danger" style="text-align:center;">⚠�??' + esc(message) + '</div><button class="btn btn-outline" style="width:auto;margin-top:12px;" onclick="fetchServerStatus()">??重�?</button></div>';
         }
 
         function fmtStateChange(value) { return value ? fmtTs(value) : '1970/1/1 0:00'; }
@@ -448,14 +448,14 @@
                 });
                 const data = await resp.json();
                 if (data.success) { parkData = data; renderParkData(data); startTick(); }
-                else { renderEmpty('鏉烇箒绶犳稉宥呮躬閸嬫粏婧呴崷鍝勫敶'); }
-            } catch (err) { renderEmpty('缂冩垹绮跺鍌氱埗'); }
+                else { renderEmpty('车辆不在停车场内'); }
+            } catch (err) { renderEmpty('网络异常'); }
         }
 
         function loadPlate() {
             try {
-                return JSON.parse(localStorage.getItem('hainanu_board_plate') || '{}').plate || '閻炵硛054DB';
-            } catch (e) { return '閻炵硛054DB'; }
+                return JSON.parse(localStorage.getItem('hainanu_board_plate') || '{}').plate || '琼A054DB';
+            } catch (e) { return '琼A054DB'; }
         }
 
         function renderParkData(d) {
@@ -463,13 +463,13 @@
             card.style.display = ''; card.style.flexDirection = '';
             const el = document.getElementById('parkBody');
             el.style.display = ''; el.style.flexDirection = ''; el.style.flex = '';
-            document.getElementById('parkName').textContent = d.parkName || '濞村嘲宕℃径褍顒熷ù椋庢暬閺嶁€冲隘';
+            document.getElementById('parkName').textContent = d.parkName || '海南大学海甸校区';
 
             const plate = d.plate || '--';
             const paid = d.bill?.paid === true;
 
             if (paid) {
-                // ---- 瀹歌尙鍗崇拹瑙勬弓妞硅泛鍤悩鑸碘偓?----
+                // ---- 已缴费未驶出状�?----
                 const freeMin = d.bill?.freeMin || 0;
                 const freeH = Math.floor(freeMin / 60), freeM = freeMin % 60;
                 const freeStr = freeH > 0 ? freeH + 'h' + freeM + 'm' : freeM + 'm';
@@ -477,22 +477,22 @@
                     ? '<span style="font-size:11px;color:var(--sub);">' + nextChargeText(d.bill.nextChargeMin, d.bill.nextChargeFee) + '</span>' : '';
 
                 el.innerHTML = '<div class="plate-row"><div class="plate-tag">' + esc(fmtPlate(plate)) + '</div>' +
-                    '<div class="park-status parked"><span class="dot"></span>瀹歌尙鍗崇拹瑙勬弓妞硅泛鍤</div></div>' +
-                    '<div class="info-grid"><div class="info-item"><div class="label">閸撯晙缍戦崗宥堝瀭閸嬫粏婧呴弮鍫曟？</div>' +
+                    '<div class="park-status parked"><span class="dot"></span>已缴费未驶�?</div></div>' +
+                    '<div class="info-grid"><div class="info-item"><div class="label">剩余免费停车时间</div>' +
                     '<div class="value" style="font-size:12px;" id="durVal">' + esc(freeStr) + '</div></div>' +
-                    '<div class="info-item"><div class="label">閸嬫粏婧呴弮鍫曟毐</div>' +
+                    '<div class="info-item"><div class="label">停车时长</div>' +
                     '<div class="value">' + fmtDur(parseInt(d.bill.durationMinutes)) + '</div></div>' +
-                    '<div class="info-item" style="grid-column:1/-1;"><div class="label">鎼存梻鍗抽柌鎴︻杺</div>' +
+                    '<div class="info-item" style="grid-column:1/-1;"><div class="label">应缴金额</div>' +
                     '<div style="display:flex;justify-content:space-between;align-items:baseline;">' +
-                    '<span class="value fee" style="color:var(--green);">妤?.00</span>' + nextCharge + '</div></div></div>' +
-                    '<div class="limit-msg safe" style="text-align:center;">閴?瀹歌尙鍗崇拹鐧哥礉鐠囧嘲鏁栬箛顐︹敀閸戝搫浠犳潪锕€婧€!</div>' +
+                    '<span class="value fee" style="color:var(--green);">??.00</span>' + nextCharge + '</div></div></div>' +
+                    '<div class="limit-msg safe" style="text-align:center;">??已缴费，请尽快驶出停车场!</div>' +
                     '<div style="display:flex;gap:8px;margin-top:12px;">' +
-                    '<button class="btn btn-pay" style="background:#a0c8a8;cursor:not-allowed;box-shadow:none;" disabled>瀹歌尙鍗崇拹</button>' +
-                    '<button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="閸掗攱鏌?>棣冩敡</button></div>';
+                    '<button class="btn btn-pay" style="background:#a0c8a8;cursor:not-allowed;box-shadow:none;" disabled>已缴�</button>' +
+                    '<button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷�??>🔄</button></div>';
                 return;
             }
 
-            // ---- 閺堫亞鍗崇拹鍦Ц閹?----
+            // ---- 未缴费状??----
             const entryStr = d.bill?.entryTimeStr || fmtTs(d.entryTime) || '--';
             const fee = d.bill?.totalFee != null ? Number(d.bill.totalFee).toFixed(2) : null;
             const parkMin = d.bill?.durationMinutes != null ? parseInt(d.bill.durationMinutes) : null;
@@ -502,22 +502,22 @@
             el.innerHTML =
                 `<div class="plate-row">
                     <div class="plate-tag">${esc(fmtPlate(plate))}</div>
-                    <div class="park-status parked"><span class="dot"></span>閸嬫粏婧呮稉</div>
+                    <div class="park-status parked"><span class="dot"></span>停车�</div>
                 </div>
 
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="label">閸忋儱婧€閺冨爼妫</div>
+                        <div class="label">入场时�?</div>
                         <div class="value" style="font-size:12px;">${esc(entryStr)}</div>
                     </div>
                     <div class="info-item">
-                        <div class="label">閸嬫粏婧呴弮鍫曟毐</div>
+                        <div class="label">停车时长</div>
                         <div class="value" id="durVal">${fmtDur(parkMin)}</div>
                     </div>
                     <div class="info-item" style="grid-column:1/-1;">
-                        <div class="label">鎼存梻鍗抽柌鎴︻杺</div>
+                        <div class="label">应缴金额</div>
                         <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                            <span class="value fee">${fee != null ? '妤? + fee : '--'}</span>
+                            <span class="value fee">${fee != null ? '?? + fee : '--'}</span>
                             ${d.bill?.nextChargeMin > 0 ? '<span style="font-size:11px;color:var(--sub);">' + nextChargeText(d.bill.nextChargeMin, d.bill.nextChargeFee) + '</span>' : ''}
                         </div>
                     </div>
@@ -532,13 +532,13 @@
                 ` : ''}
 
                 <div style="display:flex;gap:8px;margin-top:12px;">
-                    <button class="btn btn-pay" onclick="goPay()">韫囶偅宓庣紓纾嬪瀭</button>
-                    <button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="閸掗攱鏌?>棣冩敡</button>
+                    <button class="btn btn-pay" onclick="goPay()">快捷缴费</button>
+                    <button class="btn btn-outline" style="width:auto;flex-shrink:0;padding:12px 14px;" onclick="fetchParkData()" title="刷�??>🔄</button>
                 </div>`;
         }
 
         function renderEmpty(msg) {
-            document.getElementById('parkName').textContent = parkData?.parkName || '閺嗗倹妫ょ拋鏉跨秿';
+            document.getElementById('parkName').textContent = parkData?.parkName || '暂无记录';
             const plate = parkData?.plate || loadPlate();
             const card = document.getElementById('parkCard');
             card.style.display = 'flex'; card.style.flexDirection = 'column';
@@ -546,24 +546,24 @@
             el.style.display = 'flex'; el.style.flexDirection = 'column'; el.style.flex = '1';
             el.innerHTML =
                 '<div class="plate-row"><div class="plate-tag">' + esc(fmtPlate(plate)) + '</div>' +
-                '<div class="park-status" style="color:var(--red);"><span class="dot" style="background:var(--red);animation:none;"></span>閺堫亜鍙嗛崷</div></div>' +
+                '<div class="park-status" style="color:var(--red);"><span class="dot" style="background:var(--red);animation:none;"></span>未入�</div></div>' +
                 '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--sub);">' +
-                '<div style="text-align:center;"><div style="font-size:36px;margin-bottom:6px;">棣冩</div>' +
+                '<div style="text-align:center;"><div style="font-size:36px;margin-bottom:6px;">🚗</div>' +
                 '<p style="font-size:13px;">' + esc(msg) + '</p>' +
-                '<button class="btn btn-outline" style="margin-top:12px;" onclick="fetchParkData()">棣冩敡 闁插秵鏌婇弻銉嚄</button></div></div>';
+                '<button class="btn btn-outline" style="margin-top:12px;" onclick="fetchParkData()">🔄 重新查询</button></div></div>';
             clearInterval(tickTimer);
         }
 
         function startTick() {
             clearInterval(tickTimer);
             tickTimer = setInterval(() => {
-                // 瀹歌尙鍗崇拹鍦Ц閹緤绱伴崐鎺曨吀閺冭泛鍘ょ拹鐟板⒖娴ｆ瑦妞傞梻?+ 娑撳顐奸崝鐘绘尪
+                // 已缴费状态：倒计时免费剩余时�?+ 下次加钱
                 if (parkData?.bill?.paid) {
                     if (parkData.bill.freeMin > 0) parkData.bill.freeMin = Math.max(0, parkData.bill.freeMin - 10/60);
                     if (parkData.bill.nextChargeMin > 0) parkData.bill.nextChargeMin = Math.max(0, parkData.bill.nextChargeMin - 10/60);
-                    return; // 瀹歌尙鍗崇拹鍦Ц閹焦鏆熼幑顔界槨30s閸掗攱鏌婃稉鈧▎鈥冲祮閸?
+                    return; // 已缴费状态数据每30s刷新一次即??
                 }
-                // 閺堫亞鍗崇拹鍦Ц閹?
+                // 未缴费状??
                 if (parkData?.bill?.durationMinutes == null) return;
                 parkData.bill.durationMinutes = parseInt(parkData.bill.durationMinutes) + 10/60;
                 const min = Math.floor(parkData.bill.durationMinutes);
@@ -577,7 +577,7 @@
                 const msg = document.getElementById('limitMsg');
                 if (msg) { msg.textContent = limitMsg(h); msg.className = 'limit-msg ' + level; }
 
-                // 閸掗攱鏌婇崐鎺曨吀閺?
+                // 刷新倒计??
                 if (parkData.bill.nextChargeMin > 0) {
                     parkData.bill.nextChargeMin = Math.max(0, parkData.bill.nextChargeMin - 10/60);
                 }
@@ -589,20 +589,20 @@
             else fetchParkData().then(() => { if (parkData?.payUrl) window.location.href = parkData.payUrl; });
         }
 
-        // 閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡?
-        //  閸嬨儴闊╅幋澶告眽閺佹壆娲冮幒?
-        // 閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡鎰ㄦ櫜閳烘劏鏅查埡?
+        // ══════════════════════════════════════════�?
+        //  健身房人数监�?
+        // ══════════════════════════════════════════�?
 
-        const GYM_POLL_INTERVAL = 300000;  // 濮?閸掑棝鎸撻懛顏勫З鏉烆喛顕楁稉鈧▎?
+        const GYM_POLL_INTERVAL = 300000;  // ??分钟自动轮询一�?
         const GYM_STORAGE_KEY = 'gym_today_data';
         let gymTimer = null;
 
-        /** 閼惧嘲褰囨禒濠冩）閻ㄥ嫭鏆熼幑顔肩摠閸?key閿涘湻YYY-MM-DD閿?*/
+        /** 获取今日的数据存??key（YYYY-MM-DD??*/
         function gymTodayKey() {
             return new Date().toISOString().slice(0, 10);
         }
 
-        /** 娴?localStorage 閸旂姾娴囨禒濠冩）瀹告煡鍣伴梿鍡欐畱閺佺増宓?*/
+        /** ??localStorage 加载今日已采集的数�??*/
         function gymLoadToday() {
             try {
                 const raw = localStorage.getItem(GYM_STORAGE_KEY);
@@ -612,7 +612,7 @@
             } catch { return {}; }
         }
 
-        /** 娣囨繂鐡ㄦ稉鈧弶鈩冩煀闁插洭娉﹂惃鍕殶閹诡喖鍩?localStorage */
+        /** 保存一条新采集的数据�??localStorage */
         function gymSaveSample(count) {
             const now = new Date();
             const h = now.getHours();
@@ -622,7 +622,7 @@
             if (!all[key]) all[key] = {};
             if (!all[key][h]) all[key][h] = [];
             all[key][h].push({ count, m: now.getMinutes(), t: Date.now() });
-            // 閸欘亙绻氶悾娆愭付鏉?婢垛晪绱濋幒褍鍩楁径褍鐨?
+            // 只保留最??天，控制大�??
             const days = Object.keys(all).sort();
             while (days.length > 7) {
                 delete all[days.shift()];
@@ -630,7 +630,7 @@
             localStorage.setItem(GYM_STORAGE_KEY, JSON.stringify(all));
         }
 
-        /** 鐏忓棙婀囬崝鈥虫珤瑜版挸銇夌拋鏉跨秿鏉烆剚宕叉稉鍝勬禈鐞涖劋濞囬悽銊ф畱鐏忓繑妞傞柌鍥ㄧ壉鐎电钖?*/
+        /** 将服务器当天记录转换为图表使用的小时采样对�??*/
         function gymBuildTodayData(records) {
             const result = {};
             (records || []).forEach(r => {
@@ -644,7 +644,7 @@
             return result;
         }
 
-        /** 閼惧嘲褰囬張顒€鎳嗙粵鎯у煂閺佺増宓侀敍鍫濆棘閼板啰鍤庨敍?*/
+        /** 获取本周签到数据（参考线�?*/
         async function gymFetchWeeklyRef() {
             try {
                 const resp = await fetch('/api/gym/weekly-stats', {
@@ -652,7 +652,7 @@
                 });
                 const data = await resp.json();
                 if (data.success && Array.isArray(data.slots)) {
-                    // 鏉烆剚宕叉稉鍝勭毈閺冭埖妲х亸? "0:00~8:00" 閳?鐏忓繑妞?-7闁€熺ゴ閸?
+                    // 转换为小时映�? "0:00~8:00" ??小�??-7都赋??
                     const ref = {};
                     data.slots.forEach(s => {
                         const match = s.timeQuantum.match(/(\d+):00~(\d+):00/);
@@ -662,7 +662,7 @@
                             for (let h = startH; h < endH; h++) ref[h] = s.count;
                         }
                     });
-                    // 鐠侊紕鐣婚崗銊ャ亯楠炲啿娼?
+                    // 计算全天平�??
                     const counts = data.slots.map(s => s.count).filter(c => c != null);
                     const avg = counts.length ? Math.round(counts.reduce((a,b) => a+b, 0) / counts.length) : 0;
                     return { ref, avg };
@@ -671,7 +671,7 @@
             return { ref: {}, avg: 0 };
         }
 
-        /** 鐏忓棙妲伴弮銉︽殶閹诡喛娴嗘稉杞颁簰鐏忓繑妞傛稉绨乪y閻ㄥ嫭妲х亸鍕剁礄閸欐牗鐦＄亸蹇旀閻ㄥ嫬娼庨崐纭风礆 */
+        /** 将昨日数据转为以小时为key的映射（取每小时的均值） */
         function gymBuildYesterdayHourly(yesterdayData) {
             const buckets = {};
             yesterdayData.forEach(r => {
@@ -689,7 +689,7 @@
             return result;
         }
 
-        /** 缂佹ê鍩楅崑銉ㄩ煩閹村灝娴樼悰?*/
+        /** 绘制健身房图�?*/
         function gymDrawChart(todayData, yesterdayData, refData, weeklyAvg) {
             const canvas = document.getElementById('gymChart');
             if (!canvas) return;
@@ -706,7 +706,7 @@
             const currentHour = now.getHours();
             const currentMin = now.getMinutes();
 
-            // 閺佸鎮婃禒濠冩）閺佺増宓侀敍姘额浕濞嗭繝鍣伴弽宄板閻劌鎳嗛崸鍥э綖閸忓拑绱濇稊瀣倵閻劎婀＄€圭偞鏆熼幑顕嗙礉閺堫亝娼垫稉宥嗘▔缁€?
+            // 整理今日数据：首次采样前用周均填充，之后用真实数据，未来不显�?
             let firstRealH = 24;
             for (let h = 0; h < 24; h++) {
                 if (todayData[h] && todayData[h].length > 0) { firstRealH = h; break; }
@@ -724,17 +724,17 @@
                         val = sorted[0].count;
                     }
                 } else if (h < firstRealH && h < currentHour) {
-                    // 妫ｆ牗顐奸柌鍥ㄧ壉閸撳秶鏁ら張顒€鎳嗛崸鍥р偓鐓庯綖閸?
+                    // 首次采样前用本周均值填??
                     val = refData[h] != null ? refData[h] : null;
                 }
-                // 妫ｆ牗顐奸柌鍥ㄧ壉閸氬孩妫ら惇鐔风杽閺佺増宓?or h > currentHour 閳?null閿涘牊娲哥痪澶哥瑝瀵ゆ湹鍑犻敍?
+                // 首次采样后无真实数�??or h > currentHour ??null（曲线不延伸�?
                 hourlyData.push(val);
             }
 
-            // 閺佸鎮婇弰銊︽）閺佺増宓侀敍鍫濆嚒閸?-8閻愮櫢绱?
+            // 整理昨日数据（已??-8点�??
             const yesterdayHourly = gymBuildYesterdayHourly(yesterdayData);
 
-            // Y鏉炴潙娴愮€?-100閿涘本鐦?0娴滆桨绔撮弽?
+            // Y轴固??-100，�??0人一�?
             const MAX_Y = 100, Y_STEP = 10, ySteps = MAX_Y / Y_STEP;
 
             const pad = { top: 12, bottom: 18, left: 32, right: 12 };
@@ -744,7 +744,7 @@
 
             ctx.clearRect(0, 0, W, H);
 
-            // ---- Y鏉炲缍夐弽鑲╁殠 + 閺嶅洨顒?----
+            // ---- Y轴网格线 + 标�??----
             ctx.strokeStyle = '#ebeef2';
             ctx.lineWidth = 0.5;
             for (let i = 0; i <= ySteps; i++) {
@@ -753,14 +753,14 @@
                 ctx.moveTo(pad.left, y);
                 ctx.lineTo(W - pad.right, y);
                 ctx.stroke();
-                // Y鏉炲瓨鐖ｇ粵?
+                // Y轴标�?
                 ctx.fillStyle = '#b0b2b8';
                 ctx.font = '9px sans-serif';
                 ctx.textAlign = 'right';
                 ctx.fillText(Y_STEP * i, pad.left - 4, y + 3);
             }
 
-            // ---- X鏉炲瓨鐖ｇ粵鎾呯礄00:00 閸?24:00閿?----
+            // ---- X轴标签（00:00 ??24:00??----
             ctx.fillStyle = '#b0b2b8';
             ctx.font = '9px sans-serif';
             for (let h = 0; h <= 24; h += 2) {
@@ -770,7 +770,7 @@
                 ctx.fillText(String(labelHour) + ':00', x, H - 3);
             }
 
-            // ---- 缂佹ê鍩楅弰銊︽）閺佺増宓佺痪鍖＄礄濞ｈ京浼嗛懝鑼仯缁惧尅绱?----
+            // ---- 绘制昨日数据线（深灰色点线�??----
             ctx.strokeStyle = '#555';
             ctx.lineWidth = 1.5;
             ctx.setLineDash([3, 4]);
@@ -789,7 +789,7 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // ---- 缂佹ê鍩楁禒濠冩）鐎圭偞妞傞幎妯煎殠閿涘牐鎽戦懝鎻掔杽缁惧尅绱?----
+            // ---- 绘制今日实时折线（蓝色实线�??----
             ctx.strokeStyle = '#2563eb';
             ctx.lineWidth = 2.5;
             ctx.beginPath();
@@ -806,7 +806,7 @@
             }
             ctx.stroke();
 
-            // 娴ｈ法鏁ら拑婵堝殠閺堚偓閸氬簼绔存稉顏勭杽闂勫懐绮崚鍓佸仯閻ㄥ嫬鎮撴稉鈧紒鍕綏閺嶅浄绱濇穱婵婄槈閸﹀棗绺炬稉搴㈡锤缁炬寧婀粩顖炲櫢閸氬牄鈧?            const liveDot = document.getElementById('gymLiveDot');
+            // 使用蓝线最后一个实际绘制点的同一组坐标，保证圆心与曲线末端重合�??            const liveDot = document.getElementById('gymLiveDot');
             let lastTodayHour = -1;
             for (let h = hourlyData.length - 1; h >= 0; h--) {
                 if (hourlyData[h] !== null) {
@@ -824,7 +824,7 @@
                 liveDot.style.display = 'none';
             }
 
-            // ---- 婵夘偄鍘栭崠鍝勭厵閿涘牊绗庨崣姗堢礉閸掓澘缍嬮崜宥呯毈閺冭绱?----
+            // ---- 填充区域（渐变，到当前小时�??----
             const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
             grad.addColorStop(0, 'rgba(37,99,235,0.15)');
             grad.addColorStop(1, 'rgba(37,99,235,0.01)');
@@ -862,8 +862,8 @@
                 }
             }
 
-            // ---- 閺嬪嫬缂撻崚鍡涙寭缁狙囧櫚閺嶉鍋ｆ笟?hover 娴ｈ法鏁?----
-            // 娴犲﹥妫╅敍姘槨娑擃亪鍣伴弽椋庡仯缁墽鈥橀崚鏉垮瀻闁?
+            // ---- 构建分钟级采样点�?hover 使�??----
+            // 今日：每个采样点精确到分??
             const todayPoints = [];
             Object.keys(todayData).forEach(hStr => {
                 const h = parseInt(hStr);
@@ -872,13 +872,13 @@
                 });
             });
             todayPoints.sort((a, b) => a.min - b.min);
-            // 閺勩劍妫╅崥宀€鎮?
+            // 昨日同�??
             const yesterdayPoints = (yesterdayData || []).map(r => ({
                 min: parseInt(r.time.slice(0,2)) * 60 + parseInt(r.time.slice(2,4)),
                 count: r.count
             })).sort((a, b) => a.min - b.min);
 
-            // 娣囨繂鐡ㄩ弫鐗堝祦娓?hover 娴溿倓绨?
+            // 保存数据??hover 交�??
             canvas._chartData = { todayPoints, yesterdayPoints, pad, colW };
             if (!canvas._hoverInitialized) {
                 canvas._hoverInitialized = true;
@@ -891,10 +891,10 @@
                     const hoverMin = ((mx - d.pad.left) / d.colW) * 60;
                     if (hoverMin < 0 || hoverMin > 1440) { tip.style.display = 'none'; return; }
 
-                    // 閺堚偓鏉╂垳绮栭弮銉╁櫚閺嶉鍋ｉ敍鍫ユ30閸掑棝鎸撻崘鍜冪礆
+                    // 最近今日采样点（限30分钟内）
                     let bestT = null, bestTD = 31;
                     d.todayPoints.forEach(p => { const dist = Math.abs(p.min - hoverMin); if (dist < bestTD) { bestTD = dist; bestT = p; } });
-                    // 閺堚偓鏉╂垶妲伴弮銉╁櫚閺嶉鍋ｉ敍鍫ユ30閸掑棝鎸撻崘鍜冪礆
+                    // 最近昨日采样点（限30分钟内）
                     let bestY = null, bestYD = 31;
                     d.yesterdayPoints.forEach(p => { const dist = Math.abs(p.min - hoverMin); if (dist < bestYD) { bestYD = dist; bestY = p; } });
 
@@ -904,14 +904,14 @@
                     if (bestT) {
                         const hh = String(Math.floor(bestT.min / 60)).padStart(2,'0');
                         const mm = String(bestT.min % 60).padStart(2,'0');
-                        parts.push('娴犲﹥妫?' + hh + ':' + mm + '  ' + bestT.count + '娴?);
+                        parts.push('今�??' + hh + ':' + mm + '  ' + bestT.count + '??);
                     }
                     if (bestY) {
                         const hh = String(Math.floor(bestY.min / 60)).padStart(2,'0');
                         const mm = String(bestY.min % 60).padStart(2,'0');
-                        parts.push('閺勩劍妫?' + hh + ':' + mm + '  ' + bestY.count + '娴?);
+                        parts.push('昨�??' + hh + ':' + mm + '  ' + bestY.count + '??);
                     }
-                    tip.textContent = parts.join('  閳? ');
+                    tip.textContent = parts.join('  ?? ');
                     let tx = e.clientX - rect.left - tip.offsetWidth / 2;
                     tx = Math.max(2, Math.min(tx, rect.width - tip.offsetWidth - 2));
                     tip.style.left = tx + 'px';
@@ -922,9 +922,9 @@
             }
         }
 
-        let gymYesterdayData = [];  // 缂傛挸鐡ㄩ弰銊︽）閺佺増宓?
+        let gymYesterdayData = [];  // 缓存昨日数�??
 
-        /** 閼惧嘲褰囬張宥呭閸ｃ劌缍嬫径鈺佸嚒闁插洭娉﹂惃鍕暚閺佸瓨鏆熼幑?*/
+        /** 获取服务器当天已采集的完整数�?*/
         async function gymFetchToday() {
             try {
                 const resp = await fetch('/api/gym/today-data', {
@@ -938,7 +938,7 @@
             return null;
         }
 
-        /** 鏉烆喛顕楅敍姘冲箯閸欐牕缍嬮崜宥呮躬缁惧じ姹夐弫?*/
+        /** 轮询：获取当前在线人�?*/
         async function gymPoll() {
             try {
                 const resp = await fetch('/api/gym/current-online', {
@@ -948,49 +948,49 @@
                 if (data.success && data.count !== null && data.count !== undefined) {
                     const count = data.count;
 
-                    // 閺囧瓨鏌婃径褎鏆熺€?
+                    // 更新大数??
                     const el = document.getElementById('gymOnlineCount');
                     el.textContent = count;
                     el.classList.remove('loading');
 
-                    // 閻樿埖鈧胶鍋?
+                    // 状态�??
                     document.getElementById('gymStatusDot').className = 'status-dot online';
 
-                    // 娣囨繂鐡ㄩ崚?localStorage閿涘牅绶垫禒濠冩）閺囪尙鍤庡〒鍙夌厠閿?
+                    // 保存�?localStorage（供今日曲线渲染??
 
-                    // 閺囧瓨鏌婇崜顖涚垼妫?
+                    // 更新副标??
                     document.getElementById('gymSubInfo').textContent = ''; 
-                    // 閺堝秴濮熼崳銊ь伂閹镐胶鐢婚柌鍥肠閻ㄥ嫭鏆熼幑顔芥Ц娴犲﹥妫╅弴鑼殠閻ㄥ嫬鏁稉鈧弶銉︾爱閿?                    // localStorage 娴犲懍缍旀稉鐑樻箛閸斺€虫珤閹恒儱褰涢弳鍌涙娑撳秴褰查悽銊︽閻ㄥ嫰妾风痪褎鏆熼幑顔衡偓?                    const serverTodayData = await gymFetchToday();
+                    // 服务器端持续采集的数据是今日曲线的唯一来源??                    // localStorage 仅作为服务器接口暂时不可用时的降级数据�?                    const serverTodayData = await gymFetchToday();
                     const todayData = serverTodayData || gymLoadToday();
                     const [weeklyData] = await Promise.all([gymFetchWeeklyRef()]);
                     gymDrawChart(todayData, gymYesterdayData, weeklyData.ref, weeklyData.avg);
                 } else {
-                    throw new Error(data.error || '閺佺増宓佹稉铏光敄');
+                    throw new Error(data.error || '数据为空');
                 }
             } catch (err) {
-                // 瀵倸鐖堕弮鑸垫▔缁€铏瑰Ц閹?
+                // 异常时显示状??
                 const el = document.getElementById('gymOnlineCount');
                 if (el.textContent === '--') {
                     el.classList.add('loading');
                 }
                 document.getElementById('gymStatusDot').className = 'status-dot offline';
-                document.getElementById('gymSubInfo').textContent = '閳跨媴绗?' + (err.message || '閼惧嘲褰囬弫鐗堝祦婢惰精瑙?);
+                document.getElementById('gymSubInfo').textContent = '⚠�??' + (err.message || '获取数据失�??);
             }
         }
 
-        /** 閹靛濮╅崚閿嬫煀閿涘牏鍋ｉ幐澶愭尦鐟欙箑褰傞敍宀€鍔ч崥搴ㄥ櫢缂?閸掑棝鎸撶拋鈩冩閸ｎ煉绱?*/
+        /** 手动刷新（点按钮触发，然后重??分钟计时器�??*/
         async function gymManualRefresh() {
             const btn = document.getElementById('gymRefreshBtn');
             btn.style.transform = 'rotate(360deg)';
             btn.style.transition = 'transform .4s';
             setTimeout(() => btn.style.transition = '', 500);
             await gymPoll();
-            // 闁插秶鐤嗙拋鈩冩閸ｎ煉绱版禒搴＄秼閸撳秵妞傞崚璇插晙鏉?閸掑棝鎸?
+            // 重置计时器：从当前时刻再??分�??
             if (gymTimer) clearInterval(gymTimer);
             gymTimer = setInterval(gymPoll, GYM_POLL_INTERVAL);
         }
 
-        /** 閼惧嘲褰囬弰銊︽）閺佺増宓?*/
+        /** 获取昨日数�??*/
         async function gymFetchYesterday() {
             try {
                 const resp = await fetch('/api/gym/yesterday-data', {
@@ -1003,37 +1003,37 @@
             } catch {}
         }
 
-        /** 閸掓繂顫愰崠鏍т淮闊偅鍩ч惄鎴炲付 */
+        /** 初始化健身房监控 */
         function gymInit() {
-            // 閸忓牆濮炴潪鑺ユО閺冦儲鏆熼幑顕嗙礉閸愬秹顩诲▎陇鐤嗙拠?
+            // 先加载昨日数据，再首次轮�?
             gymFetchYesterday().then(() => gymPoll());
-            // 閸氼垰濮╃€规碍妞傛潪顔款嚄
+            // 启动定时轮询
             if (gymTimer) clearInterval(gymTimer);
             gymTimer = setInterval(gymPoll, GYM_POLL_INTERVAL);
         }
 
-        // 閸氼垰濮╅崑銉ㄩ煩閹磋法娲冮幒褝绱欓崷鈥昈M閸旂姾娴囬崥搴礆
+        // 启动健身房监控（在DOM加载后）
         window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(gymInit, 500);  // 鐠佲晙瀵屾い鐢告桨閸忓牊瑕嗛弻?
+            setTimeout(gymInit, 500);  // 让主页面先渲�?
         });
 
         function getLevel(h) {
-            if (h >= DANGER_H) return 'danger';  // 閳?6h 閳?缁俱垼澹?
-            if (h >= WARN_H) return 'alert';      // 閳?0h 閳?姒涘嫯澹?
+            if (h >= DANGER_H) return 'danger';  // ??6h ??红�??
+            if (h >= WARN_H) return 'alert';      // ??0h ??黄�??
             return 'safe';
         }
         function limitMsg(h) {
             const left = LIMIT_H - h;
-            if (h >= DANGER_H) return `閳跨媴绗?娴犲懎澧?${left} 鐏忓繑妞傛潏鐐姒涙垹鍤庨敍宀冾嚞鐏忚棄鎻╃紓纾嬪瀭缁傝婧€`;
-            if (h >= WARN_H)  return `閳?瀹告彃浠?${h} 鐏忓繑妞傞敍宀冪獩閹峰绮︾痪鑳箷閺?${left} 鐏忓繑妞俙;
-            return `閴?閸嬫粏婧呴弮鍫曟毐濮濓絽鐖堕敍宀冪獩閹峰绮︾痪鑳箷閺?${left} 鐏忓繑妞俙;
+            if (h >= DANGER_H) return `⚠�??仅�??${left} 小时达拉黑线，请尽快缴费离场`;
+            if (h >= WARN_H)  return `??已�??${h} 小时，距拉黑线还??${left} 小时`;
+            return `??停车时长正常，距拉黑线还??${left} 小时`;
         }
         function fmtDur(min) {
             if (min == null) return '--';
             const d = Math.floor(min / 1440), h = Math.floor((min % 1440) / 60), m = min % 60;
-            if (d > 0) return d + '婢? + h + '鐏忓繑妞? + m + '閸?;
-            if (h > 0) return h + '鐏忓繑妞? + m + '閸?;
-            return m + '閸掑棝鎸?;
+            if (d > 0) return d + '?? + h + '小�?? + m + '??;
+            if (h > 0) return h + '小�?? + m + '??;
+            return m + '分�??;
         }
         function fmtTs(ts) {
             if (!ts) return null;
@@ -1045,13 +1045,13 @@
             const h = Math.floor(min / 60), m = min % 60;
             let s = h > 0 ? h + 'h' : '';
             if (m > 0 || h === 0) s += m + 'm';
-            s += ' 閸氬骸濮炴ゼ' + (fee != null ? fee : '?');
+            s += ' 后加¥' + (fee != null ? fee : '?');
             return s;
         }
         function fmtPlate(p) {
-            // 閻炵硛054DB 閳?閻炵硛璺?54DB
+            // 琼A054DB ??琼A??54DB
             if (!p || p.length < 3) return p;
-            return p.slice(0, 2) + '璺? + p.slice(2);
+            return p.slice(0, 2) + '?? + p.slice(2);
         }
         function esc(s) {
             const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;

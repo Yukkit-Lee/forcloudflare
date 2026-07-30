@@ -194,3 +194,4 @@
   - 修复页面全面乱码/损坏：Worker 嵌入页面改为从本地 dashboard.html 重新生成，线上 bad closing tags=0。
   - 新增本地页面兼容接口映射：/api/gym/current-online、/api/gym/today-data、/api/gym/yesterday-data、/api/gym/weekly-stats。
   - 线上验证通过：页面 200，h1/title 标签完整；today-data 250 条、yesterday-data 261 条，current-online=78。
+  - 修复后续页面乱码：恢复 dashboard.html 被错误 GBK/UTF-8 转换的中文文本，Worker 页面标题已恢复为“便捷面板”。
