@@ -168,16 +168,75 @@ function chinaDateKey(date = new Date()) {
     return parts.year + '-' + parts.month + '-' + parts.day;
 }
 
-async function fetchGymJson() {
+async function writeGymApiLog(env, entry) {
+    const requestedAt = entry.requestedAt || new Date().toISOString();
+    const record = {
+        requestedAt,
+        requestDate: chinaDateKey(new Date(requestedAt)),
+        requestType: entry.requestType,
+        upstreamStatus: entry.upstreamStatus ?? null,
+        success: Boolean(entry.success),
+        durationMs: entry.durationMs,
+        errorMessage: entry.errorMessage ? String(entry.errorMessage).slice(0, 500) : null,
+    };
+
+    console.log(JSON.stringify({ event: 'gym_api_access', ...record }));
+    if (!env.GYM_DB) return;
+
+    try {
+        await env.GYM_DB.prepare(
+            `INSERT INTO gym_api_logs
+                (requested_at, request_date, request_type, upstream_status, success, duration_ms, error_message)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`
+        ).bind(
+            record.requestedAt,
+            record.requestDate,
+            record.requestType,
+            record.upstreamStatus,
+            record.success ? 1 : 0,
+            record.durationMs,
+            record.errorMessage
+        ).run();
+    } catch (error) {
+        console.error('gym api log D1 write failed', error);
+    }
+}
+
+async function fetchGymOnlineCount(env, requestType) {
+    const requestedAt = new Date().toISOString();
+    const startedAt = Date.now();
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), GYM_CONFIG.TIMEOUT);
+    let upstreamStatus = null;
     try {
         const response = await fetch(GYM_CONFIG.BASE_URL + GYM_CONFIG.CURRENT_ONLINE, {
             headers: { 'Accept': 'application/json', 'User-Agent': 'jinshugou-gym-worker/1.0' },
             signal: controller.signal,
         });
+        upstreamStatus = response.status;
         if (!response.ok) throw new Error('gym upstream HTTP ' + response.status);
-        return await response.json();
+        const count = extractGymCount(await response.json());
+        await writeGymApiLog(env, {
+            requestedAt,
+            requestType,
+            upstreamStatus,
+            success: true,
+            durationMs: Date.now() - startedAt,
+        });
+        return count;
+    } catch (error) {
+        const errorMessage = error?.name === 'AbortError'
+            ? 'gym upstream timeout after ' + GYM_CONFIG.TIMEOUT + 'ms'
+            : error?.message || String(error);
+        await writeGymApiLog(env, {
+            requestedAt,
+            requestType,
+            upstreamStatus,
+            success: false,
+            durationMs: Date.now() - startedAt,
+            errorMessage,
+        });
+        throw error;
     } finally {
         clearTimeout(timer);
     }
@@ -195,7 +254,7 @@ function extractGymCount(payload) {
 
 async function collectGymSample(env) {
     if (!env.GYM_DB) throw new Error('GYM_DB binding is missing');
-    const count = extractGymCount(await fetchGymJson());
+    const count = await fetchGymOnlineCount(env, 'worker-cron');
     const sampledAt = new Date().toISOString();
     const sampleDate = chinaDateKey(new Date(sampledAt));
     await env.GYM_DB.prepare(
@@ -236,17 +295,49 @@ async function getGymLatest(env) {
 
 async function getGymCurrentOnline(env) {
     try {
-        const count = extractGymCount(await fetchGymJson());
+        const count = await fetchGymOnlineCount(env, 'realtime-refresh');
         return json({ success: true, count, serverTime: Date.now(), source: 'realtime-refresh' });
     } catch (error) {
         return json({ success: false, count: null, error: 'gym realtime request failed' }, 502);
     }
 }
 
+async function getGymApiLogs(env, url) {
+    if (!env.GYM_DB) return json({ success: false, error: 'GYM_DB binding is missing' }, 503);
+    const date = url.searchParams.get('date');
+    const requestedLimit = Number.parseInt(url.searchParams.get('limit') || '100', 10);
+    const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 500) : 100;
+    const query = date
+        ? `SELECT requested_at, request_date, request_type, upstream_status, success,
+                  duration_ms, error_message
+           FROM gym_api_logs WHERE request_date = ? ORDER BY requested_at DESC LIMIT ?`
+        : `SELECT requested_at, request_date, request_type, upstream_status, success,
+                  duration_ms, error_message
+           FROM gym_api_logs ORDER BY requested_at DESC LIMIT ?`;
+    const statement = date
+        ? env.GYM_DB.prepare(query).bind(date, limit)
+        : env.GYM_DB.prepare(query).bind(limit);
+    const result = await statement.all();
+    return json({
+        success: true,
+        date: date || null,
+        records: (result.results || []).map(row => ({
+            requestedAt: row.requested_at,
+            requestDate: row.request_date,
+            requestType: row.request_type,
+            upstreamStatus: row.upstream_status,
+            success: Boolean(row.success),
+            durationMs: row.duration_ms,
+            errorMessage: row.error_message,
+        })),
+    });
+}
+
 async function handleGymApi(path, url, env) {
     const today = chinaDateKey();
     if (path === '/api/gym/latest') return getGymLatest(env);
     if (path === '/api/gym/current-online') return getGymCurrentOnline(env);
+    if (path === '/api/gym/api-logs') return getGymApiLogs(env, url);
     if (path === '/api/gym/today-data') return getGymSamples(env, url.searchParams.get('date') || today, url.searchParams.get('since'));
     if (path === '/api/gym/today') return getGymSamples(env, url.searchParams.get('date') || today, url.searchParams.get('since'));
     if (path === '/api/gym/yesterday') {

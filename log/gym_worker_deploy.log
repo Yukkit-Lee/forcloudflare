@@ -25,3 +25,5 @@
 2026-07-30: Remote manual-refresh verification passed; D1 today row count remained 283 before and after current-online request.
 2026-07-30: Confirmed Asia/Shanghai date rollover will query 2026-07-30 as yesterday on 2026-07-31.
 2026-07-30: Translated the README Gym/D1 section into Chinese and documented UTC timestamp handling.
+2026-07-30: Created remote D1 table gym_api_logs for Worker upstream status, latency, and error records.
+2026-07-30: Added /api/gym/api-logs; realtime refresh logs access status but never writes gym_samples or the returned count.

@@ -244,3 +244,14 @@ cd code && npx wrangler deploy
 [2026-07-30 22:27:20] git add -- README.md progress.txt log/gym_worker_deploy.log log/agentCmd.txt; git commit -m "Translate gym D1 documentation to Chinese"
 [2026-07-30 22:27:29] git push origin main
 [2026-07-30 22:27:55] git add -- log/agentCmd.txt; git commit -m "Record documentation push command"; git push origin main; git status --short
+[2026-07-30 22:36:18] git status --short; Write-Output "--- GYM FUNCTIONS ---"; rg -n "fetchGymJson|collectGymSample|getGymCurrentOnline|getGymSamples|scheduled|gym_samples|current-online|today-data|yesterday-data" code/worker.js; Write-Output "--- WRANGLER ---"; Get-Content code/wrangler.toml; Write-Output "--- SCHEMA ---"; Get-Content code/gym_schema.sql; Write-Output "--- PACKAGE ---"; Get-Content package.json -ErrorAction SilentlyContinue
+[2026-07-30 22:36:25] $lines=Get-Content code/worker.js; $lines[145..275]; Write-Output "--- HANDLER ---"; $lines[395..440]
+[2026-07-30 22:36:33] rg -n -A 12 -B 4 "GYM_CONFIG" code/worker.js; rg -n "handleGymApi\(|handleRequest" code/worker.js | Select-Object -First 20; Get-Content requirements.txt -Tail 20 -ErrorAction SilentlyContinue; Get-ChildItem -Name
+[2026-07-30 22:36:41] $lines=Get-Content code/worker.js; $lines[328..365]; Write-Output "--- README TAIL ---"; Get-Content README.md -Tail 55
+[2026-07-30 22:37:56] node --check code/worker.js; Get-Content code/package.json; Write-Output "--- DIFF CHECK ---"; git diff --check; Write-Output "--- LOG ROUTES ---"; rg -n "gym_api_logs|api-logs|fetchGymOnlineCount|writeGymApiLog" code/worker.js code/gym_schema.sql log/gymApiLog.md
+[2026-07-30 22:38:06] npx wrangler deploy --dry-run --config code/wrangler.toml
+[2026-07-30 22:38:22] npx wrangler d1 execute jinshugou-gym --remote --file code/gym_schema.sql --config code/wrangler.toml
+[2026-07-30 22:39:23] npx wrangler d1 execute jinshugou-gym --remote --command "SELECT COUNT(*) AS rows FROM gym_api_logs; PRAGMA table_info(gym_api_logs);" --config code/wrangler.toml
+[2026-07-30 22:39:38] npx wrangler d1 execute jinshugou-gym --remote --command "DROP TABLE gym_api_logs;" --config code/wrangler.toml; npx wrangler d1 execute jinshugou-gym --remote --file code/gym_schema.sql --config code/wrangler.toml
+[2026-07-30 22:40:28] node --check code/worker.js; npx wrangler deploy --dry-run --config code/wrangler.toml; git diff --check; Write-Output "--- SAMPLE INSERT PATHS ---"; rg -n "INSERT INTO gym_samples|collectGymSample\(|fetchGymOnlineCount\(|gym_api_logs" code/worker.js; Write-Output "--- STATUS ---"; git status --short
+[2026-07-30 22:40:43] git add -- README.md code/gym_schema.sql code/worker.js log/agentCmd.txt log/gym_worker_deploy.log log/gymApiLog.md progress.txt requirements.txt; git commit -m "Add persistent gym upstream API logs"
