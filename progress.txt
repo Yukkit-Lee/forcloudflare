@@ -205,3 +205,6 @@
   - 新增 D1 `gym_api_logs`：记录 Cron 和实时刷新访问上游接口的 HTTP 状态、成功状态、耗时及错误原因。
   - 新增 `/api/gym/api-logs` 查询接口和 `log/gymApiLog.md` 字段说明；单次最多返回 500 条。
   - 日志不保存实时刷新得到的人数；实时刷新仍不会向 `gym_samples` 写入曲线采样。
+  - 线上验证实时刷新前后 `gym_samples` 均为 287 条；访问日志记录 HTTP 200 和 117ms，未保存人数。
+  - 已停止本地 PID 18300，端口 3000 不再监听，不再写入本地 txt。
+  - 本地关闭后 Worker Cron 于 14:45 UTC 独立采集成功：HTTP 200、耗时 1202ms，并写入 worker-cron 采样。

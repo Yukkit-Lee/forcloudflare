@@ -4,3 +4,4 @@ api-keys/
 *.lock
 package-lock.json
 code/referenceCode
+.wrangler/

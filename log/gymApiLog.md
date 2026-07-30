@@ -44,3 +44,12 @@ WHERE success = 0
 ORDER BY requested_at DESC
 LIMIT 100;
 ```
+
+## 上线验证
+
+`2026-07-30` 验证结果：
+
+- 实时刷新前后 `gym_samples` 均为 287 条，确认没有把手动刷新结果写入曲线数据。
+- 实时刷新日志：`realtime-refresh`、HTTP 200、成功、117ms。
+- 关闭本地 PID 18300 后，Worker Cron 仍在 14:45 UTC 自动采集成功。
+- Cron 日志：`worker-cron`、HTTP 200、成功、1202ms；对应采样正常写入 `gym_samples`。
