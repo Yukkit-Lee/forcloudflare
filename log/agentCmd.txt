@@ -174,3 +174,12 @@ cd code && npx wrangler deploy
 2026-07-30 19:47:34 npx wrangler d1 execute jinshugou-gym --remote --command="SELECT sample_date, COUNT(*) AS rows FROM gym_samples GROUP BY sample_date ORDER BY sample_date;"
 2026-07-30 19:48:05 git status --short; Write-Output "--- gitignore ---"; Get-Content ..\.gitignore -ErrorAction SilentlyContinue; Write-Output "--- diff stat ---"; git diff --stat
 2026-07-30 19:48:18 git add README.md code/dashboard.html code/server.js code/worker.js code/wrangler.toml code/gym_schema.sql log/agentCmd.txt log/gym_worker_deploy.log progress.txt requirements.txt; git diff --cached --stat
+2026-07-30 19:48:24 git commit -m "Separate gym realtime refresh from cron D1 writes"
+2026-07-30 19:48:30 git push origin main
+2026-07-30 19:50:04 git status --short; git log -3 --oneline; node --check worker.js; Write-Output "--- remote ---"; try { $r=Invoke-WebRequest -Uri "https://forcloudflare.442192699.workers.dev/board?diag=1" -UseBasicParsing -TimeoutSec 30; Write-Output ("status="+$r.StatusCode+" length="+$r.Content.Length); Write-Output $r.Content.Substring(0,[Math]::Min(700,$r.Content.Length)) } catch { Write-Output $_.Exception.Message }
+2026-07-30 19:50:34 diagnose remote HTML headers and tag balance
+2026-07-30 19:50:55 compile remote inline dashboard script
+2026-07-30 19:51:16 git status --short; git diff --stat -- code/dashboard.html code/server.js code/worker.js; git diff -- code/server.js | Select-Object -First 80
+2026-07-30 19:51:34 node --check worker.js; npx wrangler deploy
+2026-07-30 19:51:58 verify no-store header and remote page after redeploy
+2026-07-30 19:52:06 git add code/worker.js log/agentCmd.txt; git commit -m "Prevent stale dashboard HTML cache"; git push origin main

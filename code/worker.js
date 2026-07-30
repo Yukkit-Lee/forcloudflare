@@ -408,7 +408,10 @@ async function handleRequest(request, env) {
     // 闂傚倸鍊搁悧濠囨偡閿曞倸鐒垫い鎴ｆ硶缁愭棃鏌曢崱妤婃█婵? 闂備焦妞挎禍婊堫敄閸℃鐔?
     if (path === '/' || path === '/board') {
         return new Response(DASHBOARD_HTML, {
-            headers: { 'Content-Type': 'text/html; charset=utf-8' },
+            headers: {
+                'Content-Type': 'text/html; charset=utf-8',
+                'Cache-Control': 'no-store, no-cache, must-revalidate',
+            },
         });
     }
 
