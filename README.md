@@ -124,16 +124,18 @@ Get-Content "D:\myApps\ServerMonitor\monitor.log" -Tail 30
 ```
 
 当 `monitor.log` 达到 10 MiB 时，监控器会在下一次周期启动时自动清空该文件。
-## Gym Monitor / D1
+## 健身房人数监控与 D1
 
-The gym monitor has two separate paths:
+健身房人数监控分为两条相互独立的执行路径：
 
-- `Cron`: Cloudflare Worker Cron runs every five minutes, calls the gym upstream API, and writes one row to D1 table `gym_samples` with `source=worker-cron`.
-- `Refresh`: a visitor clicking refresh calls `/api/gym/current-online`, which reads the upstream API directly and only renders the response. It does not write D1 and does not write the local `data/*.txt` files.
+- `Cron 定时采集`：Cloudflare Worker Cron 每五分钟调用一次健身房上游接口，并向 D1 的 `gym_samples` 表写入一条记录，`source` 为 `worker-cron`。
+- `用户手动刷新`：用户点击刷新时调用 `/api/gym/current-online`，直接读取上游接口并把结果渲染到页面。该请求不会写入 D1，也不会写入本地 `data/*.txt` 文件。
 
-The chart reads `/api/gym/today-data` and `/api/gym/yesterday-data`. The compatibility response includes `time` and `count` fields required by the local dashboard renderer. Historical data from `data/20260729.txt` and `data/20260730.txt` was imported with `source=historical-import`.
+图表分别通过 `/api/gym/today-data` 和 `/api/gym/yesterday-data` 读取今日及昨日数据。日期按 `Asia/Shanghai` 时区计算，因此进入新的一天后，昨日参考会自动切换为前一天的完整记录。例如在 `2026-07-31`，昨日参考查询的是 `sample_date = '2026-07-30'`。接口同时返回本地面板绘图所需的 `time` 和 `count` 兼容字段。
 
-D1 database: `jinshugou-gym` (`d8985623-8620-47eb-a259-dd9d311c9c59`). The table has no `venue_code` because this project monitors one gym:
+历史文件 `data/20260729.txt` 和 `data/20260730.txt` 已导入 D1，导入记录的 `source` 为 `historical-import`。
+
+D1 数据库为 `jinshugou-gym`（`d8985623-8620-47eb-a259-dd9d311c9c59`）。本项目只监控一个健身房，因此表中没有 `venue_code` 字段：
 
 ```sql
 gym_samples(
@@ -142,7 +144,7 @@ gym_samples(
 )
 ```
 
-To count stored rows, use an aggregate query instead of relying on the console result pane:
+如需统计数据库中的实际记录数，应使用聚合查询，不要把控制台结果面板显示的行数当作总记录数：
 
 ```sql
 SELECT sample_date, COUNT(*) AS rows
@@ -151,15 +153,14 @@ GROUP BY sample_date
 ORDER BY sample_date;
 ```
 
-`Rows Read` is the number of rows scanned by that SQL query; it is not the total number of rows in the table. The D1 console may also display a limited or paginated result set. The verified remote counts are 261 rows for `2026-07-29` and 252 rows for `2026-07-30`.
+`Rows Read` 表示该条 SQL 查询扫描了多少行，不代表表中一共有多少行。D1 控制台的结果也可能受分页或显示数量限制。`2026-07-29` 的历史基线为 261 条；`2026-07-30` 的记录会随着五分钟 Cron 采集持续增加，因此文档不固定记录其最终数量。
 
-The dashboard HTML is based on the confirmed working Cloudflare deployment
-`e0684139-forcloudflare`. Edit `code/dashboard.html`, then synchronize the
-embedded Worker page with:
+`sampled_at` 使用 ISO 8601 UTC 时间保存。例如 `2026-07-30T14:20:31.298Z` 中的 `Z` 表示 UTC，对应北京时间 `2026-07-30 22:20:31.298`。查询接口会按 UTC+8 生成图表使用的本地时间，同时通过 `sample_date` 保存上海时区日期，因此数据库使用 UTC 不会影响今日和昨日数据的划分。
+
+面板 HTML 以已确认显示正常的 Cloudflare 部署版本 `e0684139-forcloudflare` 为基线。修改 `code/dashboard.html` 后，使用以下命令把页面安全地同步到 Worker：
 
 ```powershell
 node code/sync-dashboard.mjs
 ```
 
-The sync script reads and writes UTF-8 directly. Do not rebuild the embedded
-HTML through PowerShell's default text encoding.
+同步脚本直接以 UTF-8 读写。不要使用 PowerShell 默认文本编码重新生成 Worker 中的嵌入 HTML，以免再次造成中文乱码或标签损坏。

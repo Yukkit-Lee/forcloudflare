@@ -236,3 +236,9 @@ cd code && npx wrangler deploy
 2026-07-30 20:11:51 verify recovered local service and no-write page refresh
 2026-07-30 20:12:18 final checks for e068 baseline plus no-write refresh changes
 2026-07-30 20:12:27 git add e068 baseline sync files and documentation; commit
+2026-07-30 20:12:34 git push origin main
+2026-07-30 22:24:42 verify Worker write paths date rollover and remote manual refresh behavior
+[2026-07-30 22:26:05] git status --short; Write-Output "--- README GYM ---"; rg -n -A 80 "^## Gym Monitor / D1" README.md; Write-Output "--- PROGRESS TAIL ---"; Get-Content progress.txt -Tail 30; Write-Output "--- DEPLOY LOG TAIL ---"; Get-Content log/gym_worker_deploy.log -Tail 30
+[2026-07-30 22:26:44] node -e "const fs=require('fs'); for (const f of ['progress.txt','log/gym_worker_deploy.log']) { const s=fs.readFileSync(f,'utf8'); console.log('---'+f+'---'); console.log(JSON.stringify(s.slice(-1200))); }"
+[2026-07-30 22:27:08] git diff --check; git diff -- README.md progress.txt log/gym_worker_deploy.log; Write-Output "--- PORT 3000 ---"; Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalAddress,LocalPort,OwningProcess
+[2026-07-30 22:27:20] git add -- README.md progress.txt log/gym_worker_deploy.log log/agentCmd.txt; git commit -m "Translate gym D1 documentation to Chinese"

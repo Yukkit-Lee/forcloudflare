@@ -22,3 +22,6 @@
 2026-07-30 20:08: Extracted e0684139 DASHBOARD_HTML to local dashboard.html; title=便捷面板.
 2026-07-30 20:10: Applied refresh-without-write behavior and removed the sample-count subtitle; Wrangler dry-run passed.
 2026-07-30 20:12: Recovered local server.js syntax, restarted local service as PID 18300, and verified refresh kept txt rows at 280.
+2026-07-30: Remote manual-refresh verification passed; D1 today row count remained 283 before and after current-online request.
+2026-07-30: Confirmed Asia/Shanghai date rollover will query 2026-07-30 as yesterday on 2026-07-31.
+2026-07-30: Translated the README Gym/D1 section into Chinese and documented UTC timestamp handling.

@@ -199,3 +199,6 @@
   - 在该基线上实现：Cron 每 5 分钟写 D1；客户刷新只实时查询并渲染，不写 D1/txt/localStorage。
   - 删除“今日已采集…最新…”副标题，并新增 UTF-8 安全同步脚本 code/sync-dashboard.mjs。
   - 恢复本地 server.js 的 UTF-8/语法并重启服务；PID 18300，刷新前后 20260730.txt 行数保持 280。
+  - 线上复核手动刷新行为：调用 current-online 前后，D1 当日记录均为 283 条，确认刷新不写库。
+  - 确认日期按 Asia/Shanghai 计算；2026-07-31 的昨日参考将自动读取 2026-07-30 数据。
+  - README 健身房/D1 章节已全部改为中文，并补充 UTC 时间、次日切换和 Rows Read 说明。
